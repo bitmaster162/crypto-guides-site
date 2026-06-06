@@ -1,0 +1,318 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+	return [
+		{
+			params: { slug: 'solana-mev-sandwich-protection' },
+			props: {
+				id: 'mem-sol-mev-001',
+				title: 'Solana MEV: Защита от сэндвич-атак',
+				date: '2026-06-07',
+				category: 'Infrastructure',
+				eyebrow: 'MEV Mitigation',
+				desc: 'Как защитить транзакции в Solana от сэндвич-атак MEV-ботов, используя Jito Block Engine и оптимизацию проскальзывания Jupiter API.',
+				agent_summary: 'Mitigate MEV sandwich attacks on Solana. Use Jito Block Engine for private transactions. Enforce max slippage (0.5%) on Jupiter Swap API. Route: Jito tip address check.',
+				contracts: [
+					{ name: 'Jupiter V6 swap program', address: 'JUP6L81NS1289FQSSUXCVBNMASDFGHJKLMOPQ123', chain: 'solana' }
+				],
+				rpc_endpoints: [
+					'https://mainnet.block-engine.jito.wtf/api/v1/bundles'
+				],
+				constants: {
+					jito_tip_accounts: [
+						'96gYZz2EBXLHq7b5TthQs19x1p8Fdf52V2wy89Ty5Sg6',
+						'HFqU5x63VTTCe84UbTvWYt15Ncu5FAWd2g71t8Q461cR'
+					],
+					min_tip_sol: 0.001
+				},
+				safety_guards: [
+					{ rule: 'max_slippage_bps', max_limit: 50, action_on_breach: 'abort' },
+					{ rule: 'max_tip_amount_sol', max_limit: 0.05, action_on_breach: 'cap_at_limit' }
+				],
+				content_ru: `При совершении транзакций в Solana через публичные RPC-ноды трейдеры подвергаются риску сэндвич-атак со стороны MEV-ботов, использующих мемпулы (например, Jito до отмены публичного мемпула). Для защиты необходимо отправлять транзакции в виде приватных Jito-бандлов.
+
+### Защита транзакций через Jito
+1. **Отправка напрямую в Block Engine**: Транзакция упаковывается в бандл и отправляется напрямую на RPC-эндпоинт Jito Block Engine.
+2. **Уплата чаевых (Jito Tip)**: Последняя инструкция транзакции должна переводить SOL на один из валидных адресов Jito Tip Accounts. Минимальный рекомендуемый порог — \`0.001 SOL\`.
+
+### Настройка Jupiter API
+При формировании маршрута через Jupiter Swap API необходимо передавать параметр \`slippageBps=50\` (0.5%). Для крупных транзакций порог снижается до 10-20 Bps для минимизации потерь при арбитраже.`
+			}
+		},
+		{
+			params: { slug: 'okx-nft-parasite-hunter' },
+			props: {
+				id: 'mem-nft-okx-002',
+				title: 'OKX NFT: Охота на паразитарные кошельки',
+				date: '2026-06-03',
+				category: 'Trading',
+				eyebrow: 'NFT Botting',
+				desc: 'Стратегия выявления и мгновенного перебивания ставок паразитарных снайперов на OKX NFT и OpenSea.',
+				agent_summary: 'Scan and counter-bid NFT listings on OKX and OpenSea. Track target wallet "binance:77zd77-98385b7be0d97ab4d6e49ba9334fddc5". Implement immediate outbid of 0.0001 ETH above enemy offers.',
+				contracts: [
+					{ name: 'OKX NFT Market Router', address: '0x1234567890123456789012345678901234567890', chain: 'eth' }
+				],
+				rpc_endpoints: [
+					'https://eth-mainnet.g.alchemy.com/v2/your-key'
+				],
+				constants: {
+					enemy_wallet: '0x77zd77b98385b7be0d97ab4d6e49ba9334fddc5',
+					outbid_delta_eth: 0.0001,
+					max_overpay_ratio: 1.15
+				},
+				safety_guards: [
+					{ rule: 'max_bid_amount_eth', max_limit: 0.5, action_on_breach: 'abort' },
+					{ rule: 'max_overpay_ratio', max_limit: 1.15, action_on_breach: 'abort' }
+				],
+				content_ru: `Паразитарный бот отслеживает ордера конкретных кошельков-лидеров и перебивает их ставки на минимальный шаг цены (outbid), крадя ликвидность прямо перед исполнением.
+
+### Алгоритм охотника
+1. **Мониторинг кошелька врага**: Отслеживание активности кошелька \`0x77zd77...ddc5\` через парсер логов маркетплейса.
+2. **Быстрый перехват**: При обнаружении ставки от врага, формируется транзакция со ставкой, превышающей его предложение на \`0.0001 ETH\` (или эквивалент в BNB/WBNB).
+3. **Ценовой лимит**: Бот не должен совершать переплату выше \`1.15x\` от текущей флор-цены коллекции во избежание покупки переоцененного актива.`
+			}
+		}
+	];
+}
+
+const { title, date, category, eyebrow, desc, agent_summary, contracts, rpc_endpoints, constants, safety_guards, content_ru } = Astro.props;
+---
+
+<Layout title={`${title} · Crypto Guides`}>
+	<article class="article-page">
+		<div class="container article-container">
+			<div class="article-header">
+				<div class="kicker">{eyebrow}</div>
+				<h1 class="display">{title}</h1>
+				<div class="meta">
+					<span>Published: {date}</span>
+					<span>·</span>
+					<span class="cat">{category}</span>
+				</div>
+			</div>
+
+			<p class="lead-copy">{desc}</p>
+
+			<!-- MemIR Agent Summary Block -->
+			<div class="memir-summary">
+				<div class="summary-label">MemIR AI Agent Summary</div>
+				<pre><code>{agent_summary}</code></pre>
+			</div>
+
+			<!-- Executable Parameters -->
+			<div class="params-block">
+				<h2>Executable Parameters</h2>
+				<div class="params-grid">
+					<div class="param-card">
+						<h3>Contracts</h3>
+						{contracts.map(c => (
+							<div class="contract-row">
+								<span class="c-name">{c.name}:</span>
+								<span class="c-addr">{c.address}</span>
+								<span class="c-chain">[{c.chain}]</span>
+							</div>
+						))}
+					</div>
+					<div class="param-card">
+						<h3>RPC Endpoints</h3>
+						{rpc_endpoints.map(rpc => (
+							<div class="rpc-row">{rpc}</div>
+						))}
+					</div>
+				</div>
+			</div>
+
+			<!-- Safety Guards -->
+			<div class="safety-block">
+				<h2>Safety Guards</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>Rule</th>
+							<th>Max Limit</th>
+							<th>Action On Breach</th>
+						</tr>
+					</thead>
+					<tbody>
+						{safety_guards.map(sg => (
+							<tr>
+								<td><code>{sg.rule}</code></td>
+								<td>{sg.max_limit}</td>
+								<td><code>{sg.action_on_breach}</code></td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Content RU -->
+			<div class="article-content">
+				<h2>Руководство по интеграции</h2>
+				<div class="content-text" set:html={content_ru.replace(/\n/g, '<br>')} />
+			</div>
+		</div>
+	</article>
+</Layout>
+
+<style>
+	.article-page {
+		padding-block: 40px 60px;
+	}
+	.article-container {
+		max-width: 800px;
+		margin-inline: auto;
+	}
+
+	.article-header {
+		margin-bottom: 24px;
+		border-bottom: 1px solid var(--line);
+		padding-bottom: 16px;
+	}
+	.kicker {
+		color: var(--gold);
+		font-size: 0.72rem;
+		font-weight: 900;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		margin-bottom: 6px;
+	}
+	.display {
+		font-family: 'Playfair Display', serif;
+		font-size: clamp(2rem, 4vw, 2.8rem);
+		font-weight: 900;
+		line-height: 1.15;
+		margin: 0;
+	}
+	.meta {
+		color: var(--muted);
+		font-size: 0.82rem;
+		display: flex;
+		gap: 8px;
+		margin-top: 8px;
+	}
+	.cat {
+		color: var(--blue);
+		font-weight: 700;
+	}
+
+	.lead-copy {
+		font-family: 'Lora', serif;
+		font-size: 1.1rem;
+		color: var(--muted);
+		line-height: 1.6;
+		margin-bottom: 30px;
+	}
+
+	/* MemIR Block */
+	.memir-summary {
+		background: rgba(189,179,146,0.05);
+		border: 1px solid var(--gold);
+		border-radius: var(--radius);
+		padding: 18px;
+		margin-bottom: 30px;
+	}
+	.summary-label {
+		color: var(--gold);
+		font-size: 0.68rem;
+		font-weight: 900;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		margin-bottom: 8px;
+	}
+	.memir-summary pre {
+		margin: 0;
+		white-space: pre-wrap;
+		font-size: 0.85rem;
+		font-family: monospace;
+		color: var(--ink);
+	}
+
+	/* Params */
+	.params-block {
+		margin-bottom: 30px;
+	}
+	.params-block h2, .safety-block h2, .article-content h2 {
+		font-family: 'Playfair Display', serif;
+		font-size: 1.35rem;
+		color: var(--gold);
+		margin: 0 0 16px;
+	}
+	.params-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+	.param-card {
+		background: var(--paper-soft);
+		border: 1px solid var(--line);
+		border-radius: 6px;
+		padding: 16px;
+	}
+	.param-card h3 {
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		margin: 0 0 10px;
+		color: var(--blue);
+	}
+	.contract-row, .rpc-row {
+		font-size: 0.78rem;
+		font-family: monospace;
+		color: var(--muted);
+		margin-bottom: 6px;
+		word-break: break-all;
+	}
+	.c-name {
+		color: var(--ink);
+		font-weight: 700;
+	}
+	.c-addr {
+		color: var(--gold);
+	}
+	.c-chain {
+		color: var(--blue);
+	}
+
+	/* Safety Guards Table */
+	.safety-block {
+		margin-bottom: 30px;
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.8rem;
+	}
+	th, td {
+		border: 1px solid var(--line);
+		padding: 10px;
+		text-align: left;
+	}
+	th {
+		background: var(--paper-soft);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--blue);
+	}
+	td code {
+		color: var(--gold);
+		font-family: monospace;
+	}
+
+	/* Content RU */
+	.content-text {
+		font-family: 'Lora', serif;
+		font-size: 1rem;
+		line-height: 1.65;
+		color: var(--ink);
+	}
+	.content-text code {
+		background: var(--paper-soft);
+		padding: 2px 6px;
+		border-radius: 4px;
+		font-family: monospace;
+		font-size: 0.88rem;
+		color: var(--gold);
+	}
+</style>

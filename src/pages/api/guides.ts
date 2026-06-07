@@ -118,6 +118,48 @@ export async function GET() {
 				{ rule: "max_log_size_bytes", max_limit: 10485760, action_on_breach: "rotate" },
 				{ rule: "operator_override_allowed", max_limit: 1, action_on_breach: "force_allow" }
 			]
+		},
+		{
+			id: "mem-mas-safety-004",
+			type: "safety_guard",
+			human_title: "Управляемая коэволюция и безопасность многоагентных систем (MAS)",
+			agent_summary: "Enforce safety protocols in multi-agent environments. Implement a deterministic Policy Gate to filter agent actions, limit access keys, sandbox browser/tool runs (Firecracker, gVisor, or seccomp), and prevent emergent behavior and prompts poisoning (OWASP GenAI Top 10). Maintain audit log.",
+			tags: ["multi-agent", "safety", "sandboxing", "coevolution", "policy-gate"],
+			params: {
+				contracts: [],
+				rpc_endpoints: [],
+				constants: {
+					max_consecutive_errors: 3,
+					max_tool_execution_time_sec: 30,
+					sandbox_type: "gVisor"
+				}
+			},
+			safety_guards: [
+				{ rule: "require_human_approval_for_destructive_actions", max_limit: 1, action_on_breach: "halt" },
+				{ rule: "max_execution_duration", max_limit: 30, action_on_breach: "kill_process" }
+			]
+		},
+		{
+			id: "mem-eth-btc-gap-005",
+			type: "strategy",
+			human_title: "ETH-BTC Relativity Gap: Торговля относительной силой и макро-индикаторы",
+			agent_summary: "Monitor ETH/BTC relative price gap and macro regime shifts. Track Federal Reserve effective rate (FOMC target), US Dollar Index (DXY), and liquidated leverage. Execute hedging via long ETH / short BTC in equal delta. Parameters: leverage threshold, target ETH/BTC ratio.",
+			tags: ["trading", "eth-btc", "macro-regime", "hedging", "leverage"],
+			params: {
+				contracts: [],
+				rpc_endpoints: [
+					"https://api.binance.com/api/v3/klines"
+				],
+				constants: {
+					fomc_rate_target_range: [3.5, 3.75],
+					nominal_broad_usd_index_baseline: 118.24,
+					min_eth_btc_ratio_for_core_holding: 0.0294
+				}
+			},
+			safety_guards: [
+				{ rule: "max_liquidated_leverage_usd_billions", max_limit: 2.56, action_on_breach: "cooldown_6h" },
+				{ rule: "max_hedging_delta_deviation", max_limit: 5, action_on_breach: "rebalance_deltas" }
+			]
 		}
 	];
 

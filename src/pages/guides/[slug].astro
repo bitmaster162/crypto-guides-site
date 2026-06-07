@@ -169,6 +169,66 @@ export function getStaticPaths() {
 3. **Decide (Решение)**: Генерация предложений (\`proposals\`) или выбор шаблонного действия (ротация логов, очистка буфера).
 4. **Act (Действие)**: Безопасное выполнение действия (активация скриптов ротации логов).`
 			}
+		},
+		{
+			params: { slug: 'multi-agent-system-safety' },
+			props: {
+				id: 'mem-mas-safety-004',
+				title: 'Управляемая коэволюция и безопасность многоагентных систем (MAS)',
+				date: '2026-06-08',
+				category: 'Security',
+				eyebrow: 'Multi-Agent Safety',
+				desc: 'Принципы безопасной управляемой коэволюции нескольких ИИ-агентов с использованием Policy Gate и изоляцией исполнения в песочницах.',
+				agent_summary: 'Enforce safety protocols in multi-agent environments. Implement a deterministic Policy Gate to filter agent actions, limit access keys, sandbox browser/tool runs (Firecracker, gVisor, or seccomp), and prevent emergent behavior and prompts poisoning (OWASP GenAI Top 10). Maintain audit log.',
+				contracts: [],
+				rpc_endpoints: [],
+				constants: {
+					max_consecutive_errors: 3,
+					max_tool_execution_time_sec: 30,
+					sandbox_type: 'gVisor'
+				},
+				safety_guards: [
+					{ rule: 'require_human_approval_for_destructive_actions', max_limit: 1, action_on_breach: 'halt' },
+					{ rule: 'max_execution_duration', max_limit: 30, action_on_breach: 'kill_process' }
+				],
+				content_ru: `Коэволюция — это взаимозависимая адаптация нескольких агентов и людей в повторяющихся циклах. При неуправляемой коэволюции локально логичные действия агентов могут приводить к глобальным сбоям (скрытый сговор ботов, разрастание прав, дрейф поведения).
+
+### Защита многоагентных систем через Policy Gate
+1. **Шлюз политик (Policy Gate)**: Любое действие агента (инструменты, API-запросы) должно проходить через детерминированный фильтр, проверяющий правила и лимиты. Разрушительные или финансовые действия требуют подтверждения оператора (Human-in-the-Loop).
+2. **Изоляция исполнения (Sandboxing)**: Выполнение стороннего кода или браузера (например, Playwright-воркеров) должно происходить в изолированных песочницах: microVM (Firecracker), прикладных ядрах (gVisor) или с фильтрацией системных вызовов через \`seccomp\`.
+3. **Наблюдаемость и Blackboard**: Все взаимодействия и лог решений фиксируются в едином неизменяемом реестре (Blackboard) для предотвращения скрытой координации и облегчения аудита.`
+			}
+		},
+		{
+			params: { slug: 'eth-btc-relativity-gap' },
+			props: {
+				id: 'mem-eth-btc-gap-005',
+				title: 'ETH-BTC Relativity Gap: Торговля относительной силой и макро-индикаторы',
+				date: '2026-06-08',
+				category: 'Trading',
+				eyebrow: 'Regime Indicators',
+				desc: 'Анализ расхождения относительной цены ETH к BTC, макроэкономических индикаторов (ставка ФРС, DXY) и механики принудительного делевериджа фьючерсов.',
+				agent_summary: 'Monitor ETH/BTC relative price gap and macro regime shifts. Track Federal Reserve effective rate (FOMC target), US Dollar Index (DXY), and liquidated leverage. Execute hedging via long ETH / short BTC in equal delta. Parameters: leverage threshold, target ETH/BTC ratio.',
+				contracts: [],
+				rpc_endpoints: [
+					'https://api.binance.com/api/v3/klines'
+				],
+				constants: {
+					fomc_rate_target_range: [3.5, 3.75],
+					nominal_broad_usd_index_baseline: 118.24,
+					min_eth_btc_ratio_for_core_holding: 0.0294
+				},
+				safety_guards: [
+					{ rule: 'max_liquidated_leverage_usd_billions', max_limit: 2.56, action_on_breach: 'cooldown_6h' },
+					{ rule: 'max_hedging_delta_deviation', max_limit: 5, action_on_breach: 'rebalance_deltas' }
+				],
+				content_ru: `Расхождение относительной стоимости ETH/BTC на десятки процентов (например, скачки между 0.0203 и 0.0294) объясняется динамикой рыночного плеча, ротацией долларовой ликвидности и позиционированием на фьючерсах, а не только сетевой активностью.
+
+### Анализ рыночного режима (Market Regimes)
+1. **Макро-якоря (Market Regimes)**: Отслеживание ставки ФРС (диапазон 3.50%-3.75% на февраль 2026 г.) и индекса доллара (около 118.24). Рост доллара давит на высокобета-активы.
+2. **Каскады делевериджа (Deleveraging)**: Массовые принудительные ликвидации на фьючерсах (например, смыв лонгов BTC на $2.56 млрд) ломают стандартные пропорции цен. При экстремальных ликвидациях торговля приостанавливается на 6 часов.
+3. **Парное хеджирование**: Ставка на относительную силу ETH к BTC открывается через одновременный лонг ETH и шорт BTC в одинаковой рыночной дельте, что защищает позицию от общего падения рынка крипты.`
+			}
 		}
 	];
 }

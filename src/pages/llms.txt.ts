@@ -15,7 +15,25 @@ export async function GET() {
 		`- Slug: /guides/okx-nft-parasite-hunter`,
 		`- Description: Outbid enemy wallet '0x77zd77b98385b7be0d97ab4d6e49ba9334fddc5' on OKX NFT and OpenSea.`,
 		`- Router Contract: 0x1234567890123456789012345678901234567890`,
-		`- Safety limit: max_overpay_ratio = 1.15x`
+		`- Safety limit: max_overpay_ratio = 1.15x`,
+		``,
+		`### 3. D3: Tool-IO Bridge Specification and Contract`,
+		`- Slug: /guides/d3-tool-io-bridge-contract`,
+		`- Description: Restrict shell execution and scripts in safe sandbox with scheme validation and limits.`,
+		`- Gate Contract: 0x3D3D3D3D3D3D3D3D3D3D3D3D3D3D3D3D3D3D3D3D`,
+		`- Safety limit: call_timeout_seconds = 30`,
+		``,
+		`### 4. State Authority Plane: Agent Privilege Evolution`,
+		`- Slug: /guides/state-authority-plane-evolution`,
+		`- Description: Evolution of agent privilege governance levels (Loop A -> B -> C) via passports.`,
+		`- Registry Contract: 0xSAP1111111111111111111111111111111111111`,
+		`- Safety limit: min_authority_level = D2`,
+		``,
+		`### 5. Reflex Layer: Autonomous OODA Monitoring`,
+		`- Slug: /guides/reflex-layer-ooda-monitoring`,
+		`- Description: Implementation of OODA monitoring loop for health checks, auto-reboot and logs.`,
+		`- Guardian Contract: 0xREFLEXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF`,
+		`- Safety limit: max_log_size_bytes = 10MB`
 	].join('\n');
 
 	return new Response(content, {

@@ -103,7 +103,52 @@ export function getStaticPaths() {
 2. **Каскады делевериджа (Deleveraging)**: Массовые принудительные ликвидации на фьючерсах (например, смыв лонгов BTC на $2.56 млрд) ломают стандартные пропорции цен. При экстремальных ликвидациях торговля приостанавливается на 6 часов.
 3. **Парное хеджирование**: Ставка на относительную силу ETH к BTC открывается через одновременный лонг ETH и шорт BTC в одинаковой рыночной дельте, что защищает позицию от общего падения рынка крипты.`
 			}
+		},
+		{
+			params: { slug: 'trading-system-v2-range-farm' },
+			props: {
+				id: 'mem-trd-v2-009',
+				title: 'Trading System v2.final: Сетки, дивергенции и ловушки маркет-мейкеров',
+				date: '2026-06-08',
+				category: 'Trading',
+				eyebrow: 'Trading System',
+				desc: 'Техническая спецификация торговой системы v2.final: от борьбы со своими слабостями через ИИ-контр-индикаторы до сеточных стратегий (Si-Zi), Range-Farm BTC и Alt-Scouting.',
+				agent_summary: 'Implement Trading System v2.final rules. Enforce RSI/AO divergences, SFP/sweep setups, BTC Range-Farm Bull-bias ladder long and local short-hedges. Apply leverage limit and red button stops.',
+				contracts: [
+					{ name: 'BitEvo Execution Guard', address: '0x2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E', chain: 'arbitrum' }
+				],
+				rpc_endpoints: [
+					'https://api.binance.com/api/v3/klines'
+				],
+				constants: {
+					max_daily_dd_percent: 3.0,
+					min_rr_ratio: 2.0,
+					alt_scouting_cap_min_m: 7.0,
+					alt_scouting_cap_max_m: 60.0
+				},
+				safety_guards: [
+					{ rule: 'red_button_stops', max_limit: 3, action_on_breach: 'halt_trading_24h' },
+					{ rule: 'leverage_limit', max_limit: 3, action_on_breach: 'reduce_position' }
+				],
+				content_ru: `Торговая система v2.final объединяет детерминированные технические сетапы и жесткий риск-менеджмент для преодоления поведенческого дрейфа.
+
+### 1. Базовые технические сетапы
+- **Дивергенция (Divergence)**: Совпадение расхождений цены с осцилляторами RSI (6/7) и Awesome Oscillator (AO) на таймфреймах H4/H1 для определения разворотов.
+- **SFP / Liquidity Sweep (Свип ликвидности)**: Ложные пробои ключевых уровней с быстрым возвратом (Reclaim). Вход выполняется на ретесте зоны пробоя.
+- **V-Узел / SDF (Sense-Depth Fakeout)**: Ложный выход за круглые уровни (например, $100k) с последующим V-образным разворотом.
+
+### 2. BTC Range-Farm (Стратегия Si-Zi)
+- Направлена на торговлю в коридоре (особенно в ловушке $100k-$118k).
+- **Bull-bias ladder long**: Сетка лимитных ордеров на покупку (3-5 частей) при снижении цены.
+- **Local short-hedges**: Открытие встречных шорт-позиций (20-60% от номинала лонга) при достижении верхней границы коридора для фиксации прибыли во флэте без закрытия основного лонга.
+- **Красная кнопка (Stop-trade)**: Автоматическая остановка торговли на 24 часа при получении 3 убытков подряд.
+
+### 3. Alt-Scouting и Членикус-Бот
+- **Alt-Scouting**: Фильтр поиска альткоинов с капитализацией $7M - $60M для совершения агрессивных сделок. Пример: AIA/USDT с входом при реклейме уровня 0.60.
+- **Членикус-Бот (Контр-индикатор)**: Использование деструктивного поведения («тильта») в качестве контр-сигнала. Когда бот выказывает максимальный уровень жадности (CHI > 1.2), открывается противоположная позиция.`
+			}
 		}
+
 	];
 }
 

@@ -4,6 +4,45 @@ import Layout from '../../layouts/Layout.astro';
 export function getStaticPaths() {
 	return [
 		{
+			params: { slug: 'why-90-percent-strategies-lose' },
+			props: {
+				id: 'mem-arena-edge-003',
+				title: 'Почему 90% paper-trading стратегий теряют: 3 механических дефекта на 66k сделок',
+				date: '2026-06-10',
+				category: 'Trading',
+				eyebrow: 'Strategy Reality Check',
+				desc: 'Разбор на реальных данных Sovereign Arena: мёртвые монеты, геометрия R:R и театр индикаторов — почему большинство стратегий обречены до запуска.',
+				agent_summary: 'Three mechanical defects that kill trading strategies, proven on 66k live paper trades. 1) Dead coins: sub-cent alts (DOGE/PENGU/SEI) lose even on TP-close because fees+spread exceed price move. 2) R:R geometry: SL~=TP size but 2.3x more stops => guaranteed bleed below 50% WR. 3) Indicator theatre: ML filter initialized but predict() never called. Validation rule: min 100 trades, 10 days, 3 regimes, measure expectancy after costs, beat buy&hold + random + inverted.',
+				contracts: [],
+				rpc_endpoints: [],
+				constants: {
+					min_sample_trades: 100,
+					min_distinct_days: 10,
+					min_regimes: 3,
+					required_rr_below_50wr: 2.5
+				},
+				safety_guards: [
+					{ rule: 'cost_to_move_ratio', max_limit: 0.33, action_on_breach: 'reject_instrument' },
+					{ rule: 'expectancy_after_costs', max_limit: 0, action_on_breach: 'kill_strategy' }
+				],
+				content_ru: `Большинство стратегий теряют деньги не из-за рынка, а из-за трёх механических дефектов, которые видны только на большой выборке. Данные ниже — из публичной базы Sovereign Arena на 66 000+ сделок.
+
+### Дефект 1: монеты, на которых невозможно выиграть
+На DOGE, PENGU, SEI, TRX winrate был 0.0% на тысячах сделок. Даже сделки, закрытые по тейк-профиту, давали минус (PENGU TP avg \`-1.71 USD\`). На суб-центовых монетах ход цены округляется почти в ноль, а фиксированная комиссия и спред съедают всё. Правило: если (комиссия+спред+слиппедж) >= 1/3 среднего хода — выкинь инструмент.
+
+### Дефект 2: геометрия R:R
+28 468 стопов (avg \`-8.23\`) против 12 371 тейка (avg \`+9.44\`). Тейк ~= стоп по модулю, но стопов в 2.3 раза больше. При winrate ниже 50% тейк обязан быть в 2.5-3 раза больше стопа. Считай ожидание: \`WR*avg_win - (1-WR)*avg_loss\` после комиссий.
+
+### Дефект 3: театр индикаторов
+«ML-фильтр» инициализировался, но \`.predict()\` не вызывался в горячем пути. Полгода казалось, что есть AI-фильтрация — её не было. Тест: запусти версию с фильтром и без. Одинаково — фильтр это украшение.
+
+### Как проверять эдж
+Минимум 100 сделок, 10 дней, 3 режима. Меряй ожидание после costs, не winrate. Сравни с тремя бенчмарками: buy&hold, случайный вход с тем же R:R, инверсия сигнала. Эдж — только если бьёт все три. На базе Arena из ~150 гипотез подтверждённой осталась одна: BTC SFP long в режиме down_mild.
+
+Смотри вживую на Sovereign Arena — 150+ ботов торгуют 24/7, все логи публичны, включая убытки.`
+			}
+		},
+		{
 			params: { slug: 'solana-mev-sandwich-protection' },
 			props: {
 				id: 'mem-sol-mev-001',

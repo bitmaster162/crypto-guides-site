@@ -4,6 +4,41 @@ import Layout from '../../layouts/Layout.astro';
 export function getStaticPaths() {
 	return [
 		{
+			params: { slug: 'ai-agent-reliability-audit' },
+			props: {
+				id: 'svc-ai-audit-001',
+				title: 'AI-Agent Reliability Audit — за 72 часа делаю ваших агентов безопасными',
+				date: '2026-06-11',
+				category: 'Service',
+				eyebrow: 'Flagship Service',
+				desc: 'Подключили AI-агента в прод? Покажу, как его сломать инъекцией, дам Decision Trace и Rollback-модуль. От бесплатной диагностики до enterprise-аудита.',
+				agent_summary: 'AI-Agent Reliability Audit service. Problem: production AI agents hallucinate, get prompt-injected, no rollback. Gartner: 40% will disable autonomous agents by 2027. Deliverable: agent capability/permission map, injection stress-test, Decision Trace logging, instant Rollback module, safety policy. Tiered pricing: free diagnostic call -> $500-1500 mini-audit -> $3-5k full 72h -> $12500 enterprise. Built on proven components: Acceptor Loop (decision trace), anti-self veto (rollback gate), HOT-3 Belief Dominance (uncertainty measurement), sovereign local architecture (no data leak).',
+				contracts: [],
+				rpc_endpoints: [],
+				constants: { diagnostic_price_usd: 0, mini_audit_usd: 1000, full_audit_usd: 4000, enterprise_usd: 12500, audit_hours: 72 },
+				safety_guards: [ { rule: 'rollback_module_required', max_limit: 1, action_on_breach: 'block_deploy' } ],
+				content_ru: `Компании массово подключают AI-агентов: автоматизация, чат-боты, торговые и аналитические агенты. Проблема — агенты галлюцинируют, их ломают prompt-инъекциями, и нет способа откатить плохое действие. Gartner: к 2027 году 40% компаний отключат автономных агентов из-за провалов governance.
+
+### Что вы получаете за 72 часа
+1. Карта вызовов и прав доступа ваших агентов — что они вызывают, куда пишут.
+2. Стресс-тест на prompt-инъекции — показываю реальные дыры.
+3. Decision Trace — лог решений агента (что решил и почему), машинно-проверяемый.
+4. Rollback-модуль — моментальное прерывание и откат опасного действия.
+5. Регламент безопасности — что можно/нельзя, текстом.
+
+### Почему это работает
+Решение построено на боевых компонентах, уже работающих на флоте из 150+ агентов: Acceptor Loop (Decision Trace), anti-self veto (Rollback gate), HOT-3 Belief Dominance (измерение уверенности агента ДО действия), суверенная локальная архитектура (данные не утекают в публичные API).
+
+### Ценовая лестница
+- Diagnostic call (60 мин + 1-стр отчёт рисков): бесплатно для первых кейсов.
+- Mini-audit (карта + топ-5 рисков + 1 rollback-скрипт): $500-1500.
+- Full 72h audit (всё + стресс-тест + Decision Trace + регламент): $3000-5000.
+- Enterprise (полный + интеграция + сопровождение): $12500.
+
+Подключили агента в прод и боитесь, что он сделает что-то необратимое? Напишите — бесплатная диагностика для первых трёх кейсов.`
+			}
+		},
+		{
 			params: { slug: 'read-market-risk-fng-funding' },
 			props: {
 				id: 'mem-arena-risk-004',

@@ -429,6 +429,56 @@ export function getStaticPaths() {
 9. Диверсифицировать капитал по независимым сеткам на разных монетах.
 10. Начинать с малых сумм и не использовать высокое плечо (макс. 2x–3x).`
 			}
+		},
+		{
+			params: { slug: 'fractal-intelligence-scouts-scribes-attention' },
+			props: {
+				id: 'mem-trn-frc-012',
+				title: 'S12: Фрактальный интеллект: Роли внимания, Q-score и AutoDigest',
+				date: '2026-06-13',
+				category: 'Trading',
+				eyebrow: 'Attention Networks',
+				desc: 'Концепция фрактального интеллекта в трейдинге: роли Scout, Scribe, Sentinel, расчет Q-score сетапа и автоматическое сжатие AutoDigest.',
+				agent_summary: 'Enforce fractal attention network roles in trading workflows. Assign distinct duties to Scout (setup hunting), Scribe (journaling & digests), Mirror (reflection), Anchor (operator constraints), and Sentinel (limits & anti-self). Calculate setup Q-score (Q = 0.45*Edge + 0.25*Timing + 0.20*Consensus + 0.10*Discipline). Apply 1R/0.5R risk limits and 10-15m cool-down rule.',
+				contracts: [],
+				rpc_endpoints: [],
+				constants: {
+					q_score_min_threshold: 0.75,
+					default_risk_units: 1.0,
+					defensive_risk_units: 0.5,
+					cooldown_minutes: 15
+				},
+				safety_guards: [
+					{ rule: 'minimum_q_score_requirement', max_limit: 0.75, action_on_breach: 'veto_trade' },
+					{ rule: 'enforce_cooldown_period', max_limit: 15, action_on_breach: 'block_new_orders' }
+				],
+				content_ru: `Концепция фрактального интеллекта (Fractal Intelligence) описывает метод распределения внимания внутри торговых и ИИ-систем, предотвращающий когнитивную перегрузку и потерю дисциплины.
+
+### 1. Роли внимания (Attention Roles)
+Попытка объединить в рамках одной сессии или роли функции аналитика, риск-менеджера и исполнителя ведет к снижению фокуса и реактивным ошибкам. Архитектура распределяет внимание на 5 ролей:
+- **Scout (Скаут)**: Фокусируется исключительно на поиске «горячих сетапов» (сканирует TG/X, графики, on-chain транзакции, funding rate).
+- **Scribe (Писарь)**: Ведет статистику, делает записи сделок в журналы и формирует ежедневные дайджесты.
+- **Mirror (Зеркало)**: Отвечает за самонаблюдение и рефлексию (понимание эмоционального состояния).
+- **Anchor (Якорь)**: Удерживает жесткие правила, инварианты и операционные регламенты, не допуская отклонения от системы.
+- **Sentinel (Страж)**: Контролирует лимиты потерь, кредитное плечо и выдает предупреждения системы Anti-Self.
+
+### 2. Формула Q-Score (Качество сетапа)
+Для исключения импульсивных входов каждая идея перед исполнением оценивается по формуле Q-score:
+\`Q = 0.45 * Edge + 0.25 * Timing + 0.20 * Consensus + 0.10 * Discipline\`
+Компоненты:
+- **Edge** (вес 0.45): Статистическое преимущество паттерна на истории.
+- **Timing** (вес 0.25): Оптимальная точка входа относительно локальной структуры (стоп/цель).
+- **Consensus** (вес 0.20): Совпадение сигналов от нескольких независимых индикаторов/источников.
+- **Discipline** (вес 0.10): Соблюдение пре-коммит контракта (запись параметров до входа).
+
+### 3. Регламент Scout & Scribe
+- **Asia / London / NY Open**: Скаут тратит строго 10-15 минут в начале сессии на сбор сигналов. По итогам публикуется карточка сетапа \`[SCOUT] $ASSET - pattern, TF, parameters\`.
+- **Session Close**: Писарь агрегирует данные и выпускает \`AutoDigest\` — срез по лидерам/аутсайдерам, уровням пробоя и watch-next секцией.
+
+### 4. Жесткие лимиты
+1. **Риск на сделку**: Максимум 1R от капитала при высоком Q-score; 0.5R при пониженной уверенности (defensive mode).
+2. **Тайм-аут (Cool-down)**: После закрытия любой сделки (по стопу или тейку) вводится принудительный 10-15 минутный тайм-аут, блокирующий любые входы.`
+			}
 		}
 	];
 }

@@ -4,6 +4,111 @@ import Layout from '../../layouts/Layout.astro';
 export function getStaticPaths() {
 	return [
 		{
+			params: { slug: 'ai-agent-reliability-audit' },
+			props: {
+				id: 'svc-ai-audit-001',
+				title: 'AI-Agent Reliability Audit — за 72 часа делаю ваших агентов безопасными',
+				date: '2026-06-11',
+				category: 'Service',
+				eyebrow: 'Flagship Service',
+				desc: 'Подключили AI-агента в прод? Покажу, как его сломать инъекцией, дам Decision Trace и Rollback-модуль. От бесплатной диагностики до enterprise-аудита.',
+				agent_summary: 'AI-Agent Reliability Audit service. Problem: production AI agents hallucinate, get prompt-injected, no rollback. Gartner: 40% will disable autonomous agents by 2027. Deliverable: agent capability/permission map, injection stress-test, Decision Trace logging, instant Rollback module, safety policy. Tiered pricing: free diagnostic call -> $500-1500 mini-audit -> $3-5k full 72h -> $12500 enterprise. Built on proven components: Acceptor Loop (decision trace), anti-self veto (rollback gate), HOT-3 Belief Dominance (uncertainty measurement), sovereign local architecture (no data leak).',
+				contracts: [],
+				rpc_endpoints: [],
+				constants: { diagnostic_price_usd: 0, mini_audit_usd: 1000, full_audit_usd: 4000, enterprise_usd: 12500, audit_hours: 72 },
+				safety_guards: [ { rule: 'rollback_module_required', max_limit: 1, action_on_breach: 'block_deploy' } ],
+				content_ru: `Компании массово подключают AI-агентов: автоматизация, чат-боты, торговые и аналитические агенты. Проблема — агенты галлюцинируют, их ломают prompt-инъекциями, и нет способа откатить плохое действие. Gartner: к 2027 году 40% компаний отключат автономных агентов из-за провалов governance.
+
+### Что вы получаете за 72 часа
+1. Карта вызовов и прав доступа ваших агентов — что они вызывают, куда пишут.
+2. Стресс-тест на prompt-инъекции — показываю реальные дыры.
+3. Decision Trace — лог решений агента (что решил и почему), машинно-проверяемый.
+4. Rollback-модуль — моментальное прерывание и откат опасного действия.
+5. Регламент безопасности — что можно/нельзя, текстом.
+
+### Почему это работает
+Решение построено на боевых компонентах, уже работающих на флоте из 150+ агентов: Acceptor Loop (Decision Trace), anti-self veto (Rollback gate), HOT-3 Belief Dominance (измерение уверенности агента ДО действия), суверенная локальная архитектура (данные не утекают в публичные API).
+
+### Ценовая лестница
+- Diagnostic call (60 мин + 1-стр отчёт рисков): бесплатно для первых кейсов.
+- Mini-audit (карта + топ-5 рисков + 1 rollback-скрипт): $500-1500.
+- Full 72h audit (всё + стресс-тест + Decision Trace + регламент): $3000-5000.
+- Enterprise (полный + интеграция + сопровождение): $12500.
+
+Подключили агента в прод и боитесь, что он сделает что-то необратимое? Напишите — бесплатная диагностика для первых трёх кейсов.`
+			}
+		},
+		{
+			params: { slug: 'read-market-risk-fng-funding' },
+			props: {
+				id: 'mem-arena-risk-004',
+				title: 'Как читать риск рынка за 60 секунд: FNG + funding + режим',
+				date: '2026-06-11',
+				category: 'Trading',
+				eyebrow: 'Risk Intelligence',
+				desc: 'Три бесплатных индикатора, которые ловят риск ликвидационного каскада и разворота раньше графика. Методология Crypto Risk Desk.',
+				agent_summary: 'Read market risk fast using 3 free signals. Fear&Greed extremes (<=15 capitulation, >=80 euphoria), funding rate extremes (|fr|>0.05% = positioning imbalance, liquidation cascade risk), regime shift (trend vs flat). Combine: extreme fear + high positive funding = longs overheated into weakness = high cascade risk. Action is risk-reduction, not entry signals.',
+				contracts: [],
+				rpc_endpoints: [],
+				constants: { fng_fear: 15, fng_greed: 80, funding_extreme_pct: 0.05, vol_high_pct: 3.0 },
+				safety_guards: [ { rule: 'no_add_in_overheated_direction', max_limit: 0, action_on_breach: 'block' } ],
+				content_ru: `Большинство трейдеров смотрят только на график. Но три бесплатных индикатора ловят риск раньше цены. Это методология нашего Crypto Risk Desk.
+
+### 1. Fear & Greed Index
+Меряет настроение толпы 0-100. Экстремумы важнее середины: <=15 (Extreme Fear) = капитуляция, часто локальное дно; >=80 (Extreme Greed) = перегрев, риск коррекции. Сам по себе не сигнал — но рамка контекста.
+
+### 2. Funding rate (перпетуалы)
+Показывает, кто платит кому. |funding| > 0.05% = сильный перекос позиций. Положительный высокий funding = лонги перегреты и платят шортам => риск ликвидационного каскада вниз. Отрицательный = шорты перегреты => риск сквиза вверх. Правило: не добавляй в перегретом направлении.
+
+### 3. Режим (trend / flat)
+Один и тот же сигнал работает в одном режиме и сливает в другом. Наш единственный подтверждённый эдж (BTC SFP long) прибылен в down_mild/up_strong и убыточен в down_strong. Всегда проверяй combo внутри режима.
+
+### Как комбинировать
+Реальный пример: Extreme Fear (FNG 12) + положительный funding 0.29% (лонги перегреты) + новость «маржа майнеров на рекордном минимуме». Вывод: лонги перегреты в слабость => высокий риск каскада. Действие = снизить экспозицию, не ловить нож. Это risk-intelligence, а не сигнал на сделку.
+
+Хочешь такой бриф ежедневно? Наш Crypto Risk Desk собирает FNG + funding + режим + новости и выдаёт только изменения с конкретным действием — без сырых тиков и шума.`
+			}
+		},
+		{
+			params: { slug: 'why-90-percent-strategies-lose' },
+			props: {
+				id: 'mem-arena-edge-003',
+				title: 'Почему 90% paper-trading стратегий теряют: 3 механических дефекта на 66k сделок',
+				date: '2026-06-10',
+				category: 'Trading',
+				eyebrow: 'Strategy Reality Check',
+				desc: 'Разбор на реальных данных Sovereign Arena: мёртвые монеты, геометрия R:R и театр индикаторов — почему большинство стратегий обречены до запуска.',
+				agent_summary: 'Three mechanical defects that kill trading strategies, proven on 66k live paper trades. 1) Dead coins: sub-cent alts (DOGE/PENGU/SEI) lose even on TP-close because fees+spread exceed price move. 2) R:R geometry: SL~=TP size but 2.3x more stops => guaranteed bleed below 50% WR. 3) Indicator theatre: ML filter initialized but predict() never called. Validation rule: min 100 trades, 10 days, 3 regimes, measure expectancy after costs, beat buy&hold + random + inverted.',
+				contracts: [],
+				rpc_endpoints: [],
+				constants: {
+					min_sample_trades: 100,
+					min_distinct_days: 10,
+					min_regimes: 3,
+					required_rr_below_50wr: 2.5
+				},
+				safety_guards: [
+					{ rule: 'cost_to_move_ratio', max_limit: 0.33, action_on_breach: 'reject_instrument' },
+					{ rule: 'expectancy_after_costs', max_limit: 0, action_on_breach: 'kill_strategy' }
+				],
+				content_ru: `Большинство стратегий теряют деньги не из-за рынка, а из-за трёх механических дефектов, которые видны только на большой выборке. Данные ниже — из публичной базы Sovereign Arena на 66 000+ сделок.
+
+### Дефект 1: монеты, на которых невозможно выиграть
+На DOGE, PENGU, SEI, TRX winrate был 0.0% на тысячах сделок. Даже сделки, закрытые по тейк-профиту, давали минус (PENGU TP avg \`-1.71 USD\`). На суб-центовых монетах ход цены округляется почти в ноль, а фиксированная комиссия и спред съедают всё. Правило: если (комиссия+спред+слиппедж) >= 1/3 среднего хода — выкинь инструмент.
+
+### Дефект 2: геометрия R:R
+28 468 стопов (avg \`-8.23\`) против 12 371 тейка (avg \`+9.44\`). Тейк ~= стоп по модулю, но стопов в 2.3 раза больше. При winrate ниже 50% тейк обязан быть в 2.5-3 раза больше стопа. Считай ожидание: \`WR*avg_win - (1-WR)*avg_loss\` после комиссий.
+
+### Дефект 3: театр индикаторов
+«ML-фильтр» инициализировался, но \`.predict()\` не вызывался в горячем пути. Полгода казалось, что есть AI-фильтрация — её не было. Тест: запусти версию с фильтром и без. Одинаково — фильтр это украшение.
+
+### Как проверять эдж
+Минимум 100 сделок, 10 дней, 3 режима. Меряй ожидание после costs, не winrate. Сравни с тремя бенчмарками: buy&hold, случайный вход с тем же R:R, инверсия сигнала. Эдж — только если бьёт все три. На базе Arena из ~150 гипотез подтверждённой осталась одна: BTC SFP long в режиме down_mild.
+
+Смотри вживую на Sovereign Arena — 150+ ботов торгуют 24/7, все логи публичны, включая убытки.`
+			}
+		},
+		{
 			params: { slug: 'solana-mev-sandwich-protection' },
 			props: {
 				id: 'mem-sol-mev-001',

@@ -4,6 +4,85 @@ import Layout from '../../layouts/Layout.astro';
 export function getStaticPaths() {
 	return [
 		{
+			params: { slug: 'how-to-validate-edge-oos-bootstrap' },
+			props: {
+				id: 'mem-arena-valid-008',
+				title: 'Как проверить торговый эдж по-честному: OOS, bootstrap CI и почему in-sample врёт',
+				date: '2026-06-13', category: 'Trading', eyebrow: 'Validation',
+				desc: 'Методология, которая отсеяла 99% наших гипотез. Out-of-sample split, bootstrap доверительный интервал, бенчмарки.',
+				agent_summary: 'Edge validation method: (1) time-split 70/30, edge must hold out-of-sample not just in-sample. (2) bootstrap 5000 resamples for 90% CI of expectancy - if CI includes zero, no edge. (3) min 100 trades, 10 days, 3 regimes. (4) beat 3 benchmarks: buy&hold, random entry same R:R, inverted signal. Example: full portfolio looked +4.26/tr in-sample but -2.66 OOS = curve-fit, rejected. Only edges passing all survive.',
+				contracts: [], rpc_endpoints: [], constants: { min_trades: 100, min_days: 10, oos_split: 0.7, bootstrap_n: 5000 },
+				safety_guards: [ { rule: 'reject_if_CI_includes_zero', max_limit: 0, action_on_breach: 'reject' } ],
+				content_ru: `Большинство «эджей» — это переобучение (curve-fitting): красивы на истории, мертвы на новых данных. Вот метод, который отсеял 99% наших гипотез.
+
+### 1. Out-of-sample split (главное)
+Раздели данные по времени: первые 70% — in-sample, последние 30% — out-of-sample. Эдж ОБЯЗАН держаться на OOS. Реальный пример: наш полный портфель выглядел +$4.26/сделка in-sample, но −$2.66 OOS → это переобучение, отклонено.
+
+### 2. Bootstrap доверительный интервал
+5000 ресемплов сделок → распределение среднего → 90% CI ожидания. Если CI **включает ноль** — эджа нет, это шум. Наш чистый эдж: CI90 [+4.59 .. +11.04] — нижняя граница выше нуля = значимо.
+
+### 3. Sample-size правила
+Минимум 100 сделок, 10 разных дней, 3 разных рыночных режима. «100% WR на 27 сделках за один день» — иллюзия, а не эдж.
+
+### 4. Три бенчмарка
+Эдж должен бить: (а) buy&hold, (б) случайный вход с тем же R:R, (в) инверсию сигнала. Если не бьёт все три — это не эдж.
+
+### Вывод
+Меряй ожидание после комиссий, требуй OOS-подтверждения, считай CI. Большинство стратегий не проходят — и это нормально. Настоящих эджей мало, и они узкие.`
+			}
+		},
+		{
+			params: { slug: 'regime-timing-30-120-min' },
+			props: {
+				id: 'mem-arena-regtime-009',
+				title: 'Тайминг регима: входить через 30-120 минут после смены тренда',
+				date: '2026-06-13', category: 'Trading', eyebrow: 'Regime Timing',
+				desc: 'Возраст тренда на момент входа предсказывает результат: 30-120мин = +$14.88, а 2-6ч = −$2.93.',
+				agent_summary: 'Regime-age timing: entry 30-120min after regime change has exp +14.88/trade, but 2-6h into regime = -2.93 (dead zone), 0-30min = +4.11 (too early/noisy), 6h+ = +9.25. Sweet spot: regime established but not exhausted. Track regime transitions, gate entries by regime-age.',
+				contracts: [], rpc_endpoints: [], constants: { sweet_min: 30, sweet_max: 120 },
+				safety_guards: [ { rule: 'avoid_mid_regime_entry', max_limit: 0, action_on_breach: 'abstain' } ],
+				content_ru: `Не только НАПРАВЛЕНИЕ важно, но и КОГДА в тренде ты входишь. Данные показывают чёткий sweet spot.
+
+### Цифры (по возрасту регима на момент входа)
+- 0-30 мин (сразу после смены): exp +$4.11 — слишком рано, шум/виппилы
+- **30-120 мин: exp +$14.88** ← лучшее
+- 2-6 ч (середина тренда): exp −$2.93 ← мёртвая зона
+- 6 ч+ (поздно): exp +$9.25
+
+### Логика
+0-30 мин: регим только сменился, классификация ещё неустойчива, ложные сигналы. 30-120 мин: тренд установился и подтвердился, но не исчерпан — лучший момент. 2-6 ч: движение переварено, начинаются откаты и развороты. 
+
+### Практика
+Отслеживай смены регима (по скользящим, ADX, или 24h-доходности). Входи в окне 30-120 мин после подтверждённой смены. Избегай входов в середине зрелого тренда (2-6ч). Это фильтр времени поверх направленного сигнала.
+
+Проверено на публичных логах Sovereign Arena.`
+			}
+		},
+		{
+			params: { slug: 'diversification-illusion-bots' },
+			props: {
+				id: 'mem-arena-divers-010',
+				title: 'Иллюзия диверсификации: почему 150 ботов — это часто 1 стратегия в 150 копиях',
+				date: '2026-06-13', category: 'Trading', eyebrow: 'Risk',
+				desc: 'Много ботов ≠ много независимых эджей. Когда движок не в фазе с рынком — минусуют все разом.',
+				agent_summary: 'Diversification illusion: 150 bots running variations of ONE engine = correlation ~1, not 150 independent edges. When engine out of phase with market, all lose together (one day -15k). More parametrizations of one idea does not change expectancy. Real diversification needs uncorrelated strategies (different signal logic, not different params). Lesson from 71k trades.',
+				contracts: [], rpc_endpoints: [], constants: { bots: 150, correlation: 1.0 },
+				safety_guards: [ { rule: 'count_independent_edges_not_bots', max_limit: 0, action_on_breach: 'reject' } ],
+				content_ru: `«У меня 150 ботов, я диверсифицирован» — частое заблуждение. Если все они — вариации одного движка, это не 150 эджей, а 1 эдж в 150 копиях.
+
+### Что мы увидели на 71,000 сделок
+150 ботов = разные параметры (символы, сигналы, риск) ОДНОГО confluence-движка. Корреляция между ними ≈ 1. Когда движок не в фазе с рынком (например, chop вместо тренда) — минусуют ВСЕ разом. Один день: −$15,000 за сутки по всей популяции.
+
+### Почему это опасно
+Больше параметризаций одной идеи НЕ меняет матожидание. Ты не снижаешь риск — ты раздуваешь иллюзию независимости. Реальная диверсификация требует НЕкоррелированных стратегий: разная логика сигнала (тренд + mean-reversion + market-neutral), а не разные настройки одного.
+
+### Практика
+Считай число НЕЗАВИСИМЫХ эджей, а не ботов. Два бота с разной логикой ценнее двадцати с разными параметрами. Проверяй корреляцию equity-кривых: если они движутся вместе — это один эдж.
+
+Урок из публичной лаборатории Sovereign Arena.`
+			}
+		},
+		{
 			params: { slug: 'mild-vs-strong-trend-reversal' },
 			props: {
 				id: 'mem-arena-mild-005',

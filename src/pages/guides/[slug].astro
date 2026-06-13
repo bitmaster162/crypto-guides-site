@@ -4,6 +4,88 @@ import Layout from '../../layouts/Layout.astro';
 export function getStaticPaths() {
 	return [
 		{
+			params: { slug: 'mild-vs-strong-trend-reversal' },
+			props: {
+				id: 'mem-arena-mild-005',
+				title: 'Парадокс mild-тренда: почему развороты работают в слабом тренде и сливают в сильном',
+				date: '2026-06-13', category: 'Trading', eyebrow: 'Regime Strength',
+				desc: 'На данных 1450 сделок: разворотные сигналы дают +$8,599 в mild-трендах и −$2,923 в strong. Контринтуитивно, но объяснимо.',
+				agent_summary: 'Reversal signals (candle_reversal) profit in MILD trends (+8599) but lose in STRONG trends (-2923) on 1450 trades. Reason: in mild trend a reversal catches the pullback in trend direction; in strong trend it fights momentum. Filter: trade reversals only in mild regimes, abstain in strong.',
+				contracts: [], rpc_endpoints: [], constants: { mild_net: 8599, strong_net: -2923 },
+				safety_guards: [ { rule: 'no_reversal_in_strong_trend', max_limit: 0, action_on_breach: 'abstain' } ],
+				content_ru: `Интуиция говорит: чем сильнее тренд, тем лучше торговать по нему. Данные говорят обратное — для разворотных сигналов.
+
+### Цифры (1450 сделок, trend-aligned)
+- MILD-тренды (up_mild/down_mild): WR 49.7%, **+$8,599** (+$9.35/сделка)
+- STRONG-тренды (up_strong/down_strong): WR 44.3%, **−$2,923** (−$5.51/сделка)
+
+### Почему
+Сигнал candle_reversal — это РАЗВОРОТНЫЙ паттерн. В mild-тренде он ловит откат (pullback) в направлении тренда — идеальный вход. В strong-тренде тот же сигнал срабатывает на коротком откате, но сильный импульс продолжается против входа, выбивая по стопу. Разворот бьётся об импульс.
+
+### Практика
+Торгуй разворотные сигналы ТОЛЬКО в слабых/умеренных трендах. В сильном импульсе — воздержись или используй чисто-трендовые входы (breakout), а не reversal. Определяй силу тренда (например, по ATR/24h-доходности): сильный = >2% за сутки.
+
+Проверено на публичных логах Sovereign Arena.`
+			}
+		},
+		{
+			params: { slug: 'trend-following-r-multiple-math' },
+			props: {
+				id: 'mem-arena-rmath-006',
+				title: 'Как 50% winrate приносит прибыль: математика R-кратности в трендследовании',
+				date: '2026-06-13', category: 'Trading', eyebrow: 'R-Multiples',
+				desc: 'На trend-aligned сделках средний тейк +$77.52 против стопа −$8.01 — асимметрия 6.8×. Редкие победы, но огромные.',
+				agent_summary: 'Trend-following math: avg TP +77.52 vs avg SL -8.01 = 6.8x asymmetry. Only 18% hit TP but winners are 6.8x losers so net positive. Expectancy = WR*avg_win - (1-WR)*avg_loss after costs. Cut losers fast, let winners run. WR alone is meaningless; expectancy in R-multiples is what matters.',
+				contracts: [], rpc_endpoints: [], constants: { avg_tp: 77.52, avg_sl: -8.01, tp_hit_rate: 0.18 },
+				safety_guards: [ { rule: 'measure_expectancy_not_winrate', max_limit: 0, action_on_breach: 'reject' } ],
+				content_ru: `Новички гонятся за высоким winrate. Профессионалы считают ожидание (expectancy) в R-кратности. Вот почему 50% WR может быть прибыльным.
+
+### Реальные цифры (trend-aligned сделки Sovereign Arena)
+- Средний тейк-профит: **+$77.52**
+- Средний стоп-лосс: **−$8.01**
+- Асимметрия: **6.8×**
+- TP-hit rate: только ~18%
+
+То есть 82% сделок закрываются маленьким стопом, и лишь 18% доходят до тейка — но эти 18% в 6.8 раза больше. Чистый результат — плюс.
+
+### Формула
+\`expectancy = WR × avg_win − (1−WR) × avg_loss\` (после комиссий)
+При WR 18%, avg_win $77.52, avg_loss $8.01:
+\`0.18×77.52 − 0.82×8.01 = 13.95 − 6.57 = +$7.38/сделка\`
+
+### Суть трендследования
+Режь убытки быстро (маленький стоп), дай победителям ехать (большой/трейлинг тейк). Высокий winrate не нужен — нужна асимметрия. Winrate сам по себе бессмыслен: 90% WR с R:R 1:10 разоряет, 30% WR с R:R 1:5 обогащает.`
+			}
+		},
+		{
+			params: { slug: 'crowd-fade-long-short-ratio' },
+			props: {
+				id: 'mem-arena-crowd-007',
+				title: 'Crowd-fade: как читать long/short ratio фьючерсов и торговать против толпы',
+				date: '2026-06-13', category: 'Trading', eyebrow: 'Positioning',
+				desc: 'Когда ритейл-толпа экстремально длинная, а смарт-мани нет — сигнал на разворот. Как читать данные позиционирования.',
+				agent_summary: 'Crowd-fade strategy: Binance futures long/short account ratio (retail) vs top-trader position ratio (smart money). When retail L/S extreme (>2.5) and top-traders neutral (<1.6) = divergence = fade-the-crowd short candidate. Data from fapi globalLongShortAccountRatio + topLongShortPositionRatio. Not standalone signal, confirmation filter.',
+				contracts: [], rpc_endpoints: ['https://fapi.binance.com/futures/data/globalLongShortAccountRatio'],
+				constants: { retail_extreme: 2.5, smart_neutral: 1.6 },
+				safety_guards: [ { rule: 'not_standalone_entry', max_limit: 0, action_on_breach: 'confirm_only' } ],
+				content_ru: `Большинство ретейл-трейдеров теряют. Значит, когда толпа экстремально на одной стороне — статистическое преимущество на другой. Вот как это читать.
+
+### Два индикатора с Binance Futures
+1. **Long/Short Account Ratio** (globalLongShortAccountRatio) — доля аккаунтов в лонг vs шорт. Это ТОЛПА (ритейл).
+2. **Top Trader Position Ratio** (topLongShortPositionRatio) — позиционирование топовых трейдеров. Это СМАРТ-МАНИ.
+
+### Сигнал дивергенции
+Когда ритейл L/S экстремальный (например, >2.5 = сильно в лонгах), а топ-трейдеры нейтральны (<1.6) — толпа перегружена, смарт-мани не подтверждает. Это кандидат на fade (контр-вход против толпы).
+
+Пример из реальных данных: SOL ритейл L/S = 2.86 (сильно длинный), топ-трейдеры = 1.54 (умеренно). Дивергенция → риск отката для перегруженных лонгов.
+
+### Важно
+Это НЕ самостоятельный сигнал на сделку — это фильтр подтверждения. Используй вместе с техническим входом и риск-менеджментом. Толпа может оставаться неправой долго (рынок дольше иррационален, чем ты платёжеспособен).
+
+Данные собираются 24/7 на Sovereign Arena.`
+			}
+		},
+		{
 			params: { slug: 'ai-agent-reliability-audit' },
 			props: {
 				id: 'svc-ai-audit-001',

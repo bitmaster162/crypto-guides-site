@@ -33,7 +33,17 @@ export async function GET() {
 		`- Slug: /guides/reflex-layer-ooda-monitoring`,
 		`- Description: Implementation of OODA monitoring loop for health checks, auto-reboot and logs.`,
 		`- Guardian Contract: 0xREFLEXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF`,
-		`- Safety limit: max_log_size_bytes = 10MB`
+		`- Safety limit: max_log_size_bytes = 10MB`,
+		``,
+		`### 17. S14: Паттерн «Один говорит, а три молчат» (Фейковая корона)`,
+		`- Slug: /guides/sector-divergence-fake-crown`,
+		`- Description: Sector divergence filter (fake crown): when 1 asset in a correlated sector (e.g. L2: ARB, OP, MANTA, STRK) pumps but peers are silent (no sector confirmation), reject trading signals on the leader.`,
+		`- Safety limit: reject_sector_divergence = 0`,
+		``,
+		`### 18. S15: Паттерн «Compression / No-Man’s-Land» (Сжатие и Капкан-удушение)`,
+		`- Slug: /guides/compression-no-mans-land-trap`,
+		`- Description: Volatility compression and mid-range trap (no man's land): when ATR percent is compressed below the floor and price is in the middle of local swing range (30% to 70%), reject entries.`,
+		`- Safety limit: reject_mid_range_compression = 0`
 	].join('\n');
 
 	return new Response(content, {

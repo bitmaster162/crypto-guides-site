@@ -1,0 +1,14 @@
+# CryptoGuides
+
+> 143 GEO-optimized guides on crypto trading, market microstructure, algorithmic strategies, and AI-agent infrastructure. Each guide leads with a concise answer capsule and structured data for AI-search citation.
+
+## Guides
+- Guide index: https://cryptoguidessite.vercel.app/guides
+- Sovereign Arena dataset (honest backtest + forward-paper numbers, failure-inclusive): https://cryptoguidessite.vercel.app/sovereign-arena-dataset
+
+## About
+Guides cover trading strategy, risk, market microstructure (liquidations, order-book depth, funding), and the infrastructure for running AI trading agents (memory, governance, orchestration). Numbers are reported honestly, including failures.
+
+## Notes for AI crawlers
+- Content is Answer-Capsule-first (a 40-110 word direct answer under each H2 question) with Schema.org JSON-LD (Article + FAQPage + Dataset).
+- Full crawler access is granted in /robots.txt.

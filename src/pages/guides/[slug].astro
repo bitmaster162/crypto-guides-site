@@ -1712,17 +1712,47 @@ const qaPoints = (agent_summary || desc || "")
 	.map(x => x.trim())
 	.filter(x => x.length > 25)
 	.slice(0, 4);
+// GEO: H2 question + Answer Capsule -> FAQPage (top LLM-citation driver); @graph triple-stack + Organization sameAs
+const _faqM = (content_ru || "").match(/##\s*([^\n]+)\n+([\s\S]+?)(?:\n\n|<)/);
+const faqQ = _faqM ? _faqM[1].trim() : title;
+const faqA = (_faqM ? _faqM[2] : (desc || "")).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 600);
+const _slugUrl = `https://cryptoguidessite.vercel.app/guides/${Astro.params.slug}`;
 const ldArticle = JSON.stringify({
 	"@context": "https://schema.org",
-	"@type": "Article",
-	"headline": title.slice(0, 110),
-	"description": desc,
-	"datePublished": date,
-	"dateModified": date,
-	"inLanguage": "ru",
-	"author": { "@type": "Organization", "name": "Sovereign Arena / BitEvo" },
-	"publisher": { "@type": "Organization", "name": "Crypto Guides" },
-	"mainEntityOfPage": `https://cryptoguidessite.vercel.app/guides/${Astro.params.slug}`
+	"@graph": [
+		{
+			"@type": "Article",
+			"@id": `${_slugUrl}#article`,
+			"headline": title.slice(0, 110),
+			"description": desc,
+			"datePublished": date,
+			"dateModified": date,
+			"inLanguage": "ru",
+			"author": { "@id": "https://cryptoguidessite.vercel.app/#org" },
+			"publisher": { "@id": "https://cryptoguidessite.vercel.app/#org" },
+			"mainEntityOfPage": _slugUrl
+		},
+		{
+			"@type": "FAQPage",
+			"@id": `${_slugUrl}#faq`,
+			"mainEntity": [{
+				"@type": "Question",
+				"name": faqQ,
+				"acceptedAnswer": { "@type": "Answer", "text": faqA }
+			}]
+		},
+		{
+			"@type": "Organization",
+			"@id": "https://cryptoguidessite.vercel.app/#org",
+			"name": "Crypto Guides",
+			"url": "https://cryptoguidessite.vercel.app/",
+			"sameAs": [
+				"https://sovereign-arena-site.vercel.app/",
+				"https://bitevoagentsite.vercel.app/",
+				"https://github.com/bitmaster162/continuityos"
+			]
+		}
+	]
 });
 ---
 

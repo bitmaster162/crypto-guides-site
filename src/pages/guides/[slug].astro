@@ -589,7 +589,8 @@ const qaPoints = (agent_summary || desc || "")
 // GEO: H2 question + Answer Capsule -> FAQPage (top LLM-citation driver); @graph triple-stack + Organization sameAs
 const _faqM = (content_ru || "").match(/##\s*([^\n]+)\n+([\s\S]+?)(?:\n\n|<)/);
 const faqQ = _faqM ? _faqM[1].trim() : title;
-const faqA = (_faqM ? _faqM[2] : (desc || "")).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 600);
+let faqA = (_faqM ? _faqM[2] : (desc || "")).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 600);
+if (faqA.split(/\s+/).filter(Boolean).length < 25 && desc) faqA = (desc || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 600);
 const _slugUrl = `https://cryptoguidessite.vercel.app/guides/${Astro.params.slug}`;
 const ldArticle = JSON.stringify({
 	"@context": "https://schema.org",

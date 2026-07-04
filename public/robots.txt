@@ -9,3 +9,20 @@ Allow: /
 
 User-agent: ClaudeBot
 Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: https://cryptoguidessite.vercel.app/sitemap-index.xml

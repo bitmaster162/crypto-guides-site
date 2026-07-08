@@ -2,22 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 
 const guides = [
-	{"slug": "ai-agents-2026", "title": "Эволюция ИИ-агентов: глобальный ландшафт, токеномика и локальная безопасность в 2026 году", "date": "2026-07-07", "category": "AI", "kicker": "Ai Agents 2026", "desc": "С середины 2026 года глобальный ландшафт ИИ претерпел значительные изменения, перейдя от простых диалоговых систем к высокоавтономным агентам. Это стало возможным благодаря новым моделям, таким как Cl", "tags": ["ИИ-агенты", "токеномика", "безопасность ИИ", "Claude Fable", "Claude Mythos", "Open Weights", "Mem0", "MCP", "локальное развертывание", "2026"]},
-	{"slug": "ai-agents-ecosystem-2026", "title": "Экосистема ИИ-агентов 2026: что взять и применить", "date": "2026-07-07", "category": "AI", "kicker": "Ai Agents Ecosystem 2026", "desc": "Период 2025–2026 годов знаменует собой фундаментальный переход от традиционных диалоговых моделей к суверенным автономным агентам. Эта эволюция сделала агентскую инфраструктуру вопросом национальной б", "tags": ["AI agents", "ecosystem", "2026", "paradigms", "infrastructure", "security", "frameworks", "trading", "ContinuityOS", "autonomous agents", "Computer Use"]},
-	{"slug": "ai-companion-market-analysis", "title": "Анализ рынка AI-компаньонов: GTM-реалии и рыночная карта 2025–2026", "date": "2026-07-07", "category": "AI", "kicker": "Ai Companion Market Analysis", "desc": "Глобальный рынок AI-компаньонов находится на пороге экспоненциального роста, прогнозируясь с 28,19 млрд долларов в 2024 году до 140,75 млрд долларов к 2030 году при среднегодовом темпе роста 30,8%. Эт", "tags": ["AI", "Искусственный интеллект", "Маркетинг", "GTM", "Монетизация", "Приватность", "Telegram", "Рост рынка", "Голосовые интерфейсы", "AI-компаньоны"]},
-	{"slug": "anthropic-models-and-upgrade", "title": "Аналитический отчёт по моделям уровня Fable Mythos и по апгрейду Sovereign Arena до Hybrid LLM plus RL", "date": "2026-07-07", "category": "AI", "kicker": "Anthropic Models And Upgrade", "desc": "Anthropic Claude Fable 5 и Mythos 5 представляют собой две конфигурации одной передовой модели, однако их доступность нестабильна, что делает Claude Opus 4.8 наиболее надёжным и мощным публичным вариа", "tags": ["Anthropic", "Claude", "Fable 5", "Mythos 5", "Opus 4.8", "Hybrid LLM + RL", "Sovereign Arena", "Trading System", "Agent Frameworks", "Geo-optimized"]},
-	{"slug": "best-longterm-memory-systems-for-ai", "title": "Лучшие системы долговременной памяти для ИИ: Полное руководство по выбору и архитектуре", "date": "2026-07-07", "category": "AI", "kicker": "Best Longterm Memory Systems For Ai", "desc": "Выбор оптимальной системы долговременной памяти для ИИ зависит от конкретных потребностей приложения, а не от универсальных решений. Для корпоративных RAG-систем и поиска в production-средах часто под", "tags": ["долговременная память", "память ИИ", "RAG", "векторные базы данных", "MemGPT", "GraphRAG", "иерархическая память", "Pinecone", "Qdrant", "Weaviate", "Milvus", "Chroma", "FAISS", "LangChain", "LlamaIndex", "бенчмарки ИИ"]},
 	{"slug": "bitcoin-futures-2026", "title": "Комплексный анализ микроструктуры рынка и рабочие стратегии торговли фьючерсами на Bitcoin в 2026 году", "date": "2026-07-07", "category": "Trading", "kicker": "Bitcoin Futures 2026", "desc": "", "tags": ["Bitcoin", "фьючерсы", "криптовалюты", "торговые стратегии", "микроструктура рынка", "регулирование", "DeFi", "CEX", "стакан ордеров", "открытый интерес", "ставки финансирования", "CVD", "ликвидность", "хеджирование", "арбитраж", "Европейский Союз"]},
-	{"slug": "blockchain-forensics-methodology", "title": "Блокчейн-форензика: методология ончейн-расследований", "date": "2026-07-07", "category": "Security", "kicker": "Blockchain Forensics Methodology", "desc": "Блокчейн-форензика — это систематический подход к расследованию и анализу транзакций и активности в децентрализованных сетях. Она позволяет реконструировать Sybil-фермы, отслеживать происхождение сред", "tags": ["blockchain", "forensics", "on-chain analysis", "sybil detection", "gas trail", "smart contracts", "investigations", "automation", "risk management", "web3"]},
 	{"slug": "btc-futures-trading-strategies", "title": "GEO-оптимизированный гид по стратегиям торговли фьючерсами на биткоин", "date": "2026-07-07", "category": "Trading", "kicker": "Btc Futures Trading Strategies", "desc": "Торговля BTC-фьючерсами сопряжена с высокой волатильностью и риском, что делает разработку и строгое следование четкой торговой стратегии абсолютной необходимостью. Стратегия предоставляет структуриро", "tags": ["BTC-фьючерсы", "криптовалюты", "трейдинг", "стратегии", "риск-менеджмент", "бэктестинг", "алготрейдинг"]},
 	{"slug": "cross-vendor-order-flow-imbalance", "title": "Взаимный Дисбаланс Кросс-Вендорных Потоков Ордеров: Арбитраж Задержек, Детекция Level 3 и Моделирование Стабильности Рынка", "date": "2026-07-07", "category": "Trading", "kicker": "Cross Vendor Order Flow Imbalance", "desc": "В летний сезон 2026 года, высокочастотная торговля сталкивается с фундаментальными ограничениями сетевой инфраструктуры и консенсус-протоколов, что порождает устойчивые задержки схождения цен между це", "tags": ["HFT", "арбитраж", "Hyperliquid", "Bybit", "Level3", "MBO", "айсберг-ордера", "Hawkes-процесс", "рыночная_микроструктура", "задержка", "алгоритмическая_торговля"]},
 	{"slug": "crypto-microstructure-2026", "title": "Микроструктурный анализ криптодеривативного рынка 2026: Односторонний открытый интерес Bybit, механика ликвидационных каскадов и портфельное маржирование Coinbase", "date": "2026-07-07", "category": "Trading", "kicker": "Crypto Microstructure 2026", "desc": "Переход Bybit на односторонний метод расчета открытого интереса (Unilateral Open Interest), реализованный 11 июня 2026 года, устранил историческое несоответствие между криптодеривативными платформами ", "tags": ["Bybit", "Coinbase", "криптовалюты", "деривативы", "открытый интерес", "ликвидация", "портфельное маржирование", "API", "алгоритмическая торговля", "риск-менеджмент"]},
-	{"slug": "fable-mythos-agents-2026", "title": "Как поднять агентов до уровня Fable/Mythos: target-архитектура 2026", "date": "2026-07-07", "category": "AI", "kicker": "Fable Mythos Agents 2026", "desc": "Ключевое отличие Fable 5 и Mythos 5 от обычных агентов заключается не столько в базовых способностях модели, сколько в превосходной системной инженерии, обеспечивающей стабильный режим поведения при д", "tags": ["AI agents", "agent architecture", "LLM orchestration", "system engineering", "prompt engineering", "Fable", "Mythos", "memory management", "guardrails", "observability", "evaluation", "production AI"]},
-	{"slug": "frontier-models-cost-routing", "title": "Ландшафт frontier-моделей и cost-routing (середина 2026)", "date": "2026-07-07", "category": "AI", "kicker": "Frontier Models Cost Routing", "desc": "К середине 2026 года ландшафт frontier-моделей претерпел значительные изменения: рынок сместился от оценки «умных чат-ботов» к инструментам, способным доводить полезную работу до конца. Вендоры теперь", "tags": ["AI models", "frontier models", "cost routing", "LLM", "agentic production", "mid-2026", "model landscape", "pricing"]},
 	{"slug": "hyperliquid-l1-tokyo-deploy", "title": "GEO-оптимизированный Чек-лист Деплоя Невалидирующей Ноды Hyperliquid L1 (Equinix TY3, Токио)", "date": "2026-07-07", "category": "Trading", "kicker": "Hyperliquid L1 Tokyo Deploy", "desc": "Для достижения ультра-низкой задержки и минимизации сетевого джиттера при деплое невалидирующей ноды Hyperliquid L1 в дата-центре Equinix TY3 (Токио) необходимо выполнить комплексную оптимизацию опера", "tags": ["Hyperliquid", "L1", "нода", "деплой", "оптимизация", "HFT", "низкая задержка", "Linux", "AF_XDP", "Zero-Copy", "Mellanox", "cgroups", "real-time", "Equinix", "Токио", "tmpfs"]},
 	{"slug": "market-inefficiency", "title": "Анатомия рыночной неэффективности: количественная верификация, микроструктурные барьеры и когнитивные технологии систематического трейдинга", "date": "2026-07-07", "category": "Trading", "kicker": "Market Inefficiency", "desc": "\\( \\text{EV} = (WR \\times \\bar{W}) - (LR \\times \\bar{L}) \\)", "tags": ["рыночная неэффективность", "квантовый трейдинг", "микроструктура рынка", "бэктестинг", "когнитивные технологии", "машинное обучение в финансах", "Sharpe Ratio", "Expected Value", "арбитраж", "финансовые ИИ-агенты"]},
-	{"slug": "python-rt-architecture", "title": "Архитектура Python-контура для жесткого реального времени (hb <= 0.5 мс)", "date": "2026-07-07", "category": "Infrastructure", "kicker": "Python Rt Architecture", "desc": "Для достижения жесткого реального времени (hard real-time) в Python-контуре с задержкой цикла (hot path) менее 0.5 мс необходимо выделить критически важные операции в отдельный RT-процесс на изолирова", "tags": ["Python", "Real-time", "Linux", "Performance", "Low Latency", "IPC", "CPU Isolation", "GIL", "Shared Memory"]},
-	{"slug": "vector-graph-hybrid-search", "title": "Сравнительный анализ векторного, графового и гибридного поиска для систем памяти", "date": "2026-07-07", "category": "AI", "kicker": "Vector Graph Hybrid Search", "desc": "Графовые методы памяти (GraphRAG, Graphiti, HippoRAG) оптимальны для задач с явными связями и \"многопрыжковыми\" запросами, поскольку они эффективно моделируют отношения и временные контексты. Векторны", "tags": ["векторный поиск", "графовый поиск", "гибридный поиск", "RAG", "LLM", "память", "эмбеддинги", "ANN", "SQLite", "ранжирование", "бенчмарки"]},
 	{"slug": "pochemu-strategii-teryayut-dengi", "title": "Почему 90% paper-trading стратегий теряют деньги: 3 механических дефекта на данных 66 000 сделок", "date": "2026-07-07", "category": "Trading", "kicker": "Pochemu Strategii Teryayut Dengi", "desc": "Даже когда цена дошла до твоего тейка — сделка в минус. Почему? На суб-центовых монетах ход цены, который видит движок, округляется почти в ноль, а фиксированная комиссия + спред съедают всё. **Физиче", "tags": ["paper trading", "торговые стратегии", "криптовалюты", "анализ сделок", "управление рисками", "прибыльность", "технический аудит", "Sovereign Arena", "trade analysis", "risk management", "profitability", "mechanical defects"]},
 	{"slug": "active-inference-agents", "title": "Active Inference Agents: Принцип Свободной Энергии, Одеяло Маркова и Механика Тильта", "date": "2026-06-25", "category": "Trading", "kicker": "Active Inference Agents", "desc": "Введение в Активный Вывод (Active Inference)\n\nАктивный Вывод (Active Inference) — это обобщенная физико-когнитивная теория, разработанная профессором Карлом Фристоном, которая описывает поведение любы", "tags": ["active-inference", "fep", "markov-blanket", "free-energy", "precision-weighting", "tilt-recovery"]},
 	{"slug": "adaptive-delegation-gate", "title": "Adaptive Delegation Gate: Шлюз адаптивного делегирования полномочий ИИ-агентов", "date": "2026-06-25", "category": "Trading", "kicker": "Adaptive Delegation Gate", "desc": "Введение\nПри работе с автономными ИИ-агентами ключевой угрозой является дрейф автономии (autonomy drift) — ситуация, когда агент расширяет свои полномочия в процессе сессии, ссылаясь на контекстную не", "tags": ["ai-safety", "coordination", "delegation-gate", "authority", "permission-control"]},
@@ -29,7 +19,6 @@ const guides = [
 	{"slug": "bybit-uta-defensive-veto", "title": "Bybit UTA Stress-Test Grid & Defensive Veto", "date": "2026-06-25", "category": "Trading", "kicker": "Bybit Uta Defensive Veto", "desc": "Механика Bybit UTA Portfolio Margin\nВ рамках Единого Торгового Аккаунта Bybit (Unified Trading Account) с поддержкой портфельной маржи (Portfolio Margin) биржа оценивает риски портфеля по сетке стресс", "tags": ["risk-management", "bybit-uta", "stress-test", "margin", "safety-guard", "defensive-veto"]},
 	{"slug": "bybit-uta-sbe", "title": "Bybit UTA SBE (Simple Binary Encoding) DMA protocol & In-Memory L3 Orderbook Engine", "date": "2026-06-25", "category": "Trading", "kicker": "Bybit Uta Sbe", "desc": "Введение\nВ высокочастотной торговле (HFT) традиционный сериализатор JSON или протокол FIX Tag-Value создают недопустимые задержки (latency) и джиттер (jitter) из-за динамического выделения памяти в ку", "tags": ["hft", "sbe", "bybit", "low-latency", "dma", "orderbook-engine"]},
 	{"slug": "candle-atr-grid-scaling", "title": "Candle ATR & Grid Scaling: Оптимизация шага сетки под волатильность и фильтрация комиссионного трения", "date": "2026-06-25", "category": "Trading", "kicker": "Candle Atr Grid Scaling", "desc": "Введение\nТрадиционные пробойные и сеточные алгоритмы часто совершают ошибку, рассчитывая параметры уровней стоп-лосса (SL) и тейк-профита (TP) на основе секундной (тиковой) волатильности без учета ком", "tags": ["trading", "grid", "atr", "volatility", "fees"]},
-	{"slug": "capability-passports-sap", "title": "Capability Passports & SAP: Делегирование прав доступа ИИ-агентов и цифровые подписи", "date": "2026-06-25", "category": "Security", "kicker": "Capability Passports Sap", "desc": "Введение\nПредоставление автономным ИИ-агентам доступа к разрушительным инструментам (модификация кода, управление процессами, переводы средств) требует строгого разграничения прав доступа.", "tags": ["ai-safety", "state-authority-plane", "capability-passports", "cryptography", "security"]},
 	{"slug": "cointegration-pairs-trading", "title": "Cointegration & Pairs Trading: Статистический арбитраж коррелированных пар", "date": "2026-06-25", "category": "Trading", "kicker": "Cointegration Pairs Trading", "desc": "Введение\nПростая торговля по тренду или уровням подвержена рыночному шуму и ложным пробоям.", "tags": ["trading", "pairs-trading", "cointegration", "statistical-arbitrage", "mean-reversion"]},
 	{"slug": "context-garbage-collection", "title": "Context Garbage Collection: Очистка контекста и предотвращение дрейфа внимания ИИ", "date": "2026-06-25", "category": "Trading", "kicker": "Context Garbage Collection", "desc": "Введение\nПри длительном взаимодействии ИИ-агента с окружением (просмотр логов, выполнение bash-команд, чтение файлов) его контекстное окно быстро заполняется.", "tags": ["ai-safety", "context-window", "garbage-collection", "attention-drift", "optimization"]},
 	{"slug": "cross-exchange-divergence", "title": "Cross-Exchange Divergence: Межбиржевой арбитраж в периоды ликвидационных сквизов", "date": "2026-06-25", "category": "Trading", "kicker": "Cross Exchange Divergence", "desc": "Введение\nВ обычных условиях цены на высоколиквидные активы (такие как BTCUSDT) на различных биржах (Binance, OKX, Bybit) идут практически вровень, а спред между ними удерживается арбитражными алгоритм", "tags": ["trading", "arbitrage", "cross-exchange", "liquidation-cascade", "correlation-divergence"]},
@@ -57,12 +46,9 @@ const guides = [
 	{"slug": "queue-admission-simulator", "title": "Queue Admission Simulator: Моделирование пропуска и исполнения ордеров в очереди", "date": "2026-06-25", "category": "Trading", "kicker": "Queue Admission Simulator", "desc": "Введение\nПри маркетмейкинге и пассивном котировании с использованием лимитных ордеров (Post-Only) простого нахождения цены на нужном уровне недостаточно для совершения сделки.", "tags": ["trading", "microstructure", "queue-admission", "order-book", "simulator"]},
 	{"slug": "queue-calibration-model", "title": "Entry Queue Calibration Model: Обратная связь и динамическая калибровка очереди ордеров", "date": "2026-06-25", "category": "Trading", "kicker": "Queue Calibration Model", "desc": "Введение\nДля точности прогнозирования заполнения лимитных ордеров недостаточно иметь статическую модель симуляции очереди.", "tags": ["microstructure", "queue-simulator", "calibration", "feedback-loop", "order-latency"]},
 	{"slug": "regime-gate-scorecard", "title": "Regime Gate Scorecard: Модель квантификации рыночных режимов", "date": "2026-06-25", "category": "Trading", "kicker": "Regime Gate Scorecard", "desc": "Введение\nВ трейдинге точность сигнала вторична по отношению к контексту рынка.", "tags": ["trading", "regime-detection", "scorecard", "market-microstructure", "risk-control"]},
-	{"slug": "reviewer-sandbox-split", "title": "ReviewerGate and SandboxPreflight Decoupled AI Security Architecture", "date": "2026-06-25", "category": "Security", "kicker": "Reviewer Sandbox Split", "desc": "Введение\nВ автономных системах на базе ИИ-агентов выполнение генерируемого кода несет критические риски безопасности (удаление файлов, утечка API-ключей, ботнет-активность).", "tags": ["ai-safety", "security", "sandbox", "reviewer-gate", "json-schema", "runtime-telemetry"]},
 	{"slug": "score-core-hft", "title": "S-CORE HFT Core: Нативное С++ Busy-Polling Ядро и Hawkes-математика", "date": "2026-06-25", "category": "Trading", "kicker": "Score Core Hft", "desc": "Введение в S-CORE v15.3\nS-CORE v15.3 представляет собой нативный C++ модуль сверхнизкой задержки (Ultra-Low Latency), скомпилированный под инструкции AVX-512 и FMA.", "tags": ["hft", "s-core", "c++", "mmap", "hawkes", "avx-512"]},
-	{"slug": "security-sandboxing", "title": "Security Sandboxing: Изоляция выполнения и контроль лимитов инструментов ИИ", "date": "2026-06-25", "category": "Security", "kicker": "Security Sandboxing", "desc": "Введение\nПри интеграции ИИ-агентов с внешним окружением (базы данных, локальная ОС, внешние API) ключевым риском является неконтролируемое выполнение команд (untrusted tool execution).", "tags": ["ai-safety", "sandboxing", "tool-isolation", "security", "runtime-protection"]},
 	{"slug": "sovereign-agent-core", "title": "Sovereign Agent Core: Безопасность MCP, MemIR Атомы и SSGM", "date": "2026-06-25", "category": "Trading", "kicker": "Sovereign Agent Core", "desc": "Введение в Sovereign Agent Core\nSovereign Agent Core представляет собой локальный/self-hosted слой безопасности (Agent Trust Layer), располагающийся между стохастической нейросетью и критическими инст", "tags": ["sovereign-core", "mcp-security", "memir", "ssgm", "ecs", "privacy-router"]},
 	{"slug": "spread-mean-reversion", "title": "Spread Mean Reversion: Торговля возвратом спреда и минимизация рыночного воздействия", "date": "2026-06-25", "category": "Trading", "kicker": "Spread Mean Reversion", "desc": "Введение\nНа микроструктурном уровне цена актива постоянно совершает колебания внутри спреда (bid-ask spread).", "tags": ["trading", "mean-reversion", "spread", "market-impact", "post-only"]},
-	{"slug": "tee-agent-secrets", "title": "TEE & MPC: Безопасное управление ключами автономных ИИ-агентов", "date": "2026-06-25", "category": "Security", "kicker": "Tee Agent Secrets", "desc": "Введение\nПредоставление автономному ИИ-агенту прямого доступа к API-ключам биржи или приватным ключам блокчейна несет критическую уязвимость.", "tags": ["ai-safety", "security", "tee", "mpc", "key-management"]},
 	{"slug": "tilt-index-antiself", "title": "Tilt Index & Anti-Self: Предотвращение тильта и когнитивных искажений в трейдинге", "date": "2026-06-25", "category": "Trading", "kicker": "Tilt Index Antiself", "desc": "Введение\nКогнитивные искажения трейдера (как человека, так и ИИ-агента) — одна из главных причин слива депозитов.", "tags": ["trading", "risk-management", "tilt-index", "anti-self", "safety-guard"]},
 	{"slug": "transient-price-impact-decay", "title": "Transient Price Impact Decay & Liquidation Sweeps", "date": "2026-06-25", "category": "Trading", "kicker": "Transient Price Impact Decay", "desc": "Введение\nКаскадные ликвидации маржинальных позиций с высоким плечом (50x–100x) приводят к выбросу крупных рыночных ордеров (market order sweeps) на бирже.", "tags": ["liquidation-cascades", "price-impact", "mean-reversion", "microstructure", "bybit"]},
 	{"slug": "volatility-sizing-policy", "title": "Volatility Sizing Policy: Адаптивное масштабирование ордеров на основе ATR", "date": "2026-06-25", "category": "Trading", "kicker": "Volatility Sizing Policy", "desc": "Введение\nВ условиях частой смены рыночных режимов фиксированный размер ордера (notional) ведет к завышенному риску в моменты высокой волатильности и неэффективному использованию капитала во время флэт", "tags": ["sizing", "volatility", "atr", "risk-management", "position-control"]},
@@ -574,102 +560,4 @@ const sections = [
 	.cat-heading {
 		font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900;
 		margin: 8px 0 18px; display: flex; align-items: baseline; gap: 12px;
-		border-bottom: 1px solid var(--line, #2a2a2a); padding-bottom: 10px; scroll-margin-top: 20px;
-	}
-	.cat-heading-count { font-family: inherit; font-size: 0.8rem; font-weight: 400; color: var(--muted); }
-
-	/* Grid */
-	.guides-section {
-		padding-block: 16px 40px;
-	}
-	.guides-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 24px;
-		max-width: 1000px;
-		margin-inline: auto;
-	}
-	@media (max-width: 768px) {
-		.guides-grid {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	.guide-card {
-		background: var(--paper-soft);
-		border: 1px solid var(--line);
-		border-radius: var(--radius);
-		padding: 30px;
-		display: flex;
-		flex-direction: column;
-		transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-	}
-	.guide-card:hover {
-		transform: translateY(-2px);
-		border-color: var(--gold);
-		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-	}
-
-	.card-meta {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		font-size: 0.72rem;
-		font-weight: 800;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--muted);
-		margin-bottom: 12px;
-	}
-	.category {
-		color: var(--blue);
-	}
-
-	.display-sm {
-		font-family: 'Playfair Display', serif;
-		font-size: 1.35rem;
-		margin: 0 0 12px;
-		line-height: 1.25;
-		transition: color 0.2s ease;
-	}
-	.display-sm:hover {
-		color: var(--gold);
-	}
-
-	.desc {
-		font-family: 'Lora', serif;
-		color: var(--muted);
-		font-size: 0.92rem;
-		line-height: 1.6;
-		margin: 0 0 20px;
-	}
-
-	.card-footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-top: auto;
-		border-top: 1px solid var(--line);
-		padding-top: 14px;
-	}
-
-	.tags {
-		display: flex;
-		gap: 8px;
-		font-size: 0.75rem;
-		font-weight: 700;
-		color: var(--muted);
-	}
-
-	.read-more {
-		font-size: 0.75rem;
-		font-weight: 800;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--gold);
-		transition: transform 0.2s ease;
-	}
-	.read-more:hover {
-		transform: translateX(2px);
-	}
-</style>
+		border-bottom: 1px solid var(--line, #2a2a2a); padding-bottom: 10px; scroll-margin-top: 20px

@@ -466,6 +466,14 @@ const guides = [
 		tags: ["trading","okx","nft","parasite","hunter"]
 	}
 ];
+
+const CATEGORY_ORDER = ["Trading","AI","Security","Infrastructure","Governance","Risk","Business","Automation","Service"];
+const byCat = {};
+guides.forEach(g => { (byCat[g.category] = byCat[g.category] || []).push(g); });
+const sections = [
+	...CATEGORY_ORDER.filter(c => byCat[c]).map(c => ({ cat: c, items: byCat[c] })),
+	...Object.keys(byCat).filter(c => !CATEGORY_ORDER.includes(c)).map(c => ({ cat: c, items: byCat[c] })),
+];
 ---
 
 <Layout title="Crypto & Trading Guides Portal">
@@ -480,59 +488,48 @@ const guides = [
 		</div>
 	</section>
 
-	<!-- Category nav + guides grouped into sections -->
-	{(() => {
-		const CATEGORY_ORDER = ["Trading","AI","Security","Infrastructure","Governance","Risk","Business","Automation","Service"];
-		const byCat = {};
-		guides.forEach(g => { (byCat[g.category] = byCat[g.category] || []).push(g); });
-		const sections = [
-			...CATEGORY_ORDER.filter(c => byCat[c]).map(c => ({ cat: c, items: byCat[c] })),
-			...Object.keys(byCat).filter(c => !CATEGORY_ORDER.includes(c)).map(c => ({ cat: c, items: byCat[c] })),
-		];
-		return (
-			<>
-				<section class="cat-nav-section">
-					<div class="container">
-						<div class="cat-nav">
-							{sections.map(s => (
-								<a href={`#cat-${s.cat}`} class="cat-pill">{s.cat}<span class="cat-count">{s.items.length}</span></a>
-							))}
-						</div>
-					</div>
-				</section>
+	<!-- Category anchor nav -->
+	<section class="cat-nav-section">
+		<div class="container">
+			<div class="cat-nav">
 				{sections.map(s => (
-					<section class="guides-section" id={`cat-${s.cat}`}>
-						<div class="container">
-							<h2 class="cat-heading">{s.cat}<span class="cat-heading-count">{s.items.length} guides</span></h2>
-							<div class="guides-grid">
-								{s.items.map(guide => (
-									<article class="guide-card">
-										<div class="card-meta">
-											<span class="category">{guide.category}</span>
-											<span class="dot">·</span>
-											<span class="date">{guide.date}</span>
-										</div>
-										<a href={`/guides/${guide.slug}`} class="title-link">
-											<h2 class="display-sm">{guide.title}</h2>
-										</a>
-										<p class="desc">{guide.desc}</p>
-										<div class="card-footer">
-											<div class="tags">
-												{guide.tags.map(tag => (
-													<span class="tag">#{tag}</span>
-												))}
-											</div>
-											<a href={`/guides/${guide.slug}`} class="read-more">Read Guide →</a>
-										</div>
-									</article>
-								))}
-							</div>
-						</div>
-					</section>
+					<a href={`#cat-${s.cat}`} class="cat-pill">{s.cat}<span class="cat-count">{s.items.length}</span></a>
 				))}
-			</>
-		);
-	})()}
+			</div>
+		</div>
+	</section>
+
+	<!-- Guides grouped by category -->
+	{sections.map(s => (
+		<section class="guides-section" id={`cat-${s.cat}`}>
+			<div class="container">
+				<h2 class="cat-heading">{s.cat}<span class="cat-heading-count">{s.items.length} guides</span></h2>
+				<div class="guides-grid">
+					{s.items.map(guide => (
+						<article class="guide-card">
+							<div class="card-meta">
+								<span class="category">{guide.category}</span>
+								<span class="dot">·</span>
+								<span class="date">{guide.date}</span>
+							</div>
+							<a href={`/guides/${guide.slug}`} class="title-link">
+								<h2 class="display-sm">{guide.title}</h2>
+							</a>
+							<p class="desc">{guide.desc}</p>
+							<div class="card-footer">
+								<div class="tags">
+									{guide.tags.map(tag => (
+										<span class="tag">#{tag}</span>
+									))}
+								</div>
+								<a href={`/guides/${guide.slug}`} class="read-more">Read Guide →</a>
+							</div>
+						</article>
+					))}
+				</div>
+			</div>
+		</section>
+	))}
 </Layout>
 
 <style>

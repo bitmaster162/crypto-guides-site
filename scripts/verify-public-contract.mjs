@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
-const required = ['index.html','guides/index.html','version/index.html','version.json','guides-index.json','llms.txt','sitemap.xml','sitemap-index.xml','robots.txt'];
+const required = ['index.html','guides/index.html','version/index.html','version.json','guides-index.json','api/public-guides.json','llms.txt','sitemap.xml','sitemap-index.xml','robots.txt'];
 for (const file of required) await access(join(dist, file));
 
 const index = JSON.parse(await readFile(join(dist, 'guides-index.json'), 'utf8'));
@@ -42,6 +42,22 @@ if (requireRecord('security-sandboxing').reviewStatus !== 'SECURITY_SAFETY_REVIE
 if (requireRecord('monetization-matrix-4x3').reviewStatus !== 'COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED') throw new Error('monetization current-product boundary regressed');
 if (requireRecord('fleet-coordinator-drift-monitoring').reviewStatus !== 'INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED') throw new Error('fleet infrastructure boundary regressed');
 
+const publicApi = JSON.parse(await readFile(join(dist, 'api/public-guides.json'), 'utf8'));
+if (publicApi.schema !== 'crypto-guides.public-api.v1') throw new Error('public API schema mismatch');
+if (publicApi.exposure !== 'REVIEWED_METADATA_ONLY') throw new Error('public API exposure boundary missing');
+if (!Array.isArray(publicApi.records) || publicApi.records.length !== index.uniqueGuides || publicApi.count !== index.uniqueGuides) throw new Error('public API count mismatch');
+const forbiddenApiKeys = new Set(['params','rpc_endpoints','contracts','constants','safety_guards','rpcEndpoints','operationalConfig']);
+for (const record of publicApi.records) {
+  for (const key of Object.keys(record)) {
+    if (forbiddenApiKeys.has(key)) throw new Error(`public API leaked legacy operational field ${key} on ${record.slug || '<unknown>'}`);
+  }
+  if (!record.reviewStatus || !record.currentness || typeof record.ymyl !== 'boolean') throw new Error(`public API review metadata missing: ${record.slug}`);
+}
+const apiRaw = await readFile(join(dist, 'api/public-guides.json'), 'utf8');
+for (const forbiddenToken of ['rpc_endpoints','BITEVO_API_KEY','34.70.171.152','185.231.154.149','144.124.250.14']) {
+  if (apiRaw.includes(forbiddenToken)) throw new Error(`public metadata API leaked forbidden operational token: ${forbiddenToken}`);
+}
+
 const version = JSON.parse(await readFile(join(dist, 'version.json'), 'utf8'));
 if (version.schema !== 'crypto-guides.public-build.v1') throw new Error('build receipt schema mismatch');
 if (!/^[0-9a-f]{40}$/i.test(version.sha)) throw new Error('build receipt SHA invalid');
@@ -60,4 +76,4 @@ const guidesHtml = await readFile(join(dist, 'guides/index.html'), 'utf8');
 if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guides review boundary missing');
 if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source binding missing');
 
-console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} required_artifacts=${required.length}`);
+console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} required_artifacts=${required.length}`);

@@ -26,19 +26,29 @@ const compiledRules = rules.map((rule) => {
 });
 
 const ruleMatches = {};
+const allRuleMatches = {};
 let routedByRule = 0;
 let explicitCount = 0;
 let defaultCount = 0;
+let multiRuleRoutes = 0;
+let ymylRoutes = 0;
+let ymylFromSecondaryEvidence = 0;
 
 manifest.reviewSources = [
   'src/data/public-review-overrides.json',
   'src/data/public-review-rules.json'
 ];
-manifest.reviewSource = 'explicit override > conservative topic rule > RESTORED_UNREVIEWED';
+manifest.reviewSource = 'explicit override > first conservative topic rule > RESTORED_UNREVIEWED; YMYL is conservative OR across explicit + every matching topic rule';
 manifest.records = manifest.records.map((record) => {
   const explicit = overrides[record.slug] || null;
   const haystack = `${record.slug || ''} ${record.title || ''} ${record.category || ''}`;
-  const matched = explicit ? null : compiledRules.find((rule) => rule.regex.test(haystack));
+  const matchedRules = compiledRules.filter((rule) => rule.regex.test(haystack));
+  const matched = explicit ? null : matchedRules[0] || null;
+
+  for (const rule of matchedRules) {
+    allRuleMatches[rule.id] = (allRuleMatches[rule.id] || 0) + 1;
+  }
+  if (matchedRules.length > 1) multiRuleRoutes += 1;
 
   if (explicit) explicitCount += 1;
   else if (matched) {
@@ -47,13 +57,21 @@ manifest.records = manifest.records.map((record) => {
   } else defaultCount += 1;
 
   const review = explicit || matched || {};
+  const ymylEvidenceRules = matchedRules.filter((rule) => rule.ymyl === true).map((rule) => rule.id);
+  const ymyl = explicit?.ymyl === true || ymylEvidenceRules.length > 0;
+  const primaryYmyl = review.ymyl === true;
+  if (ymyl) ymylRoutes += 1;
+  if (ymyl && !primaryYmyl) ymylFromSecondaryEvidence += 1;
+
   return {
     ...record,
     reviewStatus: review.status || defaultStatus,
     currentness: review.currentness || 'UNREVIEWED',
-    ymyl: review.ymyl === true,
+    ymyl,
     pair: review.pair || null,
     reviewRule: explicit ? 'EXPLICIT_OVERRIDE' : matched?.id || null,
+    reviewRuleEvidence: matchedRules.map((rule) => rule.id),
+    ymylEvidenceRules,
     reviewNote: review.note || null
   };
 });
@@ -68,10 +86,15 @@ manifest.reviewRouting = {
   ruleRouted: routedByRule,
   restoredUnreviewed: defaultCount,
   ruleMatches,
+  allRuleMatches,
+  multiRuleRoutes,
+  ymylRoutes,
+  ymylFromSecondaryEvidence,
   unrouted
 };
 
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
-console.log(`REVIEW_STATUS_GATE=PASS guides=${manifest.records.length} explicit_overrides=${explicitCount} rule_routed=${routedByRule} restored_unreviewed=${defaultCount} rules=${compiledRules.length}`);
+console.log(`REVIEW_STATUS_GATE=PASS guides=${manifest.records.length} explicit_overrides=${explicitCount} rule_routed=${routedByRule} restored_unreviewed=${defaultCount} rules=${compiledRules.length} ymyl=${ymylRoutes} multi_rule=${multiRuleRoutes} ymyl_secondary=${ymylFromSecondaryEvidence}`);
 console.log(`REVIEW_RULE_COUNTS=${JSON.stringify(ruleMatches)}`);
+console.log(`REVIEW_RULE_EVIDENCE_COUNTS=${JSON.stringify(allRuleMatches)}`);
 console.log(`REVIEW_UNROUTED=${JSON.stringify(unrouted)}`);

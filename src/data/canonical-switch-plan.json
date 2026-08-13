@@ -1,0 +1,65 @@
+{
+  "schema": "crypto-guides.canonical-switch-plan.v1",
+  "state": "READY_NOT_APPLIED",
+  "activation": false,
+  "evidenceAuthority": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
+  "currentPublicSemantics": {
+    "canonicalization": "REVISION_PAIRS_EXPLICIT_PENDING_NO_WINNER",
+    "decision": "PENDING_CLAIM_LEVEL_REVIEW",
+    "canonicalSlug": null,
+    "routeCount": 4
+  },
+  "targetPublicSemantics": {
+    "canonicalization": "REVISION_PAIRS_CANONICAL_SELECTED_SUPERSEDED_PRESERVED",
+    "decision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+    "routePolicy": "PRESERVE_BOTH_NO_REDIRECT",
+    "winnerCount": 2,
+    "supersededCount": 2
+  },
+  "groups": [
+    {
+      "canonicalGroup": "trading-discipline-journal",
+      "canonicalSlug": "trading-discipline-journal-mae-mfe",
+      "supersededSlug": "trading-discipline-journal-psychology",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_DISCIPLINE_R1.md",
+      "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
+      "canonicalRoleTarget": "CANONICAL",
+      "supersededRoleTarget": "SUPERSEDED_HISTORICAL_REVISION"
+    },
+    {
+      "canonicalGroup": "microstructure-delisting-data-integrity",
+      "canonicalSlug": "microstructure-delisting-data-integrity-2026",
+      "supersededSlug": "microstructure-delisting-2026",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_MICROSTRUCTURE_R1.md",
+      "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
+      "canonicalRoleTarget": "CANONICAL",
+      "supersededRoleTarget": "SUPERSEDED_HISTORICAL_REVISION"
+    }
+  ],
+  "coordinatedFiles": [
+    "src/data/public-review-overrides.json",
+    "scripts/generate-public-api.mjs",
+    "scripts/verify-public-contract.mjs",
+    "src/pages/guides/index.astro"
+  ],
+  "activationPreconditions": [
+    "apply all canonical semantics in one coordinated source patch",
+    "exact-head npm build executes and passes",
+    "public API reports exactly 2 canonical winners and 2 superseded historical revisions",
+    "library IA distinguishes canonical from superseded without hiding historical provenance",
+    "all 162 restored routes remain addressable unless a separately approved redirect/delete decision exists",
+    "exact Git SHA is bound to a READY preview deployment",
+    "preview readback confirms canonical and superseded labels on both groups",
+    "no production promotion occurs without separate exact-head approval"
+  ],
+  "governance": {
+    "deleteRoutes": false,
+    "redirectRoutes": false,
+    "mergeAuthorized": false,
+    "productionPromotionAuthorized": false,
+    "billingMutationAuthorized": false,
+    "runtimeMutationAuthorized": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

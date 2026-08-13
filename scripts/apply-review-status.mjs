@@ -33,17 +33,27 @@ let defaultCount = 0;
 let multiRuleRoutes = 0;
 let ymylRoutes = 0;
 let ymylFromSecondaryEvidence = 0;
+let taxonomyPoisoningAvoided = 0;
 
 manifest.reviewSources = [
   'src/data/public-review-overrides.json',
   'src/data/public-review-rules.json'
 ];
-manifest.reviewSource = 'explicit override > first conservative topic rule > RESTORED_UNREVIEWED; YMYL is conservative OR across explicit + every matching topic rule';
+manifest.reviewSource = 'explicit override > first conservative topic rule > RESTORED_UNREVIEWED; YMYL is conservative OR across explicit + every matching topic rule; trading-YMYL matches slug+title only because restored category labels are known stale/unreliable';
 manifest.records = manifest.records.map((record) => {
   const explicit = overrides[record.slug] || null;
-  const haystack = `${record.slug || ''} ${record.title || ''} ${record.category || ''}`;
-  const matchedRules = compiledRules.filter((rule) => rule.regex.test(haystack));
+  const contentHaystack = `${record.slug || ''} ${record.title || ''}`;
+  const fullHaystack = `${contentHaystack} ${record.category || ''}`;
+  const matchedRules = compiledRules.filter((rule) => {
+    const input = rule.id === 'trading-ymyl' ? contentHaystack : fullHaystack;
+    return rule.regex.test(input);
+  });
   const matched = explicit ? null : matchedRules[0] || null;
+
+  const tradingRule = compiledRules.find((rule) => rule.id === 'trading-ymyl');
+  if (tradingRule && tradingRule.regex.test(fullHaystack) && !tradingRule.regex.test(contentHaystack)) {
+    taxonomyPoisoningAvoided += 1;
+  }
 
   for (const rule of matchedRules) {
     allRuleMatches[rule.id] = (allRuleMatches[rule.id] || 0) + 1;
@@ -76,6 +86,22 @@ manifest.records = manifest.records.map((record) => {
   };
 });
 
+const requiredYmylOverlapSlugs = [
+  'bybit-uta-defensive-veto',
+  'execution-drift-daemon',
+  'hyperliquid-l1-tokyo-deploy',
+  'pnl-protection-daemons',
+  'risk-freymvork-dlya-kripto-botov'
+];
+const recordsBySlug = new Map(manifest.records.map((record) => [record.slug, record]));
+for (const slug of requiredYmylOverlapSlugs) {
+  const record = recordsBySlug.get(slug);
+  if (!record) throw new Error(`Required YMYL overlap control route missing: ${slug}`);
+  if (record.ymyl !== true) throw new Error(`Cross-category trading route lost YMYL flag: ${slug}`);
+  if (!record.reviewRuleEvidence.includes('trading-ymyl')) throw new Error(`Cross-category trading route lacks trading YMYL evidence: ${slug}`);
+  if (record.reviewRuleEvidence.length < 2) throw new Error(`Expected cross-category overlap not detected: ${slug}`);
+}
+
 manifest.reviewCounts = manifest.records.reduce((acc, record) => {
   acc[record.reviewStatus] = (acc[record.reviewStatus] || 0) + 1;
   return acc;
@@ -90,11 +116,15 @@ manifest.reviewRouting = {
   multiRuleRoutes,
   ymylRoutes,
   ymylFromSecondaryEvidence,
+  taxonomyPoisoningAvoided,
+  tradingYmylMatchFields: ['slug', 'title'],
+  requiredYmylOverlapSlugs,
   unrouted
 };
 
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
-console.log(`REVIEW_STATUS_GATE=PASS guides=${manifest.records.length} explicit_overrides=${explicitCount} rule_routed=${routedByRule} restored_unreviewed=${defaultCount} rules=${compiledRules.length} ymyl=${ymylRoutes} multi_rule=${multiRuleRoutes} ymyl_secondary=${ymylFromSecondaryEvidence}`);
+console.log(`REVIEW_STATUS_GATE=PASS guides=${manifest.records.length} explicit_overrides=${explicitCount} rule_routed=${routedByRule} restored_unreviewed=${defaultCount} rules=${compiledRules.length} ymyl=${ymylRoutes} multi_rule=${multiRuleRoutes} ymyl_secondary=${ymylFromSecondaryEvidence} taxonomy_poisoning_avoided=${taxonomyPoisoningAvoided}`);
+console.log(`YMYL_OVERLAP_GATE=PASS routes=${requiredYmylOverlapSlugs.length}`);
 console.log(`REVIEW_RULE_COUNTS=${JSON.stringify(ruleMatches)}`);
 console.log(`REVIEW_RULE_EVIDENCE_COUNTS=${JSON.stringify(allRuleMatches)}`);
 console.log(`REVIEW_UNROUTED=${JSON.stringify(unrouted)}`);

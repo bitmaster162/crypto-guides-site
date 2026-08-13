@@ -71,9 +71,12 @@ for (const record of index.records) {
 const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
 if (!llms.includes(`Unique guide routes: ${index.uniqueGuides}`)) throw new Error('llms count mismatch');
 if (!llms.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('llms review boundary missing');
+if (!llms.includes('https://cryptoguidessite.vercel.app/api/public-guides.json')) throw new Error('llms canonical reviewed API missing');
+if (!llms.includes('legacy /api/guides endpoint')) throw new Error('llms legacy API migration boundary missing');
+if (!llms.includes('not the canonical machine-ingestion authority')) throw new Error('llms canonical API authority statement missing');
 
 const guidesHtml = await readFile(join(dist, 'guides/index.html'), 'utf8');
 if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guides review boundary missing');
 if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source binding missing');
 
-console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} required_artifacts=${required.length}`);
+console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);

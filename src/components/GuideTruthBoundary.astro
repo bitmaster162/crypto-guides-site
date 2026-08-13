@@ -1,0 +1,90 @@
+---
+const path = Astro.url.pathname;
+const isGuideDetail = path.startsWith('/guides/') && path !== '/guides/' && path !== '/guides';
+const slug = isGuideDetail ? decodeURIComponent(path.slice('/guides/'.length).replace(/\/$/, '')) : '';
+---
+
+{isGuideDetail && (
+  <aside class="guide-truth-boundary" data-guide-truth-boundary data-guide-slug={slug} aria-label="Статус ревизии материала">
+    <div class="gtb-topline">
+      <strong>RESTORED CONTENT · REVIEW REQUIRED</strong>
+      <a href="/guides">Открыть review index →</a>
+    </div>
+    <div class="gtb-badges" aria-live="polite">
+      <span class="gtb-badge" data-review-status>REVIEW_STATUS_LOADING</span>
+      <span class="gtb-badge" data-currentness>CURRENTNESS_LOADING</span>
+      <span class="gtb-badge gtb-ymyl" data-ymyl hidden>YMYL REVIEW</span>
+    </div>
+    <p>
+      Это восстановленный исследовательский материал. Наличие страницы не подтверждает текущую точность исторических фактов,
+      параметров, API/venue state, комиссий, funding, leverage, performance claims или торговых порогов.
+    </p>
+    <p class="gtb-ymyl-copy" data-ymyl-copy hidden>
+      Для этого материала установлен YMYL review boundary: числовые торговые параметры, доходность, риск, leverage,
+      funding/fees, execution/API и venue claims требуют отдельной текущей проверки. Они не являются торговым разрешением,
+      runtime-конфигурацией, гарантией результата или универсальными настройками.
+    </p>
+    <p class="gtb-fallback" data-fallback hidden>
+      Source-derived review metadata сейчас не удалось загрузить. До повторной проверки материал следует считать историческим и непроверенным на текущую дату.
+    </p>
+  </aside>
+)}
+
+<script>
+  const boundary = document.querySelector('[data-guide-truth-boundary]');
+  if (boundary instanceof HTMLElement) {
+    const slug = boundary.dataset.guideSlug || '';
+    const statusNode = boundary.querySelector('[data-review-status]');
+    const currentnessNode = boundary.querySelector('[data-currentness]');
+    const ymylBadge = boundary.querySelector('[data-ymyl]');
+    const ymylCopy = boundary.querySelector('[data-ymyl-copy]');
+    const fallback = boundary.querySelector('[data-fallback]');
+
+    fetch('/guides-index.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error(`guides-index ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        const records = Array.isArray(payload?.records) ? payload.records : [];
+        const record = records.find((item) => item?.slug === slug);
+        if (!record) throw new Error(`review record missing for ${slug}`);
+
+        if (statusNode) statusNode.textContent = String(record.reviewStatus || 'UNREVIEWED');
+        if (currentnessNode) currentnessNode.textContent = String(record.currentness || 'UNKNOWN_CURRENTNESS');
+        if (record.ymyl === true) {
+          if (ymylBadge instanceof HTMLElement) ymylBadge.hidden = false;
+          if (ymylCopy instanceof HTMLElement) ymylCopy.hidden = false;
+        }
+        boundary.dataset.reviewResolved = 'true';
+      })
+      .catch(() => {
+        if (statusNode) statusNode.textContent = 'REVIEW_METADATA_UNAVAILABLE';
+        if (currentnessNode) currentnessNode.textContent = 'CURRENTNESS_UNVERIFIED';
+        if (fallback instanceof HTMLElement) fallback.hidden = false;
+        boundary.dataset.reviewResolved = 'false';
+      });
+  }
+</script>
+
+<style>
+  .guide-truth-boundary {
+    width: min(1200px, calc(100vw - 40px));
+    margin: 22px auto 0;
+    padding: 16px 18px;
+    border: 1px solid rgba(255,178,46,.42);
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255,178,46,.08), rgba(255,84,104,.035));
+    color: var(--ink);
+  }
+  .gtb-topline { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .gtb-topline strong { color:var(--gold); font:800 .69rem var(--font-mono); letter-spacing:.055em; }
+  .gtb-topline a { color:var(--blue); font:800 .69rem var(--font-mono); }
+  .gtb-badges { display:flex; gap:7px; flex-wrap:wrap; margin:11px 0 9px; }
+  .gtb-badge { border:1px solid var(--line); border-radius:999px; padding:4px 8px; font:800 .58rem var(--font-mono); color:var(--muted); background:rgba(255,255,255,.025); }
+  .gtb-ymyl { color:var(--gold); border-color:rgba(255,178,46,.48); }
+  .guide-truth-boundary p { max-width:1000px; margin:7px 0 0; color:var(--muted); font-size:.78rem; line-height:1.55; }
+  .guide-truth-boundary .gtb-ymyl-copy { color:#d9c38e; }
+  .guide-truth-boundary .gtb-fallback { color:#e7a0a8; }
+  @media (max-width:620px) { .guide-truth-boundary { width:min(100% - 28px, 1200px); margin-top:14px; padding:14px; } }
+</style>

@@ -31,6 +31,7 @@ const records = manifest.records.map((record) => {
     canonicalDecision: canonical.canonicalDecision || null,
     canonicalSlug: canonical.canonicalSlug || null,
     canonicalRole: canonical.canonicalRole || null,
+    claimReview: canonical.claimReview || null,
     reviewRule: record.reviewRule || null
   };
 });
@@ -44,6 +45,9 @@ for (const record of records) {
       throw new Error(`Revision pair canonical boundary missing: ${record.slug}`);
     }
     if (record.canonicalSlug !== null) throw new Error(`Pending revision pair asserted canonical winner: ${record.slug}`);
+    if (!record.claimReview || !record.claimReview.startsWith('docs/CONTENT_CLAIM_REVIEW_')) {
+      throw new Error(`Revision pair claim-review evidence binding missing: ${record.slug}`);
+    }
   }
 }
 
@@ -52,7 +56,8 @@ const payload = {
   status: 'RESTORED_CORPUS_UNDER_REVIEW',
   exposure: 'REVIEWED_METADATA_ONLY',
   canonicalization: 'REVISION_PAIRS_EXPLICIT_PENDING_NO_WINNER',
-  generatedFrom: 'guides-index.json after review routing + source review overrides for canonical-decision metadata',
+  evidenceBinding: 'REVISION_PAIRS_SOURCE_BOUND_TO_CLAIM_REVIEW_DOCS',
+  generatedFrom: 'guides-index.json after review routing + source review overrides for canonical-decision and claim-review metadata',
   warning: 'This endpoint intentionally excludes legacy executable-looking params, RPC endpoints, contracts, safety constants and operational configuration. Historical publication does not imply currentness. Revision pairs marked PENDING_CLAIM_LEVEL_REVIEW have no canonical winner.',
   count: records.length,
   records
@@ -60,4 +65,4 @@ const payload = {
 
 await mkdir(outDir, { recursive: true });
 await writeFile(outPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
-console.log(`PUBLIC_API_GENERATION=PASS records=${records.length} exposure=${payload.exposure} canonicalization=${payload.canonicalization}`);
+console.log(`PUBLIC_API_GENERATION=PASS records=${records.length} exposure=${payload.exposure} canonicalization=${payload.canonicalization} evidence_binding=${payload.evidenceBinding}`);

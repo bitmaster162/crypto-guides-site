@@ -13,7 +13,8 @@
     "generate:public-api": "node scripts/generate-public-api.mjs",
     "build:site": "npm run generate:build-meta && astro build && npm run generate:discovery && npm run apply:review-status && npm run generate:public-api",
     "verify:public": "node scripts/verify-public-contract.mjs",
-    "build": "npm run build:site && npm run verify:public",
+    "verify:canonical-plan": "node scripts/verify-canonical-switch-plan.mjs",
+    "build": "npm run build:site && npm run verify:public && npm run verify:canonical-plan",
     "preview": "astro preview",
     "astro": "astro"
   },

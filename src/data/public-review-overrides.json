@@ -95,17 +95,20 @@
     "anthropic-models-and-upgrade": {
       "status": "VOLATILE_VENDOR_STATE",
       "ymyl": false,
-      "currentness": "REVERIFY_REQUIRED"
+      "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_VOLATILE_VENDOR_STATE_R1.md"
     },
     "fable-mythos-agents-2026": {
       "status": "VOLATILE_VENDOR_STATE",
       "ymyl": false,
-      "currentness": "REVERIFY_REQUIRED"
+      "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_VOLATILE_VENDOR_STATE_R1.md"
     },
     "frontier-models-cost-routing": {
       "status": "VOLATILE_VENDOR_STATE",
       "ymyl": false,
-      "currentness": "REVERIFY_REQUIRED"
+      "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_VOLATILE_VENDOR_STATE_R1.md"
     },
     "monetization-matrix-4x3": {
       "status": "COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED",

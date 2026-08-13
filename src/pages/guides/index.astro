@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Гайды · Crypto Guides" description="Публичный индекс восстановленного корпуса Crypto Guides с явной границей текущей ревизии.">
+  <section class="guide-index">
+    <div class="container">
+      <div class="eyebrow">PUBLIC INDEX · SOURCE-DERIVED</div>
+      <h1>Гайды и исследования</h1>
+      <p class="lede">Индекс генерируется из того же исходного списка, который строит текущие страницы. Корпус восстановлен из июльской версии и сейчас проходит ревизию: наличие страницы не означает, что каждый исторический факт или параметр актуален сегодня.</p>
+      <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW">
+        <strong>RESTORED_CORPUS_UNDER_REVIEW</strong>
+        <span>Текущность, тип материала и YMYL-границы будут нормализованы по мере миграции content-truth слоя.</span>
+      </div>
+      <div class="controls">
+        <label><span>Поиск</span><input id="guide-search" type="search" placeholder="Название, тег, категория…" autocomplete="off" /></label>
+        <div id="guide-count" aria-live="polite">Загрузка индекса…</div>
+      </div>
+      <div id="guide-list" class="cards" data-index-source="/guides-index.json"></div>
+      <noscript><p>Для интерактивного фильтра нужен JavaScript. Полный маршрутный индекс также доступен в <a href="/guides-index.json">guides-index.json</a> и <a href="/sitemap.xml">sitemap.xml</a>.</p></noscript>
+    </div>
+  </section>
+
+  <script>
+    const list = document.getElementById('guide-list');
+    const count = document.getElementById('guide-count');
+    const search = document.getElementById('guide-search');
+    let records = [];
+
+    const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    const render = () => {
+      const q = (search?.value || '').trim().toLowerCase();
+      const filtered = records.filter((record) => {
+        const haystack = [record.title, record.slug, record.category, ...(record.tags || [])].join(' ').toLowerCase();
+        return !q || haystack.includes(q);
+      });
+      if (count) count.textContent = `${filtered.length} из ${records.length}`;
+      if (!list) return;
+      list.innerHTML = filtered.map((record) => `
+        <a class="guide-card" href="/guides/${encodeURIComponent(record.slug)}">
+          <div class="meta"><span>${esc(record.category || 'Unclassified')}</span><span>${esc(record.date || 'historical')}</span></div>
+          <h2>${esc(record.title)}</h2>
+          <p>${esc((record.tags || []).slice(0, 5).join(' · '))}</p>
+          <small>Открыть материал →</small>
+        </a>`).join('');
+    };
+
+    fetch('/guides-index.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error(`index ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        records = Array.isArray(payload.records) ? payload.records : [];
+        render();
+      })
+      .catch((error) => {
+        if (count) count.textContent = 'Индекс временно недоступен';
+        if (list) list.innerHTML = `<div class="error">Не удалось загрузить guides-index.json: ${esc(error.message)}</div>`;
+      });
+
+    search?.addEventListener('input', render);
+  </script>
+</Layout>
+
+<style>
+  .guide-index{padding:64px 0 30px}.eyebrow{font:800 .68rem var(--font-mono);letter-spacing:.12em;color:var(--green);margin-bottom:10px}.guide-index h1{font-size:clamp(2.2rem,6vw,4.4rem);line-height:.98;margin:0 0 18px}.lede{max-width:850px;color:var(--muted);font-size:1rem}.boundary{margin:26px 0;padding:16px 18px;border:1px solid rgba(255,178,46,.35);border-radius:var(--radius);background:rgba(255,178,46,.055);display:flex;gap:12px;flex-wrap:wrap}.boundary strong{color:var(--gold);font:800 .72rem var(--font-mono);letter-spacing:.06em}.boundary span{color:var(--muted);font-size:.84rem}.controls{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:28px 0 16px}.controls label{display:grid;gap:7px;flex:1}.controls label span{font:700 .68rem var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.controls input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper-soft);color:var(--ink);font:inherit;outline:none}.controls input:focus{border-color:rgba(52,229,122,.5)}#guide-count{font:700 .72rem var(--font-mono);color:var(--muted);white-space:nowrap}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.guide-card{display:flex;flex-direction:column;min-height:210px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-soft);transition:transform .16s ease,border-color .16s ease}.guide-card:hover{transform:translateY(-2px);border-color:rgba(52,229,122,.4)}.guide-card .meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font:700 .64rem var(--font-mono)}.guide-card h2{font-size:1rem;line-height:1.35;margin:20px 0 10px}.guide-card p{margin:0;color:var(--muted);font-size:.75rem}.guide-card small{margin-top:auto;padding-top:20px;color:var(--green);font-weight:800}.error{padding:18px;border:1px solid rgba(255,84,104,.4);border-radius:8px;color:var(--red)}@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.guide-index{padding-top:38px}.controls{align-items:stretch;flex-direction:column}.cards{grid-template-columns:1fr}}
+</style>

@@ -7,7 +7,10 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "generate:build-meta": "node scripts/generate-build-meta.mjs",
+    "generate:discovery": "node scripts/generate-discovery.mjs",
+    "build:site": "npm run generate:build-meta && npm run generate:discovery && astro build",
+    "build": "npm run build:site",
     "preview": "astro preview",
     "astro": "astro"
   },

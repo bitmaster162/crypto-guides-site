@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Build receipt · Crypto Guides" description="Inspectable source/build identity for the current Crypto Guides deployment artifact.">
+  <section class="version-page">
+    <div class="container">
+      <div class="eyebrow">PUBLIC BUILD RECEIPT</div>
+      <h1>Source and build identity</h1>
+      <p>Эта страница показывает identity сборки. Она не доказывает актуальность каждого исторического гайда, runtime-здоровье внешних сервисов или финансовый результат.</p>
+      <dl id="receipt" class="receipt" data-receipt-source="/version.json">
+        <div><dt>SHA</dt><dd id="sha">loading…</dd></div>
+        <div><dt>Provider</dt><dd id="provider">loading…</dd></div>
+        <div><dt>Ref</dt><dd id="ref">loading…</dd></div>
+        <div><dt>Schema</dt><dd id="schema">loading…</dd></div>
+      </dl>
+      <p class="machine"><a href="/version.json">Open machine-readable version.json →</a></p>
+    </div>
+  </section>
+  <script>
+    fetch('/version.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error(`version ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        for (const key of ['sha', 'provider', 'ref', 'schema']) {
+          const node = document.getElementById(key);
+          if (node) node.textContent = String(data[key] || 'unknown');
+        }
+      })
+      .catch(() => {
+        const node = document.getElementById('sha');
+        if (node) node.textContent = 'receipt unavailable';
+      });
+  </script>
+</Layout>
+
+<style>
+  .version-page{padding:72px 0}.eyebrow{color:var(--green);font:800 .68rem var(--font-mono);letter-spacing:.12em}.version-page h1{font-size:clamp(2.2rem,6vw,4rem);margin:10px 0 14px}.version-page>div>p{max-width:760px;color:var(--muted)}.receipt{max-width:760px;margin:28px 0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.receipt div{display:grid;grid-template-columns:140px 1fr;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line)}.receipt div:last-child{border-bottom:0}.receipt dt{color:var(--muted);font:700 .7rem var(--font-mono);text-transform:uppercase}.receipt dd{margin:0;word-break:break-all;font-family:var(--font-mono);font-size:.78rem}.machine a{color:var(--green);font-weight:800}@media(max-width:520px){.receipt div{grid-template-columns:1fr;gap:5px}}
+</style>

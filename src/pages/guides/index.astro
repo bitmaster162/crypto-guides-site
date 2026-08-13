@@ -1,5 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import taxonomyPolicy from '../../data/public-taxonomy-policy.json';
+const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c');
 ---
 
 <Layout title="Гайды · Crypto Guides" description="Публичный индекс восстановленного корпуса Crypto Guides с явной границей текущей ревизии.">
@@ -10,7 +12,7 @@ import Layout from '../../layouts/Layout.astro';
       <p class="lede">Индекс генерируется из того же исходного списка, который строит текущие страницы. Корпус восстановлен из июльской версии и сейчас проходит ревизию: наличие страницы не означает, что каждый исторический факт или параметр актуален сегодня.</p>
       <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW">
         <strong>RESTORED_CORPUS_UNDER_REVIEW</strong>
-        <span>Карточки показывают текущий review-status, currentness и YMYL-флаг из source-derived truth layer. Публичный раздел выводится из review-authority, а не из восстановленного legacy category, который известен как ненадёжный. Это маршрутизация на проверку, а не сертификация фактов или рекомендация.</span>
+        <span>Карточки показывают текущий review-status, currentness и YMYL-флаг из source-derived truth layer. Публичный раздел выводится из review-authority через source policy, а не из восстановленного legacy category, который известен как ненадёжный. Это маршрутизация на проверку, а не сертификация фактов или рекомендация.</span>
       </div>
       <div class="controls">
         <label class="search-control"><span>Поиск</span><input id="guide-search" type="search" placeholder="Название, раздел, статус…" autocomplete="off" /></label>
@@ -19,11 +21,12 @@ import Layout from '../../layouts/Layout.astro';
         <label><span>YMYL</span><select id="ymyl-filter"><option value="">Все</option><option value="true">Требует YMYL review</option><option value="false">Не помечено YMYL</option></select></label>
         <div id="guide-count" aria-live="polite">Загрузка индекса…</div>
       </div>
-      <div id="guide-list" class="cards" data-index-source="/guides-index.json"></div>
+      <div id="guide-list" class="cards" data-index-source="/guides-index.json" data-taxonomy-source="src/data/public-taxonomy-policy.json"></div>
       <noscript><p>Для интерактивного фильтра нужен JavaScript. Полный маршрутный индекс также доступен в <a href="/guides-index.json">guides-index.json</a> и <a href="/sitemap.xml">sitemap.xml</a>.</p></noscript>
     </div>
   </section>
 
+  <script id="public-taxonomy-policy" type="application/json" set:html={taxonomyPolicyJson}></script>
   <script>
     const list = document.getElementById('guide-list');
     const count = document.getElementById('guide-count');
@@ -31,18 +34,19 @@ import Layout from '../../layouts/Layout.astro';
     const categoryFilter = document.getElementById('category-filter');
     const reviewFilter = document.getElementById('review-filter');
     const ymylFilter = document.getElementById('ymyl-filter');
+    const taxonomyNode = document.getElementById('public-taxonomy-policy');
+    const taxonomyPolicy = taxonomyNode?.textContent ? JSON.parse(taxonomyNode.textContent) : null;
     let records = [];
 
     const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
     const publicCategory = (record) => {
       const status = String(record.reviewStatus || '');
-      if (status === 'LEGACY_COMMERCIAL_CONFLICT' || status === 'COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED') return 'Commercial / Historical';
-      if (status === 'VOLATILE_VENDOR_STATE') return 'AI / Models';
-      if (status === 'REDUNDANT_REVISION_PAIR' || status === 'YMYL_TRADING_REVIEW_REQUIRED') return 'Trading / Risk';
-      if (status.includes('SECURITY')) return 'Security';
-      if (status.includes('INFRA')) return 'Infrastructure';
-      if (status.includes('SYSTEM_RESEARCH')) return 'AI / Systems';
-      return 'Unclassified / Review';
+      const direct = taxonomyPolicy?.statusMap?.[status];
+      if (direct) return direct;
+      for (const rule of taxonomyPolicy?.containsMap || []) {
+        if (rule?.token && status.includes(rule.token)) return rule.publicCategory;
+      }
+      return taxonomyPolicy?.fallback || 'Unclassified / Review';
     };
     const populateFilters = () => {
       if (categoryFilter instanceof HTMLSelectElement) {

@@ -62,13 +62,16 @@ manifest.reviewCounts = manifest.records.reduce((acc, record) => {
   acc[record.reviewStatus] = (acc[record.reviewStatus] || 0) + 1;
   return acc;
 }, {});
+const unrouted = manifest.records.filter((record) => !record.reviewRule).map((record) => record.slug);
 manifest.reviewRouting = {
   explicitOverrides: explicitCount,
   ruleRouted: routedByRule,
   restoredUnreviewed: defaultCount,
-  ruleMatches
+  ruleMatches,
+  unrouted
 };
 
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 console.log(`REVIEW_STATUS_GATE=PASS guides=${manifest.records.length} explicit_overrides=${explicitCount} rule_routed=${routedByRule} restored_unreviewed=${defaultCount} rules=${compiledRules.length}`);
 console.log(`REVIEW_RULE_COUNTS=${JSON.stringify(ruleMatches)}`);
+console.log(`REVIEW_UNROUTED=${JSON.stringify(unrouted)}`);

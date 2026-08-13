@@ -68,14 +68,22 @@ for (const [group, members] of canonicalGroups) {
 const publicApi = JSON.parse(await readFile(join(dist, 'api/public-guides.json'), 'utf8'));
 if (publicApi.schema !== 'crypto-guides.public-api.v1') throw new Error('public API schema mismatch');
 if (publicApi.exposure !== 'REVIEWED_METADATA_ONLY') throw new Error('public API exposure boundary missing');
+if (publicApi.canonicalization !== 'REVISION_PAIRS_EXPLICIT_PENDING_NO_WINNER') throw new Error('public API canonicalization boundary missing');
 if (!Array.isArray(publicApi.records) || publicApi.records.length !== index.uniqueGuides || publicApi.count !== index.uniqueGuides) throw new Error('public API count mismatch');
 const forbiddenApiKeys = new Set(['params','rpc_endpoints','contracts','constants','safety_guards','rpcEndpoints','operationalConfig']);
+let apiRevisionRoutes = 0;
 for (const record of publicApi.records) {
   for (const key of Object.keys(record)) {
     if (forbiddenApiKeys.has(key)) throw new Error(`public API leaked legacy operational field ${key} on ${record.slug || '<unknown>'}`);
   }
   if (!record.reviewStatus || !record.currentness || typeof record.ymyl !== 'boolean') throw new Error(`public API review metadata missing: ${record.slug}`);
+  if (record.reviewStatus === 'REDUNDANT_REVISION_PAIR') {
+    apiRevisionRoutes += 1;
+    if (!record.canonicalGroup || record.canonicalDecision !== 'PENDING_CLAIM_LEVEL_REVIEW' || !record.canonicalRole) throw new Error(`public API revision canonical metadata missing: ${record.slug}`);
+    if (record.canonicalSlug !== null) throw new Error(`public API pending revision asserted canonical winner: ${record.slug}`);
+  }
 }
+if (apiRevisionRoutes !== redundantOverrides.length) throw new Error(`public API revision-route count mismatch: ${apiRevisionRoutes}`);
 const apiRaw = await readFile(join(dist, 'api/public-guides.json'), 'utf8');
 for (const forbiddenToken of ['rpc_endpoints','BITEVO_API_KEY','34.70.171.152','185.231.154.149','144.124.250.14']) {
   if (apiRaw.includes(forbiddenToken)) throw new Error(`public metadata API leaked forbidden operational token: ${forbiddenToken}`);
@@ -102,5 +110,5 @@ const guidesHtml = await readFile(join(dist, 'guides/index.html'), 'utf8');
 if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guides review boundary missing');
 if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source binding missing');
 
-console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=PENDING_CLAIM_LEVEL_REVIEW winners=0`);
-console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);
+console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=PENDING_CLAIM_LEVEL_REVIEW winners=0 api_revision_routes=${apiRevisionRoutes}`);
+console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonicalization=${publicApi.canonicalization} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);

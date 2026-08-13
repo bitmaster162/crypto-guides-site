@@ -90,8 +90,7 @@ const requiredYmylOverlapSlugs = [
   'bybit-uta-defensive-veto',
   'execution-drift-daemon',
   'hyperliquid-l1-tokyo-deploy',
-  'pnl-protection-daemons',
-  'risk-freymvork-dlya-kripto-botov'
+  'pnl-protection-daemons'
 ];
 const recordsBySlug = new Map(manifest.records.map((record) => [record.slug, record]));
 for (const slug of requiredYmylOverlapSlugs) {
@@ -100,6 +99,15 @@ for (const slug of requiredYmylOverlapSlugs) {
   if (record.ymyl !== true) throw new Error(`Cross-category trading route lost YMYL flag: ${slug}`);
   if (!record.reviewRuleEvidence.includes('trading-ymyl')) throw new Error(`Cross-category trading route lacks trading YMYL evidence: ${slug}`);
   if (record.reviewRuleEvidence.length < 2) throw new Error(`Expected cross-category overlap not detected: ${slug}`);
+}
+
+const requiredStandaloneTradingYmylSlugs = ['risk-freymvork-dlya-kripto-botov'];
+for (const slug of requiredStandaloneTradingYmylSlugs) {
+  const record = recordsBySlug.get(slug);
+  if (!record) throw new Error(`Required standalone trading-YMYL route missing: ${slug}`);
+  if (record.ymyl !== true || !record.reviewRuleEvidence.includes('trading-ymyl')) {
+    throw new Error(`Standalone trading route lost YMYL evidence: ${slug}`);
+  }
 }
 
 manifest.reviewCounts = manifest.records.reduce((acc, record) => {
@@ -119,12 +127,13 @@ manifest.reviewRouting = {
   taxonomyPoisoningAvoided,
   tradingYmylMatchFields: ['slug', 'title'],
   requiredYmylOverlapSlugs,
+  requiredStandaloneTradingYmylSlugs,
   unrouted
 };
 
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 console.log(`REVIEW_STATUS_GATE=PASS guides=${manifest.records.length} explicit_overrides=${explicitCount} rule_routed=${routedByRule} restored_unreviewed=${defaultCount} rules=${compiledRules.length} ymyl=${ymylRoutes} multi_rule=${multiRuleRoutes} ymyl_secondary=${ymylFromSecondaryEvidence} taxonomy_poisoning_avoided=${taxonomyPoisoningAvoided}`);
-console.log(`YMYL_OVERLAP_GATE=PASS routes=${requiredYmylOverlapSlugs.length}`);
+console.log(`YMYL_OVERLAP_GATE=PASS routes=${requiredYmylOverlapSlugs.length} standalone=${requiredStandaloneTradingYmylSlugs.length}`);
 console.log(`REVIEW_RULE_COUNTS=${JSON.stringify(ruleMatches)}`);
 console.log(`REVIEW_RULE_EVIDENCE_COUNTS=${JSON.stringify(allRuleMatches)}`);
 console.log(`REVIEW_UNROUTED=${JSON.stringify(unrouted)}`);

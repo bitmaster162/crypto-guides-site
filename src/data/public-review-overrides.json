@@ -12,25 +12,45 @@
       "status": "REDUNDANT_REVISION_PAIR",
       "ymyl": true,
       "currentness": "REVIEW_REQUIRED",
-      "pair": "trading-discipline-journal-psychology"
+      "pair": "trading-discipline-journal-psychology",
+      "canonicalGroup": "trading-discipline-journal",
+      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
+      "canonicalSlug": null,
+      "canonicalRole": "EARLIER_REVISION",
+      "note": "Same public title as its paired July revision. The later route has richer metadata, but no canonical winner is asserted until claim-level review."
     },
     "trading-discipline-journal-psychology": {
       "status": "REDUNDANT_REVISION_PAIR",
       "ymyl": true,
       "currentness": "REVIEW_REQUIRED",
-      "pair": "trading-discipline-journal-mae-mfe"
+      "pair": "trading-discipline-journal-mae-mfe",
+      "canonicalGroup": "trading-discipline-journal",
+      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
+      "canonicalSlug": null,
+      "canonicalRole": "LATER_REVISION_REVIEW_CANDIDATE",
+      "note": "Later dated revision with expanded agent metadata/constants/safety guards. Review first, but do not treat later date alone as proof of canonical factual authority."
     },
     "microstructure-delisting-data-integrity-2026": {
       "status": "REDUNDANT_REVISION_PAIR",
       "ymyl": true,
       "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
-      "pair": "microstructure-delisting-2026"
+      "pair": "microstructure-delisting-2026",
+      "canonicalGroup": "microstructure-delisting-data-integrity",
+      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
+      "canonicalSlug": null,
+      "canonicalRole": "EARLIER_REVISION",
+      "note": "Same public title as its paired July revision. Preserve both until event/calibration and derived trading-rule claims are reviewed at claim level."
     },
     "microstructure-delisting-2026": {
       "status": "REDUNDANT_REVISION_PAIR",
       "ymyl": true,
       "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
-      "pair": "microstructure-delisting-data-integrity-2026"
+      "pair": "microstructure-delisting-data-integrity-2026",
+      "canonicalGroup": "microstructure-delisting-data-integrity",
+      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
+      "canonicalSlug": null,
+      "canonicalRole": "LATER_REVISION_REVIEW_CANDIDATE",
+      "note": "Later dated revision with expanded event/calibration metadata. Review first, but do not select it as canonical before claim-level verification."
     },
     "anthropic-models-and-upgrade": {
       "status": "VOLATILE_VENDOR_STATE",

@@ -8,6 +8,41 @@
       "currentness": "HISTORICAL",
       "note": "Predates the canonical BitEvo Agent Authority & Evidence Audit doctrine and must not be treated as the current commercial authority."
     },
+    "bitcoin-futures-2026": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review rejects unsupported win-rate/per-trade performance wording, universal funding thresholds, generic profitability claims and uncited leverage/venue-state assumptions as current guidance. Retain only as restored research pending copy repair and fresh primary-source verification."
+    },
+    "btc-futures-trading-strategies": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review classifies return ranges, leverage/risk constants, legal/tax assertions and risk-free arbitrage wording as rewrite/reverify material rather than current guidance."
+    },
+    "liquidation-cascades-arbitrage": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review requires current API-path verification and treats 20% OI, funding, margin and delta-drift constants as internal heuristics; zero-risk and deterministic-bottom language must be rewritten."
+    },
+    "funding-convergence-arbitrage": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review rejects universal 8-hour funding cadence and risk-free/fully price-independent framing. Venue/product cadence and operational mechanics require fresh primary-source verification; numeric thresholds remain internal heuristics."
+    },
+    "risk-freymvork-dlya-kripto-botov": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Research concepts may be retained, but prescriptive DD/latency/re-entry thresholds and '2026 institutional standard' claims are not established as universal current facts and require rewrite/reverification."
+    },
     "trading-discipline-journal-mae-mfe": {
       "status": "REDUNDANT_REVISION_PAIR",
       "ymyl": true,

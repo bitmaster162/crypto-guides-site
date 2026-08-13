@@ -6,6 +6,7 @@
       "status": "LEGACY_COMMERCIAL_CONFLICT",
       "ymyl": false,
       "currentness": "HISTORICAL",
+      "claimReview": "docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md",
       "note": "Predates the canonical BitEvo Agent Authority & Evidence Audit doctrine and must not be treated as the current commercial authority."
     },
     "bitcoin-futures-2026": {
@@ -110,12 +111,14 @@
       "status": "COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED",
       "ymyl": false,
       "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md",
       "note": "Historical business-strategy article contains time-sensitive product, pricing, guide-count and go-to-market state claims; retain as research until those assertions are rebound to current product evidence."
     },
     "fleet-coordinator-drift-monitoring": {
       "status": "INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED",
       "ymyl": false,
       "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md",
       "note": "Historical fleet-coordination specification exposes infrastructure-era host identities, addresses, scheduler/API assumptions and implementation parameters; treat as historical engineering material until current source/runtime/public-boundary review."
     }
   }

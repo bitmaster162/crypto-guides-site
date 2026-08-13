@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "generate:build-meta": "node scripts/generate-build-meta.mjs",
-    "generate:discovery": "node scripts/generate-discovery.mjs",
+    "generate:discovery": "node scripts/generate-discovery-v2.mjs",
     "build:site": "npm run generate:build-meta && npm run generate:discovery && astro build",
     "verify:public": "node scripts/verify-public-contract.mjs",
     "build": "npm run build:site && npm run verify:public",

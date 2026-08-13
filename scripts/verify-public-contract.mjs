@@ -47,6 +47,7 @@ const overrideRecords = overrideConfig.records || {};
 const redundantOverrides = Object.entries(overrideRecords).filter(([, review]) => review?.status === 'REDUNDANT_REVISION_PAIR');
 if (redundantOverrides.length !== 4) throw new Error(`unexpected redundant revision-route count: ${redundantOverrides.length}`);
 const canonicalGroups = new Map();
+const claimReviewDocs = new Set();
 for (const [slug, review] of redundantOverrides) {
   if (!review.pair || !overrideRecords[review.pair]) throw new Error(`revision pair peer missing: ${slug}`);
   const peer = overrideRecords[review.pair];
@@ -55,12 +56,16 @@ for (const [slug, review] of redundantOverrides) {
   if (review.canonicalDecision !== 'PENDING_CLAIM_LEVEL_REVIEW' || peer.canonicalDecision !== review.canonicalDecision) throw new Error(`canonical decision boundary invalid: ${slug}`);
   if (review.canonicalSlug != null || peer.canonicalSlug != null) throw new Error(`pending revision pair asserted canonical winner: ${slug}`);
   if (!review.canonicalRole || !peer.canonicalRole || review.canonicalRole === peer.canonicalRole) throw new Error(`canonical review roles invalid: ${slug}`);
+  if (!review.claimReview || peer.claimReview !== review.claimReview || !review.claimReview.startsWith('docs/CONTENT_CLAIM_REVIEW_')) throw new Error(`claim-review evidence binding invalid: ${slug}`);
+  await access(join(root, review.claimReview));
+  claimReviewDocs.add(review.claimReview);
   if (requireRecord(slug).pair !== review.pair) throw new Error(`generated index pair binding mismatch: ${slug}`);
   const members = canonicalGroups.get(review.canonicalGroup) || new Set();
   members.add(slug);
   canonicalGroups.set(review.canonicalGroup, members);
 }
 if (canonicalGroups.size !== 2) throw new Error(`canonical revision-group count mismatch: ${canonicalGroups.size}`);
+if (claimReviewDocs.size !== canonicalGroups.size) throw new Error(`claim-review document/group mismatch: docs=${claimReviewDocs.size} groups=${canonicalGroups.size}`);
 for (const [group, members] of canonicalGroups) {
   if (members.size !== 2) throw new Error(`canonical revision group must contain exactly two routes: ${group}`);
 }
@@ -69,6 +74,7 @@ const publicApi = JSON.parse(await readFile(join(dist, 'api/public-guides.json')
 if (publicApi.schema !== 'crypto-guides.public-api.v1') throw new Error('public API schema mismatch');
 if (publicApi.exposure !== 'REVIEWED_METADATA_ONLY') throw new Error('public API exposure boundary missing');
 if (publicApi.canonicalization !== 'REVISION_PAIRS_EXPLICIT_PENDING_NO_WINNER') throw new Error('public API canonicalization boundary missing');
+if (publicApi.evidenceBinding !== 'REVISION_PAIRS_SOURCE_BOUND_TO_CLAIM_REVIEW_DOCS') throw new Error('public API claim-review evidence binding missing');
 if (!Array.isArray(publicApi.records) || publicApi.records.length !== index.uniqueGuides || publicApi.count !== index.uniqueGuides) throw new Error('public API count mismatch');
 const forbiddenApiKeys = new Set(['params','rpc_endpoints','contracts','constants','safety_guards','rpcEndpoints','operationalConfig']);
 let apiRevisionRoutes = 0;
@@ -81,6 +87,7 @@ for (const record of publicApi.records) {
     apiRevisionRoutes += 1;
     if (!record.canonicalGroup || record.canonicalDecision !== 'PENDING_CLAIM_LEVEL_REVIEW' || !record.canonicalRole) throw new Error(`public API revision canonical metadata missing: ${record.slug}`);
     if (record.canonicalSlug !== null) throw new Error(`public API pending revision asserted canonical winner: ${record.slug}`);
+    if (!record.claimReview || !claimReviewDocs.has(record.claimReview)) throw new Error(`public API revision claim-review binding missing: ${record.slug}`);
   }
 }
 if (apiRevisionRoutes !== redundantOverrides.length) throw new Error(`public API revision-route count mismatch: ${apiRevisionRoutes}`);
@@ -110,5 +117,5 @@ const guidesHtml = await readFile(join(dist, 'guides/index.html'), 'utf8');
 if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guides review boundary missing');
 if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source binding missing');
 
-console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=PENDING_CLAIM_LEVEL_REVIEW winners=0 api_revision_routes=${apiRevisionRoutes}`);
-console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonicalization=${publicApi.canonicalization} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);
+console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=PENDING_CLAIM_LEVEL_REVIEW winners=0 claim_review_docs=${claimReviewDocs.size} api_revision_routes=${apiRevisionRoutes}`);
+console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonicalization=${publicApi.canonicalization} evidence_binding=${publicApi.evidenceBinding} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);

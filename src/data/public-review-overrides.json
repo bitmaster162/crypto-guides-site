@@ -46,6 +46,18 @@
       "status": "VOLATILE_VENDOR_STATE",
       "ymyl": false,
       "currentness": "REVERIFY_REQUIRED"
+    },
+    "monetization-matrix-4x3": {
+      "status": "COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED",
+      "note": "Historical business-strategy article contains time-sensitive product, pricing, guide-count and go-to-market state claims; retain as research until those assertions are rebound to current product evidence."
+    },
+    "fleet-coordinator-drift-monitoring": {
+      "status": "INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED",
+      "ymyl": false,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "note": "Historical fleet-coordination specification exposes infrastructure-era host identities, addresses, scheduler/API assumptions and implementation parameters; treat as historical engineering material until current source/runtime/public-boundary review."
     }
   }
 }

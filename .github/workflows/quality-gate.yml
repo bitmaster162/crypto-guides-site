@@ -1,0 +1,26 @@
+name: Crypto Guides Quality Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/v2-content-truth-quality-r2
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install exact dependencies
+        run: npm ci
+      - name: Build and verify public contract
+        run: npm run build

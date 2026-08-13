@@ -10,10 +10,11 @@ import Layout from '../../layouts/Layout.astro';
       <p class="lede">Индекс генерируется из того же исходного списка, который строит текущие страницы. Корпус восстановлен из июльской версии и сейчас проходит ревизию: наличие страницы не означает, что каждый исторический факт или параметр актуален сегодня.</p>
       <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW">
         <strong>RESTORED_CORPUS_UNDER_REVIEW</strong>
-        <span>Карточки показывают текущий review-status, currentness и YMYL-флаг из source-derived truth layer. Это маршрутизация на проверку, а не сертификация фактов или рекомендация.</span>
+        <span>Карточки показывают текущий review-status, currentness и YMYL-флаг из source-derived truth layer. Публичный раздел выводится из review-authority, а не из восстановленного legacy category, который известен как ненадёжный. Это маршрутизация на проверку, а не сертификация фактов или рекомендация.</span>
       </div>
       <div class="controls">
-        <label class="search-control"><span>Поиск</span><input id="guide-search" type="search" placeholder="Название, тег, категория, статус…" autocomplete="off" /></label>
+        <label class="search-control"><span>Поиск</span><input id="guide-search" type="search" placeholder="Название, раздел, статус…" autocomplete="off" /></label>
+        <label><span>Раздел</span><select id="category-filter"><option value="">Все разделы</option></select></label>
         <label><span>Review status</span><select id="review-filter"><option value="">Все статусы</option></select></label>
         <label><span>YMYL</span><select id="ymyl-filter"><option value="">Все</option><option value="true">Требует YMYL review</option><option value="false">Не помечено YMYL</option></select></label>
         <div id="guide-count" aria-live="polite">Загрузка индекса…</div>
@@ -27,32 +28,53 @@ import Layout from '../../layouts/Layout.astro';
     const list = document.getElementById('guide-list');
     const count = document.getElementById('guide-count');
     const search = document.getElementById('guide-search');
+    const categoryFilter = document.getElementById('category-filter');
     const reviewFilter = document.getElementById('review-filter');
     const ymylFilter = document.getElementById('ymyl-filter');
     let records = [];
 
     const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-    const populateReviewFilter = () => {
-      if (!(reviewFilter instanceof HTMLSelectElement)) return;
-      const statuses = [...new Set(records.map((record) => record.reviewStatus).filter(Boolean))].sort();
-      reviewFilter.innerHTML = '<option value="">Все статусы</option>' + statuses.map((status) => `<option value="${esc(status)}">${esc(status)}</option>`).join('');
+    const publicCategory = (record) => {
+      const status = String(record.reviewStatus || '');
+      if (status === 'LEGACY_COMMERCIAL_CONFLICT' || status === 'COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED') return 'Commercial / Historical';
+      if (status === 'VOLATILE_VENDOR_STATE') return 'AI / Models';
+      if (status === 'REDUNDANT_REVISION_PAIR' || status === 'YMYL_TRADING_REVIEW_REQUIRED') return 'Trading / Risk';
+      if (status.includes('SECURITY')) return 'Security';
+      if (status.includes('INFRA')) return 'Infrastructure';
+      if (status.includes('SYSTEM_RESEARCH')) return 'AI / Systems';
+      return 'Unclassified / Review';
+    };
+    const populateFilters = () => {
+      if (categoryFilter instanceof HTMLSelectElement) {
+        const categories = [...new Set(records.map(publicCategory))].sort();
+        categoryFilter.innerHTML = '<option value="">Все разделы</option>' + categories.map((category) => `<option value="${esc(category)}">${esc(category)}</option>`).join('');
+      }
+      if (reviewFilter instanceof HTMLSelectElement) {
+        const statuses = [...new Set(records.map((record) => record.reviewStatus).filter(Boolean))].sort();
+        reviewFilter.innerHTML = '<option value="">Все статусы</option>' + statuses.map((status) => `<option value="${esc(status)}">${esc(status)}</option>`).join('');
+      }
     };
     const render = () => {
       const q = (search instanceof HTMLInputElement ? search.value : '').trim().toLowerCase();
+      const selectedCategory = categoryFilter instanceof HTMLSelectElement ? categoryFilter.value : '';
       const selectedStatus = reviewFilter instanceof HTMLSelectElement ? reviewFilter.value : '';
       const selectedYmyl = ymylFilter instanceof HTMLSelectElement ? ymylFilter.value : '';
       const filtered = records.filter((record) => {
-        const haystack = [record.title, record.slug, record.category, record.reviewStatus, record.currentness, ...(record.tags || [])].join(' ').toLowerCase();
+        const category = publicCategory(record);
+        const haystack = [record.title, record.slug, category, record.reviewStatus, record.currentness, ...(record.tags || [])].join(' ').toLowerCase();
         const matchesSearch = !q || haystack.includes(q);
+        const matchesCategory = !selectedCategory || category === selectedCategory;
         const matchesStatus = !selectedStatus || record.reviewStatus === selectedStatus;
         const matchesYmyl = !selectedYmyl || String(record.ymyl === true) === selectedYmyl;
-        return matchesSearch && matchesStatus && matchesYmyl;
+        return matchesSearch && matchesCategory && matchesStatus && matchesYmyl;
       });
       if (count) count.textContent = `${filtered.length} из ${records.length}`;
       if (!list) return;
-      list.innerHTML = filtered.map((record) => `
-        <a class="guide-card" href="/guides/${encodeURIComponent(record.slug)}">
-          <div class="meta"><span>${esc(record.category || 'Unclassified')}</span><span>${esc(record.date || 'historical')}</span></div>
+      list.innerHTML = filtered.map((record) => {
+        const category = publicCategory(record);
+        return `
+        <a class="guide-card" href="/guides/${encodeURIComponent(record.slug)}" data-public-category="${esc(category)}">
+          <div class="meta"><span>${esc(category)}</span><span>${esc(record.date || 'historical')}</span></div>
           <div class="badges">
             <span class="badge review">${esc(record.reviewStatus || 'UNREVIEWED')}</span>
             <span class="badge currentness">${esc(record.currentness || 'UNKNOWN')}</span>
@@ -61,7 +83,8 @@ import Layout from '../../layouts/Layout.astro';
           <h2>${esc(record.title)}</h2>
           <p>${esc((record.tags || []).slice(0, 5).join(' · '))}</p>
           <small>Открыть материал →</small>
-        </a>`).join('');
+        </a>`;
+      }).join('');
     };
 
     fetch('/guides-index.json', { cache: 'no-store' })
@@ -71,7 +94,7 @@ import Layout from '../../layouts/Layout.astro';
       })
       .then((payload) => {
         records = Array.isArray(payload.records) ? payload.records : [];
-        populateReviewFilter();
+        populateFilters();
         render();
       })
       .catch((error) => {
@@ -80,11 +103,12 @@ import Layout from '../../layouts/Layout.astro';
       });
 
     search?.addEventListener('input', render);
+    categoryFilter?.addEventListener('change', render);
     reviewFilter?.addEventListener('change', render);
     ymylFilter?.addEventListener('change', render);
   </script>
 </Layout>
 
 <style>
-  .guide-index{padding:64px 0 30px}.eyebrow{font:800 .68rem var(--font-mono);letter-spacing:.12em;color:var(--green);margin-bottom:10px}.guide-index h1{font-size:clamp(2.2rem,6vw,4.4rem);line-height:.98;margin:0 0 18px}.lede{max-width:850px;color:var(--muted);font-size:1rem}.boundary{margin:26px 0;padding:16px 18px;border:1px solid rgba(255,178,46,.35);border-radius:var(--radius);background:rgba(255,178,46,.055);display:flex;gap:12px;flex-wrap:wrap}.boundary strong{color:var(--gold);font:800 .72rem var(--font-mono);letter-spacing:.06em}.boundary span{color:var(--muted);font-size:.84rem}.controls{display:grid;grid-template-columns:minmax(280px,1fr) minmax(190px,.45fr) minmax(170px,.4fr) auto;align-items:end;gap:12px;margin:28px 0 16px}.controls label{display:grid;gap:7px}.controls label span{font:700 .68rem var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.controls input,.controls select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper-soft);color:var(--ink);font:inherit;outline:none}.controls input:focus,.controls select:focus{border-color:rgba(52,229,122,.5)}#guide-count{font:700 .72rem var(--font-mono);color:var(--muted);white-space:nowrap;padding-bottom:12px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.guide-card{display:flex;flex-direction:column;min-height:250px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-soft);transition:transform .16s ease,border-color .16s ease}.guide-card:hover{transform:translateY(-2px);border-color:rgba(52,229,122,.4)}.guide-card .meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font:700 .64rem var(--font-mono)}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.badge{padding:4px 7px;border:1px solid var(--line);border-radius:999px;font:800 .55rem var(--font-mono);letter-spacing:.02em;color:var(--muted);background:rgba(255,255,255,.02)}.badge.review{color:var(--ink)}.badge.ymyl{border-color:rgba(255,178,46,.45);color:var(--gold);background:rgba(255,178,46,.06)}.guide-card h2{font-size:1rem;line-height:1.35;margin:16px 0 10px}.guide-card p{margin:0;color:var(--muted);font-size:.75rem}.guide-card small{margin-top:auto;padding-top:20px;color:var(--green);font-weight:800}.error{padding:18px;border:1px solid rgba(255,84,104,.4);border-radius:8px;color:var(--red)}@media(max-width:1000px){.controls{grid-template-columns:1fr 1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.guide-index{padding-top:38px}.controls{grid-template-columns:1fr}.cards{grid-template-columns:1fr}#guide-count{padding-bottom:0}}
+  .guide-index{padding:64px 0 30px}.eyebrow{font:800 .68rem var(--font-mono);letter-spacing:.12em;color:var(--green);margin-bottom:10px}.guide-index h1{font-size:clamp(2.2rem,6vw,4.4rem);line-height:.98;margin:0 0 18px}.lede{max-width:850px;color:var(--muted);font-size:1rem}.boundary{margin:26px 0;padding:16px 18px;border:1px solid rgba(255,178,46,.35);border-radius:var(--radius);background:rgba(255,178,46,.055);display:flex;gap:12px;flex-wrap:wrap}.boundary strong{color:var(--gold);font:800 .72rem var(--font-mono);letter-spacing:.06em}.boundary span{color:var(--muted);font-size:.84rem}.controls{display:grid;grid-template-columns:minmax(260px,1fr) minmax(170px,.45fr) minmax(190px,.52fr) minmax(170px,.4fr) auto;align-items:end;gap:12px;margin:28px 0 16px}.controls label{display:grid;gap:7px}.controls label span{font:700 .68rem var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.controls input,.controls select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper-soft);color:var(--ink);font:inherit;outline:none}.controls input:focus,.controls select:focus{border-color:rgba(52,229,122,.5)}#guide-count{font:700 .72rem var(--font-mono);color:var(--muted);white-space:nowrap;padding-bottom:12px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.guide-card{display:flex;flex-direction:column;min-height:250px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-soft);transition:transform .16s ease,border-color .16s ease}.guide-card:hover{transform:translateY(-2px);border-color:rgba(52,229,122,.4)}.guide-card .meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font:700 .64rem var(--font-mono)}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.badge{padding:4px 7px;border:1px solid var(--line);border-radius:999px;font:800 .55rem var(--font-mono);letter-spacing:.02em;color:var(--muted);background:rgba(255,255,255,.02)}.badge.review{color:var(--ink)}.badge.ymyl{border-color:rgba(255,178,46,.45);color:var(--gold);background:rgba(255,178,46,.06)}.guide-card h2{font-size:1rem;line-height:1.35;margin:16px 0 10px}.guide-card p{margin:0;color:var(--muted);font-size:.75rem}.guide-card small{margin-top:auto;padding-top:20px;color:var(--green);font-weight:800}.error{padding:18px;border:1px solid rgba(255,84,104,.4);border-radius:8px;color:var(--red)}@media(max-width:1180px){.controls{grid-template-columns:1fr 1fr 1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:720px){.guide-index{padding-top:38px}.controls{grid-template-columns:1fr}.cards{grid-template-columns:1fr}#guide-count{padding-bottom:0}}
 </style>

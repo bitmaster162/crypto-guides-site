@@ -22,8 +22,10 @@ const routing = index.reviewRouting;
 if (!routing) throw new Error('review routing receipt missing');
 const routedTotal = routing.explicitOverrides + routing.ruleRouted + routing.restoredUnreviewed;
 if (routedTotal !== index.uniqueGuides) throw new Error(`review routing count mismatch: ${routedTotal} != ${index.uniqueGuides}`);
-if (routing.explicitOverrides < 8) throw new Error(`explicit review overrides regressed: ${routing.explicitOverrides}`);
+if (routing.explicitOverrides < 10) throw new Error(`explicit review overrides regressed: ${routing.explicitOverrides}`);
 if (routing.ruleRouted < 1) throw new Error('topic-level review routing produced zero matches');
+if (routing.restoredUnreviewed !== 0) throw new Error(`restored corpus still contains unrouted records: ${JSON.stringify(routing.unrouted || [])}`);
+if (Array.isArray(routing.unrouted) && routing.unrouted.length !== 0) throw new Error(`unrouted receipt not empty: ${routing.unrouted.join(', ')}`);
 
 const bySlug = new Map(index.records.map((record) => [record.slug, record]));
 const requireRecord = (slug) => {
@@ -37,6 +39,8 @@ if (requireRecord('microstructure-delisting-2026').reviewStatus !== 'REDUNDANT_R
 if (requireRecord('anthropic-models-and-upgrade').currentness !== 'REVERIFY_REQUIRED') throw new Error('volatile Anthropic currentness boundary regressed');
 if (requireRecord('bitcoin-futures-2026').ymyl !== true) throw new Error('trading YMYL routing failed');
 if (requireRecord('security-sandboxing').reviewStatus !== 'SECURITY_SAFETY_REVIEW_REQUIRED') throw new Error('security review routing failed');
+if (requireRecord('monetization-matrix-4x3').reviewStatus !== 'COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED') throw new Error('monetization current-product boundary regressed');
+if (requireRecord('fleet-coordinator-drift-monitoring').reviewStatus !== 'INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED') throw new Error('fleet infrastructure boundary regressed');
 
 const version = JSON.parse(await readFile(join(dist, 'version.json'), 'utf8'));
 if (version.schema !== 'crypto-guides.public-build.v1') throw new Error('build receipt schema mismatch');

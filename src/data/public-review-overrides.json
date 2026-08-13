@@ -1,0 +1,51 @@
+{
+  "schema": "crypto-guides.review-overrides.v1",
+  "defaultStatus": "RESTORED_UNREVIEWED",
+  "records": {
+    "ai-agent-reliability-audit": {
+      "status": "LEGACY_COMMERCIAL_CONFLICT",
+      "ymyl": false,
+      "currentness": "HISTORICAL",
+      "note": "Predates the canonical BitEvo Agent Authority & Evidence Audit doctrine and must not be treated as the current commercial authority."
+    },
+    "trading-discipline-journal-mae-mfe": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "REVIEW_REQUIRED",
+      "pair": "trading-discipline-journal-psychology"
+    },
+    "trading-discipline-journal-psychology": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "REVIEW_REQUIRED",
+      "pair": "trading-discipline-journal-mae-mfe"
+    },
+    "microstructure-delisting-data-integrity-2026": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
+      "pair": "microstructure-delisting-2026"
+    },
+    "microstructure-delisting-2026": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
+      "pair": "microstructure-delisting-data-integrity-2026"
+    },
+    "anthropic-models-and-upgrade": {
+      "status": "VOLATILE_VENDOR_STATE",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED"
+    },
+    "fable-mythos-agents-2026": {
+      "status": "VOLATILE_VENDOR_STATE",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED"
+    },
+    "frontier-models-cost-routing": {
+      "status": "VOLATILE_VENDOR_STATE",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED"
+    }
+  }
+}

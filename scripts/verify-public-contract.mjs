@@ -42,6 +42,29 @@ if (requireRecord('security-sandboxing').reviewStatus !== 'SECURITY_SAFETY_REVIE
 if (requireRecord('monetization-matrix-4x3').reviewStatus !== 'COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED') throw new Error('monetization current-product boundary regressed');
 if (requireRecord('fleet-coordinator-drift-monitoring').reviewStatus !== 'INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED') throw new Error('fleet infrastructure boundary regressed');
 
+const overrideConfig = JSON.parse(await readFile(join(root, 'src/data/public-review-overrides.json'), 'utf8'));
+const overrideRecords = overrideConfig.records || {};
+const redundantOverrides = Object.entries(overrideRecords).filter(([, review]) => review?.status === 'REDUNDANT_REVISION_PAIR');
+if (redundantOverrides.length !== 4) throw new Error(`unexpected redundant revision-route count: ${redundantOverrides.length}`);
+const canonicalGroups = new Map();
+for (const [slug, review] of redundantOverrides) {
+  if (!review.pair || !overrideRecords[review.pair]) throw new Error(`revision pair peer missing: ${slug}`);
+  const peer = overrideRecords[review.pair];
+  if (peer.status !== 'REDUNDANT_REVISION_PAIR' || peer.pair !== slug) throw new Error(`revision pair is not reciprocal: ${slug}`);
+  if (!review.canonicalGroup || peer.canonicalGroup !== review.canonicalGroup) throw new Error(`canonical group mismatch: ${slug}`);
+  if (review.canonicalDecision !== 'PENDING_CLAIM_LEVEL_REVIEW' || peer.canonicalDecision !== review.canonicalDecision) throw new Error(`canonical decision boundary invalid: ${slug}`);
+  if (review.canonicalSlug != null || peer.canonicalSlug != null) throw new Error(`pending revision pair asserted canonical winner: ${slug}`);
+  if (!review.canonicalRole || !peer.canonicalRole || review.canonicalRole === peer.canonicalRole) throw new Error(`canonical review roles invalid: ${slug}`);
+  if (requireRecord(slug).pair !== review.pair) throw new Error(`generated index pair binding mismatch: ${slug}`);
+  const members = canonicalGroups.get(review.canonicalGroup) || new Set();
+  members.add(slug);
+  canonicalGroups.set(review.canonicalGroup, members);
+}
+if (canonicalGroups.size !== 2) throw new Error(`canonical revision-group count mismatch: ${canonicalGroups.size}`);
+for (const [group, members] of canonicalGroups) {
+  if (members.size !== 2) throw new Error(`canonical revision group must contain exactly two routes: ${group}`);
+}
+
 const publicApi = JSON.parse(await readFile(join(dist, 'api/public-guides.json'), 'utf8'));
 if (publicApi.schema !== 'crypto-guides.public-api.v1') throw new Error('public API schema mismatch');
 if (publicApi.exposure !== 'REVIEWED_METADATA_ONLY') throw new Error('public API exposure boundary missing');
@@ -79,4 +102,5 @@ const guidesHtml = await readFile(join(dist, 'guides/index.html'), 'utf8');
 if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guides review boundary missing');
 if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source binding missing');
 
+console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=PENDING_CLAIM_LEVEL_REVIEW winners=0`);
 console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);

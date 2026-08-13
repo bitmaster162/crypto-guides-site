@@ -55,15 +55,18 @@ const llms = [
   `Generated from the actual built guide routes. Unique guide routes: ${records.length}.`,
   'Status: RESTORED_CORPUS_UNDER_REVIEW. A reachable page is not evidence that every historical claim is current.',
   'Legacy machine-readable parameters may be synthetic, historical, or research artifacts unless explicitly marked otherwise.', '',
-  '## Canonical discovery',
-  `- Guide index: ${origin}/guides`,
+  '## Canonical machine interfaces',
+  `- Reviewed metadata-only API: ${origin}/api/public-guides.json`,
   `- Guide index JSON: ${origin}/guides-index.json`,
-  `- Failure-inclusive research dataset: ${origin}/sovereign-arena-dataset`,
-  `- Sitemap: ${origin}/sitemap.xml`,
-  `- Build receipt: ${origin}/version.json`, '',
+  `- Build receipt: ${origin}/version.json`,
+  `- Sitemap: ${origin}/sitemap.xml`, '',
+  'The legacy /api/guides endpoint is preserved for compatibility during migration, but it is not the canonical machine-ingestion authority because historical records can contain executable-looking params, RPC endpoints, contracts, constants or operational-era fields.', '',
+  '## Human discovery',
+  `- Guide index: ${origin}/guides`,
+  `- Failure-inclusive research dataset: ${origin}/sovereign-arena-dataset`, '',
   '## Built guide routes',
   ...records.map((record) => `- ${record.title} — ${origin}/guides/${record.slug}`), ''
 ].join('\n');
 await writeFile(join(dist, 'llms.txt'), llms, 'utf8');
 
-console.log(`DISCOVERY_GENERATION=PASS built_guides=${records.length} sitemap_urls=${routes.length} source=dist`);
+console.log(`DISCOVERY_GENERATION=PASS built_guides=${records.length} sitemap_urls=${routes.length} source=dist canonical_api=/api/public-guides.json legacy_api=/api/guides`);

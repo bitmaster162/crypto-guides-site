@@ -1,6 +1,6 @@
 {
   "schema": "crypto-guides.review-rules.v1",
-  "description": "Conservative topic-level review routing. These rules classify review obligations; they do not certify factual correctness or currentness. Explicit per-slug overrides take precedence.",
+  "description": "Conservative topic-level review routing. These rules classify review obligations; they do not certify factual correctness or currentness. Explicit per-slug overrides take precedence for primary review status. YMYL classification is conservative and may be inherited from any matching rule.",
   "rules": [
     {
       "id": "volatile-vendor-state",
@@ -32,7 +32,7 @@
     },
     {
       "id": "trading-ymyl",
-      "pattern": "(?:trading|trade|bitcoin|btc-|crypto|funding|basis|arbitrage|arbitrazh|market-|market_|ryn|liquidity|likvid|order-book|order-flow|spread|volatility|vpin|pairs|cointegration|hawkes|grid|delist|liquidation|queue-|candle|trend|risk-fng|slippage|inventory|execution|regime|crowd-fade|macro-liquidity|eth-btc|survival-math|kelly|scalper|microstructure|obi-|lob-|price-impact|depth-liquidity|lead-lag|bybit|hyperliquid|funding-convergence|avellaneda|score-core-hft|sector-divergence|read-market-risk|why-90-percent-strategies|strategiya-sovereign-arena|three-btc|torgov|treyd|ekonomika-premialnykh-treyding|epizodicheskaya-pamyat-v-algotreydinge)",
+      "pattern": "(?:trading|trade|bitcoin|btc-|crypto|kripto|kriptobirzh|funding|basis|arbitrage|arbitrazh|market-|market_|ryn|liquidity|likvid|order-book|order-flow|spread|volatility|vpin|pairs|cointegration|hawkes|grid|delist|liquidation|queue-|candle|trend|risk-fng|risk-freymvork|slippage|inventory|execution|ispolneniya|regime|crowd-fade|macro-liquidity|eth-btc|survival-math|kelly|scalper|microstructure|obi-|lob-|price-impact|depth-liquidity|lead-lag|bybit|hyperliquid|funding-convergence|avellaneda|score-core-hft|hft|pnl|futures?|perpetual|derivatives?|leverage|margin|position-sizing|stop-loss|take-profit|sector-divergence|read-market-risk|why-90-percent-strategies|strategiya-sovereign-arena|three-btc|torgov|treyd|ekonomika-premialnykh-treyding|epizodicheskaya-pamyat-v-algotreydinge)",
       "status": "YMYL_TRADING_REVIEW_REQUIRED",
       "currentness": "REVIEW_REQUIRED",
       "ymyl": true

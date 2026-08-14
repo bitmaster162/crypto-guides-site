@@ -1,4 +1,6 @@
 ---
+import GuideTruthBoundary from '../components/GuideTruthBoundary.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -38,6 +40,7 @@ const { title, description = "Crypto Guides — восстановленная �
     </header>
 
     <main>
+      <GuideTruthBoundary />
       <slot />
     </main>
 

@@ -12,7 +12,7 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       <p class="lede">Индекс генерируется из того же исходного списка, который строит текущие страницы. Корпус восстановлен из июльской версии и сейчас проходит ревизию: наличие страницы не означает, что каждый исторический факт или параметр актуален сегодня.</p>
       <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW">
         <strong>RESTORED_CORPUS_UNDER_REVIEW</strong>
-        <span>Карточки показывают текущий review-status, currentness и YMYL-флаг из source-derived truth layer. Публичный раздел выводится из review-authority через source policy, а не из восстановленного legacy category, который известен как ненадёжный. Это маршрутизация на проверку, а не сертификация фактов или рекомендация.</span>
+        <span>Карточки соединяют source-derived review/currentness/YMYL из <code>guides-index.json</code> с canonical metadata из reviewed <code>/api/public-guides.json</code>. Метка CANONICAL выбирает предпочтительную ревизию только внутри двух evidence-reviewed duplicate pairs; она не означает, что все утверждения стали current-verified. SUPERSEDED сохраняется как исторический маршрут для provenance.</span>
       </div>
       <div class="controls">
         <label class="search-control"><span>Поиск</span><input id="guide-search" type="search" placeholder="Название, раздел, статус…" autocomplete="off" /></label>
@@ -21,8 +21,8 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
         <label><span>YMYL</span><select id="ymyl-filter"><option value="">Все</option><option value="true">Требует YMYL review</option><option value="false">Не помечено YMYL</option></select></label>
         <div id="guide-count" aria-live="polite">Загрузка индекса…</div>
       </div>
-      <div id="guide-list" class="cards" data-index-source="/guides-index.json" data-taxonomy-source="src/data/public-taxonomy-policy.json"></div>
-      <noscript><p>Для интерактивного фильтра нужен JavaScript. Полный маршрутный индекс также доступен в <a href="/guides-index.json">guides-index.json</a> и <a href="/sitemap.xml">sitemap.xml</a>.</p></noscript>
+      <div id="guide-list" class="cards" data-index-source="/guides-index.json" data-canonical-source="/api/public-guides.json" data-taxonomy-source="src/data/public-taxonomy-policy.json"></div>
+      <noscript><p>Для интерактивного фильтра нужен JavaScript. Полный маршрутный индекс также доступен в <a href="/guides-index.json">guides-index.json</a>, reviewed metadata — в <a href="/api/public-guides.json">public-guides.json</a>, а все маршруты — в <a href="/sitemap.xml">sitemap.xml</a>.</p></noscript>
     </div>
   </section>
 
@@ -48,6 +48,11 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       }
       return taxonomyPolicy?.fallback || 'Unclassified / Review';
     };
+    const canonicalBadge = (record) => {
+      if (record.canonicalRole === 'CANONICAL') return '<span class="badge canonical">CANONICAL</span>';
+      if (record.canonicalRole === 'SUPERSEDED_HISTORICAL_REVISION') return '<span class="badge superseded">SUPERSEDED · HISTORICAL</span>';
+      return '';
+    };
     const populateFilters = () => {
       if (categoryFilter instanceof HTMLSelectElement) {
         const categories = [...new Set(records.map(publicCategory))].sort();
@@ -65,7 +70,7 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       const selectedYmyl = ymylFilter instanceof HTMLSelectElement ? ymylFilter.value : '';
       const filtered = records.filter((record) => {
         const category = publicCategory(record);
-        const haystack = [record.title, record.slug, category, record.reviewStatus, record.currentness, ...(record.tags || [])].join(' ').toLowerCase();
+        const haystack = [record.title, record.slug, category, record.reviewStatus, record.currentness, record.canonicalRole, record.canonicalSlug, ...(record.tags || [])].join(' ').toLowerCase();
         const matchesSearch = !q || haystack.includes(q);
         const matchesCategory = !selectedCategory || category === selectedCategory;
         const matchesStatus = !selectedStatus || record.reviewStatus === selectedStatus;
@@ -76,34 +81,63 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       if (!list) return;
       list.innerHTML = filtered.map((record) => {
         const category = publicCategory(record);
+        const canonicalNote = record.canonicalRole === 'SUPERSEDED_HISTORICAL_REVISION' && record.canonicalSlug
+          ? `<p class="canonical-note">Предпочтительная ревизия: <code>${esc(record.canonicalSlug)}</code></p>`
+          : '';
         return `
-        <a class="guide-card" href="/guides/${encodeURIComponent(record.slug)}" data-public-category="${esc(category)}">
+        <a class="guide-card" href="/guides/${encodeURIComponent(record.slug)}" data-public-category="${esc(category)}" data-canonical-role="${esc(record.canonicalRole || '')}">
           <div class="meta"><span>${esc(category)}</span><span>${esc(record.date || 'historical')}</span></div>
           <div class="badges">
             <span class="badge review">${esc(record.reviewStatus || 'UNREVIEWED')}</span>
             <span class="badge currentness">${esc(record.currentness || 'UNKNOWN')}</span>
             ${record.ymyl === true ? '<span class="badge ymyl">YMYL REVIEW</span>' : ''}
+            ${canonicalBadge(record)}
           </div>
           <h2>${esc(record.title)}</h2>
           <p>${esc((record.tags || []).slice(0, 5).join(' · '))}</p>
+          ${canonicalNote}
           <small>Открыть материал →</small>
         </a>`;
       }).join('');
     };
 
-    fetch('/guides-index.json', { cache: 'no-store' })
-      .then((response) => {
+    Promise.all([
+      fetch('/guides-index.json', { cache: 'no-store' }).then((response) => {
         if (!response.ok) throw new Error(`index ${response.status}`);
         return response.json();
+      }),
+      fetch('/api/public-guides.json', { cache: 'no-store' }).then((response) => {
+        if (!response.ok) throw new Error(`public api ${response.status}`);
+        return response.json();
       })
-      .then((payload) => {
-        records = Array.isArray(payload.records) ? payload.records : [];
+    ])
+      .then(([indexPayload, apiPayload]) => {
+        const indexRecords = Array.isArray(indexPayload.records) ? indexPayload.records : [];
+        const apiRecords = Array.isArray(apiPayload.records) ? apiPayload.records : [];
+        if (indexRecords.length !== apiRecords.length || indexRecords.length === 0) {
+          throw new Error(`authority count mismatch index=${indexRecords.length} api=${apiRecords.length}`);
+        }
+        const apiBySlug = new Map(apiRecords.map((record) => [record.slug, record]));
+        records = indexRecords.map((record) => {
+          const canonical = apiBySlug.get(record.slug);
+          if (!canonical) throw new Error(`canonical metadata missing for ${record.slug}`);
+          return {
+            ...record,
+            canonicalGroup: canonical.canonicalGroup || null,
+            canonicalDecision: canonical.canonicalDecision || null,
+            canonicalSlug: canonical.canonicalSlug || null,
+            canonicalRole: canonical.canonicalRole || null,
+            claimReview: canonical.claimReview || null,
+            lineageReview: canonical.lineageReview || null
+          };
+        });
         populateFilters();
         render();
       })
       .catch((error) => {
-        if (count) count.textContent = 'Индекс временно недоступен';
-        if (list) list.innerHTML = `<div class="error">Не удалось загрузить guides-index.json: ${esc(error.message)}</div>`;
+        records = [];
+        if (count) count.textContent = 'Authority index временно недоступен';
+        if (list) list.innerHTML = `<div class="error">Не удалось согласовать guides-index.json и /api/public-guides.json: ${esc(error.message)}</div>`;
       });
 
     search?.addEventListener('input', render);
@@ -114,5 +148,5 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
 </Layout>
 
 <style>
-  .guide-index{padding:64px 0 30px}.eyebrow{font:800 .68rem var(--font-mono);letter-spacing:.12em;color:var(--green);margin-bottom:10px}.guide-index h1{font-size:clamp(2.2rem,6vw,4.4rem);line-height:.98;margin:0 0 18px}.lede{max-width:850px;color:var(--muted);font-size:1rem}.boundary{margin:26px 0;padding:16px 18px;border:1px solid rgba(255,178,46,.35);border-radius:var(--radius);background:rgba(255,178,46,.055);display:flex;gap:12px;flex-wrap:wrap}.boundary strong{color:var(--gold);font:800 .72rem var(--font-mono);letter-spacing:.06em}.boundary span{color:var(--muted);font-size:.84rem}.controls{display:grid;grid-template-columns:minmax(260px,1fr) minmax(170px,.45fr) minmax(190px,.52fr) minmax(170px,.4fr) auto;align-items:end;gap:12px;margin:28px 0 16px}.controls label{display:grid;gap:7px}.controls label span{font:700 .68rem var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.controls input,.controls select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper-soft);color:var(--ink);font:inherit;outline:none}.controls input:focus,.controls select:focus{border-color:rgba(52,229,122,.5)}#guide-count{font:700 .72rem var(--font-mono);color:var(--muted);white-space:nowrap;padding-bottom:12px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.guide-card{display:flex;flex-direction:column;min-height:250px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-soft);transition:transform .16s ease,border-color .16s ease}.guide-card:hover{transform:translateY(-2px);border-color:rgba(52,229,122,.4)}.guide-card .meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font:700 .64rem var(--font-mono)}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.badge{padding:4px 7px;border:1px solid var(--line);border-radius:999px;font:800 .55rem var(--font-mono);letter-spacing:.02em;color:var(--muted);background:rgba(255,255,255,.02)}.badge.review{color:var(--ink)}.badge.ymyl{border-color:rgba(255,178,46,.45);color:var(--gold);background:rgba(255,178,46,.06)}.guide-card h2{font-size:1rem;line-height:1.35;margin:16px 0 10px}.guide-card p{margin:0;color:var(--muted);font-size:.75rem}.guide-card small{margin-top:auto;padding-top:20px;color:var(--green);font-weight:800}.error{padding:18px;border:1px solid rgba(255,84,104,.4);border-radius:8px;color:var(--red)}@media(max-width:1180px){.controls{grid-template-columns:1fr 1fr 1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:720px){.guide-index{padding-top:38px}.controls{grid-template-columns:1fr}.cards{grid-template-columns:1fr}#guide-count{padding-bottom:0}}
+  .guide-index{padding:64px 0 30px}.eyebrow{font:800 .68rem var(--font-mono);letter-spacing:.12em;color:var(--green);margin-bottom:10px}.guide-index h1{font-size:clamp(2.2rem,6vw,4.4rem);line-height:.98;margin:0 0 18px}.lede{max-width:850px;color:var(--muted);font-size:1rem}.boundary{margin:26px 0;padding:16px 18px;border:1px solid rgba(255,178,46,.35);border-radius:var(--radius);background:rgba(255,178,46,.055);display:flex;gap:12px;flex-wrap:wrap}.boundary strong{color:var(--gold);font:800 .72rem var(--font-mono);letter-spacing:.06em}.boundary span{color:var(--muted);font-size:.84rem}.boundary code,.canonical-note code{font:700 .72rem var(--font-mono);color:var(--ink)}.controls{display:grid;grid-template-columns:minmax(260px,1fr) minmax(170px,.45fr) minmax(190px,.52fr) minmax(170px,.4fr) auto;align-items:end;gap:12px;margin:28px 0 16px}.controls label{display:grid;gap:7px}.controls label span{font:700 .68rem var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.controls input,.controls select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper-soft);color:var(--ink);font:inherit;outline:none}.controls input:focus,.controls select:focus{border-color:rgba(52,229,122,.5)}#guide-count{font:700 .72rem var(--font-mono);color:var(--muted);white-space:nowrap;padding-bottom:12px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.guide-card{display:flex;flex-direction:column;min-height:250px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-soft);transition:transform .16s ease,border-color .16s ease}.guide-card:hover{transform:translateY(-2px);border-color:rgba(52,229,122,.4)}.guide-card .meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font:700 .64rem var(--font-mono)}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.badge{padding:4px 7px;border:1px solid var(--line);border-radius:999px;font:800 .55rem var(--font-mono);letter-spacing:.02em;color:var(--muted);background:rgba(255,255,255,.02)}.badge.review{color:var(--ink)}.badge.ymyl{border-color:rgba(255,178,46,.45);color:var(--gold);background:rgba(255,178,46,.06)}.badge.canonical{border-color:rgba(52,229,122,.5);color:var(--green);background:rgba(52,229,122,.06)}.badge.superseded{border-color:rgba(255,84,104,.38);color:#f1a0aa;background:rgba(255,84,104,.05)}.guide-card h2{font-size:1rem;line-height:1.35;margin:16px 0 10px}.guide-card p{margin:0;color:var(--muted);font-size:.75rem}.guide-card .canonical-note{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);color:#d7a2a8}.guide-card small{margin-top:auto;padding-top:20px;color:var(--green);font-weight:800}.error{padding:18px;border:1px solid rgba(255,84,104,.4);border-radius:8px;color:var(--red)}@media(max-width:1180px){.controls{grid-template-columns:1fr 1fr 1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:720px){.guide-index{padding-top:38px}.controls{grid-template-columns:1fr}.cards{grid-template-columns:1fr}#guide-count{padding-bottom:0}}
 </style>

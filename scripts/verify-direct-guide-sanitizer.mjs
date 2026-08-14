@@ -26,6 +26,7 @@ let repairedRoutes = 0;
 let preserved = 0;
 
 const markerCount = (html, marker) => html.split(marker).length - 1;
+const truthBoundaryTagCount = (html) => (html.match(/<aside\b[^>]*\bdata-guide-truth-boundary(?:\s|=|>)/giu) || []).length;
 const stripTags = (value = '') => String(value)
   .replace(/<script\b[^>]*>[\s\S]*?<\/script>/giu, ' ')
   .replace(/<style\b[^>]*>[\s\S]*?<\/style>/giu, ' ')
@@ -45,7 +46,7 @@ for (const record of records) {
   await access(outPath);
   const html = await readFile(outPath, 'utf8');
 
-  if (markerCount(html, 'data-guide-truth-boundary') !== 1) throw new Error(`truth boundary count invalid after sanitizer: ${slug}`);
+  if (truthBoundaryTagCount(html) !== 1) throw new Error(`truth boundary tag count invalid after sanitizer: ${slug}`);
   if (!html.includes(`data-guide-slug="${slug}"`)) throw new Error(`truth boundary slug binding missing after sanitizer: ${slug}`);
   if (!html.includes('class="article-page')) throw new Error(`article-page boundary missing after sanitizer: ${slug}`);
 

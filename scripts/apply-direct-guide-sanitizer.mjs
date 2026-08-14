@@ -21,6 +21,10 @@ function markerCount(html, marker) {
   return html.split(marker).length - 1;
 }
 
+function truthBoundaryTagCount(html) {
+  return (html.match(/<aside\b[^>]*\bdata-guide-truth-boundary(?:\s|=|>)/giu) || []).length;
+}
+
 function locateBalancedDiv(html, className) {
   const marker = `class="${className}"`;
   if (markerCount(html, marker) !== 1) throw new Error(`expected exactly one ${className} marker before structural parse`);
@@ -53,8 +57,8 @@ for (const record of records) {
 
   const outPath = join(dist, 'guides', slug, 'index.html');
   const html = await readFile(outPath, 'utf8');
-  const truthBoundaryCount = markerCount(html, 'data-guide-truth-boundary');
-  if (truthBoundaryCount !== 1) throw new Error(`truth boundary count invalid before sanitizer: ${slug} count=${truthBoundaryCount}`);
+  const truthBoundaryCount = truthBoundaryTagCount(html);
+  if (truthBoundaryCount !== 1) throw new Error(`truth boundary tag count invalid before sanitizer: ${slug} count=${truthBoundaryCount}`);
   if (!html.includes('class="article-page')) throw new Error(`article-page boundary missing before sanitizer: ${slug}`);
 
   const memirCount = markerCount(html, 'class="memir-summary"');
@@ -94,7 +98,7 @@ for (const record of records) {
   if (markerCount(sanitized, 'class="memir-summary"') !== 0 || markerCount(sanitized, 'class="params-block"') !== 0) {
     throw new Error(`sanitizer target marker survived apply step: ${slug}`);
   }
-  if (markerCount(sanitized, 'data-guide-truth-boundary') !== 1) throw new Error(`truth boundary changed during sanitizer: ${slug}`);
+  if (truthBoundaryTagCount(sanitized) !== 1) throw new Error(`truth boundary tag changed during sanitizer: ${slug}`);
   if (!sanitized.includes('class="article-page')) throw new Error(`article-page removed during sanitizer: ${slug}`);
 
   await writeFile(outPath, sanitized, 'utf8');

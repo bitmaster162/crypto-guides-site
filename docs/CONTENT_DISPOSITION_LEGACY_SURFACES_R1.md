@@ -54,15 +54,67 @@ Currentness: `HISTORICAL_REVERIFY_REQUIRED`.
 
 Repository authority says this historical fleet-coordination specification exposes infrastructure-era host identities, addresses, scheduler/API assumptions and implementation parameters.
 
-Disposition:
+### Exact public-source exposure confirmed 2026-08-14
 
-- retain as historical engineering material only;
+The restored route currently contains the following operational metadata in source-visible public copy:
+
+- host aliases plus addresses:
+  - `arena-vps` → `34.70.171.152`;
+  - `win185` → `185.231.154.149`;
+  - `fin35` → `35.217.10.153`;
+  - `old144` → `144.124.250.14`;
+- role/topology descriptions tying those hosts to named services and projects;
+- internal endpoint metadata: `http://localhost:8080/journal/entries`;
+- scheduler semantics: `fleet_coordinator.py`, Windows Task Scheduler task `Fleet-Coordinator`, every 15 minutes;
+- internal output/state filenames including `unified_state.json`, `unified_state.js` and `fleet/unified_state.json`;
+- internal registry/topology identifiers such as `fleet_registry.json` and `infrastructure.json`;
+- the environment-variable name `BITEVO_API_KEY` and the statement that its presence enables submission to the BitEvo audit log.
+
+No credential value, private key, bearer token or API-key secret was observed in this review. The presence of the environment-variable **name** is therefore not classified as a confirmed credential leak.
+
+Decision class for the observed metadata: `PUBLIC_OPERATIONAL_METADATA_EXPOSURE / NO_CONFIRMED_SECRET_VALUE`.
+
+### Risk interpretation
+
+The material should not be treated as proof that any listed address, service, scheduler, API path or topology is still live or reachable. Historical publication does not establish current runtime state.
+
+However, the fact that a value may be historical does not make it appropriate public documentation. Host identities, addresses, service-role mapping, scheduler names/cadence and internal state paths create unnecessary operational reconnaissance value and should be redacted from the public artifact unless there is an explicit present-day reason to expose them.
+
+This source finding alone does **not** justify credential rotation, host shutdown, firewall mutation, DNS changes, scheduler changes or any other runtime action. Those would require a separate current infrastructure/security assessment and explicit authorization.
+
+### Disposition
+
+- retain the engineering concepts as historical research/provenance only;
+- do not expose concrete host aliases/IP addresses or host-to-service mapping in the repaired public copy;
+- remove or generalize scheduler task names/cadence, internal filenames/paths and internal endpoint details unless they are necessary to explain a generic concept;
+- the environment-variable name may be omitted because it adds no educational value; if retained in historical source, it must not be interpreted as evidence that a corresponding credential exists or is valid;
 - host names, addresses, ports, scheduler cadence, API paths, deployment topology, service state and implementation constants are not current runtime authority;
-- the presence of a host/API/config value in restored content does not establish reachability, credential validity, deployment, production binding, scheduler activity or external effect;
 - no historical infrastructure value may be used as a current operational instruction without an independent fresh runtime/source/effect receipt;
-- public presentation should eventually requalify executable-looking infrastructure metadata as historical/illustrative rather than active configuration.
+- public presentation should distinguish generic drift-monitoring concepts from historical implementation details.
 
-Decision: `HISTORICAL_INFRA_SPEC / NO_CURRENT_RUNTIME_AUTHORITY`.
+Decision: `HISTORICAL_INFRA_SPEC / PUBLIC_REDACTION_REQUIRED / NO_CURRENT_RUNTIME_AUTHORITY`.
+
+### Future deterministic public-redaction gate
+
+Do not add another public post-build rewrite while the already implemented `funding-convergence-r1` repair is still awaiting a real exact-head build execution.
+
+When implementation resumes, the generated `fleet-coordinator-drift-monitoring` public HTML should fail verification if it contains any of these concrete operational identifiers:
+
+- `34.70.171.152`;
+- `185.231.154.149`;
+- `35.217.10.153`;
+- `144.124.250.14`;
+- `arena-vps`;
+- `win185`;
+- `fin35`;
+- `old144`;
+- `Fleet-Coordinator`;
+- `fleet_coordinator.py`;
+- `BITEVO_API_KEY`;
+- `http://localhost:8080/journal/entries`;
+- `fleet/unified_state.json`.
+
+The repaired public route may retain generic concepts such as fleet reconciliation, drift categories, fail-closed state handling and audit logging, but it must not present historical implementation metadata as a current operational map.
 
 ## Shared truth contract
 
@@ -73,7 +125,9 @@ For all three routes:
 3. historical parameters != current configuration;
 4. historical product copy != current commercial authority;
 5. no customer/certification/runtime/deployment/effect claim is inherited from the restored route;
-6. future promotion to current status requires explicit fresh source evidence and, where applicable, build/deployment/readback/effect receipts.
+6. future promotion to current status requires explicit fresh source evidence and, where applicable, build/deployment/readback/effect receipts;
+7. historical operational metadata may require public redaction even when it is not proven current;
+8. exposure of an environment-variable name is not equivalent to exposure of the secret value.
 
 ## Governance
 

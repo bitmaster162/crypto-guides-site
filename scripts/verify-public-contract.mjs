@@ -48,36 +48,58 @@ const redundantOverrides = Object.entries(overrideRecords).filter(([, review]) =
 if (redundantOverrides.length !== 4) throw new Error(`unexpected redundant revision-route count: ${redundantOverrides.length}`);
 const canonicalGroups = new Map();
 const claimReviewDocs = new Set();
+let overrideWinners = 0;
+let overrideSuperseded = 0;
 for (const [slug, review] of redundantOverrides) {
   if (!review.pair || !overrideRecords[review.pair]) throw new Error(`revision pair peer missing: ${slug}`);
   const peer = overrideRecords[review.pair];
   if (peer.status !== 'REDUNDANT_REVISION_PAIR' || peer.pair !== slug) throw new Error(`revision pair is not reciprocal: ${slug}`);
   if (!review.canonicalGroup || peer.canonicalGroup !== review.canonicalGroup) throw new Error(`canonical group mismatch: ${slug}`);
-  if (review.canonicalDecision !== 'PENDING_CLAIM_LEVEL_REVIEW' || peer.canonicalDecision !== review.canonicalDecision) throw new Error(`canonical decision boundary invalid: ${slug}`);
-  if (review.canonicalSlug != null || peer.canonicalSlug != null) throw new Error(`pending revision pair asserted canonical winner: ${slug}`);
-  if (!review.canonicalRole || !peer.canonicalRole || review.canonicalRole === peer.canonicalRole) throw new Error(`canonical review roles invalid: ${slug}`);
+  if (review.canonicalDecision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED' || peer.canonicalDecision !== review.canonicalDecision) throw new Error(`canonical decision boundary invalid: ${slug}`);
+  if (!review.canonicalSlug || peer.canonicalSlug !== review.canonicalSlug) throw new Error(`canonical slug agreement invalid: ${slug}`);
+  if (!['CANONICAL','SUPERSEDED_HISTORICAL_REVISION'].includes(review.canonicalRole)) throw new Error(`canonical role invalid: ${slug}`);
   if (!review.claimReview || peer.claimReview !== review.claimReview || !review.claimReview.startsWith('docs/CONTENT_CLAIM_REVIEW_')) throw new Error(`claim-review evidence binding invalid: ${slug}`);
+  if (review.lineageReview !== 'docs/CANONICAL_LINEAGE_DECISION_R1.md' || peer.lineageReview !== review.lineageReview) throw new Error(`lineage-review evidence binding invalid: ${slug}`);
+  if (review.canonicalDecisionReadiness !== 'APPLIED_PREVIEW_ONLY') throw new Error(`canonical readiness receipt invalid: ${slug}`);
   await access(join(root, review.claimReview));
+  await access(join(root, review.lineageReview));
   claimReviewDocs.add(review.claimReview);
   if (requireRecord(slug).pair !== review.pair) throw new Error(`generated index pair binding mismatch: ${slug}`);
-  const members = canonicalGroups.get(review.canonicalGroup) || new Set();
-  members.add(slug);
-  canonicalGroups.set(review.canonicalGroup, members);
+
+  if (review.canonicalRole === 'CANONICAL') {
+    overrideWinners += 1;
+    if (review.canonicalSlug !== slug) throw new Error(`canonical winner does not self-reference: ${slug}`);
+  } else {
+    overrideSuperseded += 1;
+    if (review.canonicalSlug === slug) throw new Error(`superseded revision self-selected: ${slug}`);
+    const winner = overrideRecords[review.canonicalSlug];
+    if (!winner || winner.canonicalRole !== 'CANONICAL' || winner.canonicalGroup !== review.canonicalGroup) throw new Error(`superseded revision target invalid: ${slug}`);
+  }
+
+  const group = canonicalGroups.get(review.canonicalGroup) || { members: new Set(), winners: 0, superseded: 0 };
+  group.members.add(slug);
+  if (review.canonicalRole === 'CANONICAL') group.winners += 1;
+  else group.superseded += 1;
+  canonicalGroups.set(review.canonicalGroup, group);
 }
 if (canonicalGroups.size !== 2) throw new Error(`canonical revision-group count mismatch: ${canonicalGroups.size}`);
 if (claimReviewDocs.size !== canonicalGroups.size) throw new Error(`claim-review document/group mismatch: docs=${claimReviewDocs.size} groups=${canonicalGroups.size}`);
-for (const [group, members] of canonicalGroups) {
-  if (members.size !== 2) throw new Error(`canonical revision group must contain exactly two routes: ${group}`);
+if (overrideWinners !== 2 || overrideSuperseded !== 2) throw new Error(`canonical override counts invalid: winners=${overrideWinners} superseded=${overrideSuperseded}`);
+for (const [groupName, group] of canonicalGroups) {
+  if (group.members.size !== 2 || group.winners !== 1 || group.superseded !== 1) throw new Error(`canonical revision group role split invalid: ${groupName}`);
 }
 
 const publicApi = JSON.parse(await readFile(join(dist, 'api/public-guides.json'), 'utf8'));
 if (publicApi.schema !== 'crypto-guides.public-api.v1') throw new Error('public API schema mismatch');
 if (publicApi.exposure !== 'REVIEWED_METADATA_ONLY') throw new Error('public API exposure boundary missing');
-if (publicApi.canonicalization !== 'REVISION_PAIRS_EXPLICIT_PENDING_NO_WINNER') throw new Error('public API canonicalization boundary missing');
-if (publicApi.evidenceBinding !== 'REVISION_PAIRS_SOURCE_BOUND_TO_CLAIM_REVIEW_DOCS') throw new Error('public API claim-review evidence binding missing');
+if (publicApi.canonicalization !== 'REVISION_PAIRS_CANONICAL_SELECTED_SUPERSEDED_PRESERVED') throw new Error('public API canonicalization boundary missing');
+if (publicApi.evidenceBinding !== 'REVISION_PAIRS_SOURCE_BOUND_TO_CLAIM_AND_LINEAGE_REVIEW_DOCS') throw new Error('public API evidence binding missing');
 if (!Array.isArray(publicApi.records) || publicApi.records.length !== index.uniqueGuides || publicApi.count !== index.uniqueGuides) throw new Error('public API count mismatch');
+if (publicApi.canonicalWinnerCount !== 2 || publicApi.supersededRevisionCount !== 2) throw new Error('public API canonical count receipt mismatch');
 const forbiddenApiKeys = new Set(['params','rpc_endpoints','contracts','constants','safety_guards','rpcEndpoints','operationalConfig']);
 let apiRevisionRoutes = 0;
+let apiWinners = 0;
+let apiSuperseded = 0;
 for (const record of publicApi.records) {
   for (const key of Object.keys(record)) {
     if (forbiddenApiKeys.has(key)) throw new Error(`public API leaked legacy operational field ${key} on ${record.slug || '<unknown>'}`);
@@ -85,12 +107,20 @@ for (const record of publicApi.records) {
   if (!record.reviewStatus || !record.currentness || typeof record.ymyl !== 'boolean') throw new Error(`public API review metadata missing: ${record.slug}`);
   if (record.reviewStatus === 'REDUNDANT_REVISION_PAIR') {
     apiRevisionRoutes += 1;
-    if (!record.canonicalGroup || record.canonicalDecision !== 'PENDING_CLAIM_LEVEL_REVIEW' || !record.canonicalRole) throw new Error(`public API revision canonical metadata missing: ${record.slug}`);
-    if (record.canonicalSlug !== null) throw new Error(`public API pending revision asserted canonical winner: ${record.slug}`);
+    if (!record.canonicalGroup || record.canonicalDecision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED' || !record.canonicalSlug || !['CANONICAL','SUPERSEDED_HISTORICAL_REVISION'].includes(record.canonicalRole)) throw new Error(`public API revision canonical metadata missing: ${record.slug}`);
     if (!record.claimReview || !claimReviewDocs.has(record.claimReview)) throw new Error(`public API revision claim-review binding missing: ${record.slug}`);
+    if (record.lineageReview !== 'docs/CANONICAL_LINEAGE_DECISION_R1.md') throw new Error(`public API revision lineage binding missing: ${record.slug}`);
+    if (record.canonicalRole === 'CANONICAL') {
+      apiWinners += 1;
+      if (record.canonicalSlug !== record.slug) throw new Error(`public API canonical winner mismatch: ${record.slug}`);
+    } else {
+      apiSuperseded += 1;
+      if (record.canonicalSlug === record.slug) throw new Error(`public API superseded self-selection: ${record.slug}`);
+    }
   }
 }
 if (apiRevisionRoutes !== redundantOverrides.length) throw new Error(`public API revision-route count mismatch: ${apiRevisionRoutes}`);
+if (apiWinners !== 2 || apiSuperseded !== 2) throw new Error(`public API canonical role counts invalid: winners=${apiWinners} superseded=${apiSuperseded}`);
 const apiRaw = await readFile(join(dist, 'api/public-guides.json'), 'utf8');
 for (const forbiddenToken of ['rpc_endpoints','BITEVO_API_KEY','34.70.171.152','185.231.154.149','144.124.250.14']) {
   if (apiRaw.includes(forbiddenToken)) throw new Error(`public metadata API leaked forbidden operational token: ${forbiddenToken}`);
@@ -118,6 +148,8 @@ if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guid
 if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source binding missing');
 if (!guidesHtml.includes('/api/public-guides.json')) throw new Error('/guides canonical metadata source binding missing');
 if (!guidesHtml.includes('data-canonical-source')) throw new Error('/guides canonical-source receipt missing');
+if (!guidesHtml.includes('EVIDENCE_REVIEWED_CANONICAL_SELECTED')) throw new Error('/guides canonical-selection mode missing');
+if (!guidesHtml.includes('CANONICAL') || !guidesHtml.includes('SUPERSEDED · HISTORICAL')) throw new Error('/guides canonical role labels missing');
 if (guidesHtml.includes('<aside class="guide-truth-boundary"')) throw new Error('/guides index must not render direct-article truth boundary');
 
 const directGuideHtml = await readFile(join(dist, 'guides/risk-freymvork-dlya-kripto-botov/index.html'), 'utf8');
@@ -126,7 +158,27 @@ if (!directGuideHtml.includes('RESTORED CONTENT · REVIEW REQUIRED')) throw new 
 if (!directGuideHtml.includes('YMYL review boundary')) throw new Error('direct guide YMYL warning copy missing');
 if (!directGuideHtml.includes('/guides-index.json')) throw new Error('direct guide truth boundary metadata source missing');
 
-console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=PENDING_CLAIM_LEVEL_REVIEW winners=0 claim_review_docs=${claimReviewDocs.size} api_revision_routes=${apiRevisionRoutes}`);
-console.log('GUIDES_EVIDENCE_IA_GATE=PASS sources=/guides-index.json,/api/public-guides.json canonical_selection=PENDING');
+const routePresentationPairs = [
+  {
+    canonical: 'trading-discipline-journal-mae-mfe',
+    superseded: 'trading-discipline-journal-psychology'
+  },
+  {
+    canonical: 'microstructure-delisting-data-integrity-2026',
+    superseded: 'microstructure-delisting-2026'
+  }
+];
+for (const pair of routePresentationPairs) {
+  const canonicalHtml = await readFile(join(dist, `guides/${pair.canonical}/index.html`), 'utf8');
+  const supersededHtml = await readFile(join(dist, `guides/${pair.superseded}/index.html`), 'utf8');
+  if (!canonicalHtml.includes('CANONICAL')) throw new Error(`canonical direct-guide label missing: ${pair.canonical}`);
+  if (!canonicalHtml.includes('src/data/public-review-overrides.json')) throw new Error(`canonical direct-guide source binding missing: ${pair.canonical}`);
+  if (!supersededHtml.includes('SUPERSEDED · HISTORICAL')) throw new Error(`superseded direct-guide label missing: ${pair.superseded}`);
+  if (!supersededHtml.includes(`/guides/${pair.canonical}`)) throw new Error(`superseded preferred-route link missing: ${pair.superseded}`);
+}
+
+console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=EVIDENCE_REVIEWED_CANONICAL_SELECTED winners=${overrideWinners} superseded=${overrideSuperseded} claim_review_docs=${claimReviewDocs.size} api_revision_routes=${apiRevisionRoutes}`);
+console.log('GUIDES_EVIDENCE_IA_GATE=PASS sources=/guides-index.json,/api/public-guides.json canonical_selection=ACTIVE winners=2 superseded=2 route_policy=PRESERVE_BOTH_NO_REDIRECT');
+console.log(`DIRECT_GUIDE_CANONICAL_GATE=PASS pairs=${routePresentationPairs.length} source=src/data/public-review-overrides.json`);
 console.log('DIRECT_GUIDE_BOUNDARY_GATE=PASS sample=risk-freymvork-dlya-kripto-botov ymyl=true metadata_source=/guides-index.json');
-console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonicalization=${publicApi.canonicalization} evidence_binding=${publicApi.evidenceBinding} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);
+console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonicalization=${publicApi.canonicalization} evidence_binding=${publicApi.evidenceBinding} canonical_winners=${apiWinners} superseded=${apiSuperseded} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);

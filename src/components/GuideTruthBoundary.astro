@@ -1,11 +1,27 @@
 ---
+import reviewOverrides from '../data/public-review-overrides.json';
+
 const path = Astro.url.pathname;
 const isGuideDetail = path.startsWith('/guides/') && path !== '/guides/' && path !== '/guides';
 const slug = isGuideDetail ? decodeURIComponent(path.slice('/guides/'.length).replace(/\/$/, '')) : '';
+const overrideRecords = reviewOverrides.records as Record<string, any>;
+const canonicalMeta = isGuideDetail ? overrideRecords[slug] || null : null;
+const canonicalRole = canonicalMeta?.canonicalRole || '';
+const canonicalSlug = canonicalMeta?.canonicalSlug || '';
+const isCanonical = canonicalRole === 'CANONICAL' && canonicalSlug === slug;
+const isSuperseded = canonicalRole === 'SUPERSEDED_HISTORICAL_REVISION' && Boolean(canonicalSlug);
 ---
 
 {isGuideDetail && (
-  <aside class="guide-truth-boundary" data-guide-truth-boundary data-guide-slug={slug} aria-label="Статус ревизии материала">
+  <aside
+    class="guide-truth-boundary"
+    data-guide-truth-boundary
+    data-guide-slug={slug}
+    data-canonical-source="src/data/public-review-overrides.json"
+    data-canonical-role={canonicalRole || undefined}
+    data-canonical-slug={canonicalSlug || undefined}
+    aria-label="Статус ревизии материала"
+  >
     <div class="gtb-topline">
       <strong>RESTORED CONTENT · REVIEW REQUIRED</strong>
       <a href="/guides">Открыть review index →</a>
@@ -14,11 +30,25 @@ const slug = isGuideDetail ? decodeURIComponent(path.slice('/guides/'.length).re
       <span class="gtb-badge" data-review-status>REVIEW_STATUS_LOADING</span>
       <span class="gtb-badge" data-currentness>CURRENTNESS_LOADING</span>
       <span class="gtb-badge gtb-ymyl" data-ymyl hidden>YMYL REVIEW</span>
+      {isCanonical && <span class="gtb-badge gtb-canonical">CANONICAL</span>}
+      {isSuperseded && <span class="gtb-badge gtb-superseded">SUPERSEDED · HISTORICAL</span>}
     </div>
     <p>
       Это восстановленный исследовательский материал. Наличие страницы не подтверждает текущую точность исторических фактов,
       параметров, API/venue state, комиссий, funding, leverage, performance claims или торговых порогов.
     </p>
+    {isCanonical && (
+      <p class="gtb-canonical-copy">
+        Эта страница выбрана как предпочтительная ревизия только внутри evidence-reviewed duplicate group. CANONICAL не означает,
+        что все исторические утверждения автоматически стали current-verified.
+      </p>
+    )}
+    {isSuperseded && (
+      <p class="gtb-canonical-copy gtb-superseded-copy">
+        Эта историческая ревизия сохранена для provenance. Предпочтительная ревизия:
+        {' '}<a href={`/guides/${encodeURIComponent(canonicalSlug)}`}>{canonicalSlug}</a>.
+      </p>
+    )}
     <p class="gtb-ymyl-copy" data-ymyl-copy hidden>
       Для этого материала установлен YMYL review boundary: числовые торговые параметры, доходность, риск, leverage,
       funding/fees, execution/API и venue claims требуют отдельной текущей проверки. Они не являются торговым разрешением,
@@ -83,8 +113,13 @@ const slug = isGuideDetail ? decodeURIComponent(path.slice('/guides/'.length).re
   .gtb-badges { display:flex; gap:7px; flex-wrap:wrap; margin:11px 0 9px; }
   .gtb-badge { border:1px solid var(--line); border-radius:999px; padding:4px 8px; font:800 .58rem var(--font-mono); color:var(--muted); background:rgba(255,255,255,.025); }
   .gtb-ymyl { color:var(--gold); border-color:rgba(255,178,46,.48); }
+  .gtb-canonical { color:var(--green); border-color:rgba(52,229,122,.5); background:rgba(52,229,122,.06); }
+  .gtb-superseded { color:#f1a0aa; border-color:rgba(255,84,104,.38); background:rgba(255,84,104,.05); }
   .guide-truth-boundary p { max-width:1000px; margin:7px 0 0; color:var(--muted); font-size:.78rem; line-height:1.55; }
   .guide-truth-boundary .gtb-ymyl-copy { color:#d9c38e; }
+  .guide-truth-boundary .gtb-canonical-copy { color:#b9d9c6; }
+  .guide-truth-boundary .gtb-superseded-copy { color:#d7a2a8; }
+  .guide-truth-boundary .gtb-canonical-copy a { color:var(--blue); font-weight:800; }
   .guide-truth-boundary .gtb-fallback { color:#e7a0a8; }
   @media (max-width:620px) { .guide-truth-boundary { width:min(100% - 28px, 1200px); margin-top:14px; padding:14px; } }
 </style>

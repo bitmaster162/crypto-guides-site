@@ -1,12 +1,14 @@
 {
   "schema": "crypto-guides.canonical-switch-plan.v1",
-  "state": "READY_NOT_APPLIED",
-  "activation": false,
+  "state": "APPLIED_PREVIEW_ONLY",
+  "activation": true,
   "evidenceAuthority": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
   "currentPublicSemantics": {
-    "canonicalization": "REVISION_PAIRS_EXPLICIT_PENDING_NO_WINNER",
-    "decision": "PENDING_CLAIM_LEVEL_REVIEW",
-    "canonicalSlug": null,
+    "canonicalization": "REVISION_PAIRS_CANONICAL_SELECTED_SUPERSEDED_PRESERVED",
+    "decision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+    "routePolicy": "PRESERVE_BOTH_NO_REDIRECT",
+    "winnerCount": 2,
+    "supersededCount": 2,
     "routeCount": 4
   },
   "targetPublicSemantics": {
@@ -40,16 +42,18 @@
     "src/data/public-review-overrides.json",
     "scripts/generate-public-api.mjs",
     "scripts/verify-public-contract.mjs",
-    "src/pages/guides/index.astro"
+    "scripts/verify-canonical-switch-plan.mjs",
+    "src/pages/guides/index.astro",
+    "src/components/GuideTruthBoundary.astro"
   ],
-  "activationPreconditions": [
-    "apply all canonical semantics in one coordinated source patch",
+  "validationRequirements": [
     "exact-head npm build executes and passes",
     "public API reports exactly 2 canonical winners and 2 superseded historical revisions",
-    "library IA distinguishes canonical from superseded without hiding historical provenance",
+    "library IA distinguishes canonical from superseded and fails closed on authority mismatch",
+    "direct guide routes render canonical or superseded provenance labels from source-controlled evidence metadata",
     "all 162 restored routes remain addressable unless a separately approved redirect/delete decision exists",
     "exact Git SHA is bound to a READY preview deployment",
-    "preview readback confirms canonical and superseded labels on both groups",
+    "preview readback confirms canonical and superseded labels when authenticated preview access is available",
     "no production promotion occurs without separate exact-head approval"
   ],
   "governance": {

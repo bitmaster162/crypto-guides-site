@@ -50,13 +50,13 @@
       "currentness": "PRIMARY_BEHAVIORAL_EFFECT_SUPPORTED_METHOD_REVIEW_REQUIRED",
       "pair": "trading-discipline-journal-psychology",
       "canonicalGroup": "trading-discipline-journal",
-      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
-      "canonicalSlug": null,
-      "canonicalRole": "EARLIER_REVISION",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "trading-discipline-journal-mae-mfe",
+      "canonicalRole": "CANONICAL",
       "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_DISCIPLINE_R1.md",
       "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
-      "canonicalDecisionReadiness": "EVIDENCE_COMPLETE_SWITCH_DEFERRED",
-      "note": "Claim review supports the disposition-effect concept but keeps MAE/MFE stop-target calibration strategy-specific. Repository lineage independently removed the paired later psychology revision during the prior 162->160 duplicate cleanup; coordinated canonical source switch is deferred until generator/verifier/build can move together."
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Canonical within this restored revision pair because claim-level review gives it the lower-overclaim profile and repository lineage independently removed the paired psychology revision during the prior duplicate cleanup. This selection does not upgrade unresolved numeric or method claims to current verified guidance."
     },
     "trading-discipline-journal-psychology": {
       "status": "REDUNDANT_REVISION_PAIR",
@@ -64,13 +64,13 @@
       "currentness": "PRIMARY_BEHAVIORAL_EFFECT_SUPPORTED_NUMERIC_AND_METHOD_REVIEW_REQUIRED",
       "pair": "trading-discipline-journal-mae-mfe",
       "canonicalGroup": "trading-discipline-journal",
-      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
-      "canonicalSlug": null,
-      "canonicalRole": "LATER_REVISION_REVIEW_CANDIDATE",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "trading-discipline-journal-mae-mfe",
+      "canonicalRole": "SUPERSEDED_HISTORICAL_REVISION",
       "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_DISCIPLINE_R1.md",
       "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
-      "canonicalDecisionReadiness": "EVIDENCE_COMPLETE_SWITCH_DEFERRED",
-      "note": "Later revision is structurally richer, but its approximately-2x loss-aversion shorthand requires qualification and its safety-guard labels must remain internal implementation patterns unless independently evidenced. Repository lineage previously removed this exact slug as a duplicate; coordinated canonical source switch is deferred."
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Preserved as a historical revision for provenance. The preferred route is trading-discipline-journal-mae-mfe; the approximately-2x loss-aversion shorthand and internal safety-control labels here remain qualification/review material rather than current universal guidance."
     },
     "microstructure-delisting-data-integrity-2026": {
       "status": "REDUNDANT_REVISION_PAIR",
@@ -78,13 +78,13 @@
       "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
       "pair": "microstructure-delisting-2026",
       "canonicalGroup": "microstructure-delisting-data-integrity",
-      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
-      "canonicalSlug": null,
-      "canonicalRole": "EARLIER_REVISION",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "microstructure-delisting-data-integrity-2026",
+      "canonicalRole": "CANONICAL",
       "claimReview": "docs/CONTENT_CLAIM_REVIEW_MICROSTRUCTURE_R1.md",
       "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
-      "canonicalDecisionReadiness": "EVIDENCE_COMPLETE_SWITCH_DEFERRED",
-      "note": "Primary exchange events are partly confirmed while exact calibration and DRS rules remain derived/internal. Repository lineage independently removed the paired later microstructure revision during the prior 162->160 duplicate cleanup; coordinated canonical source switch is deferred."
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Canonical within this restored revision pair because claim-level review separates exchange-confirmed events from derived calibration and repository lineage independently removed the paired microstructure-delisting-2026 revision during the prior duplicate cleanup. Derived thresholds still require qualification."
     },
     "microstructure-delisting-2026": {
       "status": "REDUNDANT_REVISION_PAIR",
@@ -92,13 +92,13 @@
       "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
       "pair": "microstructure-delisting-data-integrity-2026",
       "canonicalGroup": "microstructure-delisting-data-integrity",
-      "canonicalDecision": "PENDING_CLAIM_LEVEL_REVIEW",
-      "canonicalSlug": null,
-      "canonicalRole": "LATER_REVISION_REVIEW_CANDIDATE",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "microstructure-delisting-data-integrity-2026",
+      "canonicalRole": "SUPERSEDED_HISTORICAL_REVISION",
       "claimReview": "docs/CONTENT_CLAIM_REVIEW_MICROSTRUCTURE_R1.md",
       "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
-      "canonicalDecisionReadiness": "EVIDENCE_COMPLETE_SWITCH_DEFERRED",
-      "note": "Later revision contains stronger universal-looking 0.5 calibration and custom DRS threshold metadata that primary-source review does not validate as exchange rules. Repository lineage previously removed this exact slug as a duplicate; coordinated canonical source switch is deferred."
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Preserved as a historical revision for provenance. The preferred route is microstructure-delisting-data-integrity-2026; universal-looking 0.5 calibration and exact DRS threshold metadata remain derived/internal review material rather than exchange rules."
     },
     "anthropic-models-and-upgrade": {
       "status": "VOLATILE_VENDOR_STATE",

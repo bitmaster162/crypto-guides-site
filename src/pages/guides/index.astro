@@ -10,7 +10,7 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       <div class="eyebrow">PUBLIC INDEX · SOURCE-DERIVED</div>
       <h1>Гайды и исследования</h1>
       <p class="lede">Индекс генерируется из того же исходного списка, который строит текущие страницы. Корпус восстановлен из июльской версии и сейчас проходит ревизию: наличие страницы не означает, что каждый исторический факт или параметр актуален сегодня.</p>
-      <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW">
+      <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW" data-canonical-mode="EVIDENCE_REVIEWED_CANONICAL_SELECTED">
         <strong>RESTORED_CORPUS_UNDER_REVIEW</strong>
         <span>Карточки соединяют source-derived review/currentness/YMYL из <code>guides-index.json</code> с canonical metadata из reviewed <code>/api/public-guides.json</code>. Метка CANONICAL выбирает предпочтительную ревизию только внутри двух evidence-reviewed duplicate pairs; она не означает, что все утверждения стали current-verified. SUPERSEDED сохраняется как исторический маршрут для provenance.</span>
       </div>
@@ -117,6 +117,9 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
         if (indexRecords.length !== apiRecords.length || indexRecords.length === 0) {
           throw new Error(`authority count mismatch index=${indexRecords.length} api=${apiRecords.length}`);
         }
+        if (apiPayload.canonicalization !== 'REVISION_PAIRS_CANONICAL_SELECTED_SUPERSEDED_PRESERVED') {
+          throw new Error(`canonical authority mode mismatch: ${apiPayload.canonicalization || 'missing'}`);
+        }
         const apiBySlug = new Map(apiRecords.map((record) => [record.slug, record]));
         records = indexRecords.map((record) => {
           const canonical = apiBySlug.get(record.slug);
@@ -131,6 +134,25 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
             lineageReview: canonical.lineageReview || null
           };
         });
+
+        const mergedBySlug = new Map(records.map((record) => [record.slug, record]));
+        const canonicalRecords = records.filter((record) => record.canonicalRole === 'CANONICAL');
+        const supersededRecords = records.filter((record) => record.canonicalRole === 'SUPERSEDED_HISTORICAL_REVISION');
+        if (canonicalRecords.length !== 2 || supersededRecords.length !== 2) {
+          throw new Error(`canonical role count mismatch winners=${canonicalRecords.length} superseded=${supersededRecords.length}`);
+        }
+        for (const record of canonicalRecords) {
+          if (record.canonicalDecision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED' || record.canonicalSlug !== record.slug) {
+            throw new Error(`canonical winner authority mismatch for ${record.slug}`);
+          }
+        }
+        for (const record of supersededRecords) {
+          const preferred = record.canonicalSlug ? mergedBySlug.get(record.canonicalSlug) : null;
+          if (record.canonicalDecision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED' || !preferred || preferred.canonicalRole !== 'CANONICAL' || preferred.canonicalGroup !== record.canonicalGroup) {
+            throw new Error(`superseded authority target mismatch for ${record.slug}`);
+          }
+        }
+
         populateFilters();
         render();
       })

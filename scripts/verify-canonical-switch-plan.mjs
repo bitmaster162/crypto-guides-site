@@ -11,15 +11,15 @@ const overrideConfig = JSON.parse(await readFile(overridesPath, 'utf8'));
 const overrides = overrideConfig.records || {};
 
 if (plan.schema !== 'crypto-guides.canonical-switch-plan.v1') throw new Error('canonical switch plan schema mismatch');
-if (plan.state !== 'READY_NOT_APPLIED') throw new Error(`canonical switch plan state invalid: ${plan.state}`);
-if (plan.activation !== false) throw new Error('canonical switch plan must remain inactive until coordinated activation');
+if (plan.state !== 'APPLIED_PREVIEW_ONLY') throw new Error(`canonical switch plan state invalid: ${plan.state}`);
+if (plan.activation !== true) throw new Error('canonical switch source activation must be true on the preview branch');
 if (plan.evidenceAuthority !== 'docs/CANONICAL_LINEAGE_DECISION_R1.md') throw new Error('canonical switch evidence authority mismatch');
 await access(join(root, plan.evidenceAuthority));
 
-if (plan.currentPublicSemantics?.canonicalization !== 'REVISION_PAIRS_EXPLICIT_PENDING_NO_WINNER') throw new Error('current canonicalization receipt mismatch');
-if (plan.currentPublicSemantics?.decision !== 'PENDING_CLAIM_LEVEL_REVIEW') throw new Error('current canonical decision receipt mismatch');
-if (plan.currentPublicSemantics?.canonicalSlug !== null) throw new Error('current plan must assert no active canonical slug');
-if (plan.currentPublicSemantics?.routeCount !== 4) throw new Error('current revision-route count receipt mismatch');
+if (plan.currentPublicSemantics?.canonicalization !== 'REVISION_PAIRS_CANONICAL_SELECTED_SUPERSEDED_PRESERVED') throw new Error('current canonicalization receipt mismatch');
+if (plan.currentPublicSemantics?.decision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED') throw new Error('current canonical decision receipt mismatch');
+if (plan.currentPublicSemantics?.routePolicy !== 'PRESERVE_BOTH_NO_REDIRECT') throw new Error('current canonical route policy mismatch');
+if (plan.currentPublicSemantics?.winnerCount !== 2 || plan.currentPublicSemantics?.supersededCount !== 2 || plan.currentPublicSemantics?.routeCount !== 4) throw new Error('current canonical counts mismatch');
 
 if (plan.targetPublicSemantics?.canonicalization !== 'REVISION_PAIRS_CANONICAL_SELECTED_SUPERSEDED_PRESERVED') throw new Error('target canonicalization receipt mismatch');
 if (plan.targetPublicSemantics?.decision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED') throw new Error('target canonical decision receipt mismatch');
@@ -44,21 +44,25 @@ for (const group of plan.groups) {
   const canonical = overrides[group.canonicalSlug];
   const historical = overrides[group.supersededSlug];
   if (!canonical || !historical) throw new Error(`canonical plan references missing override: ${group.canonicalGroup}`);
-  for (const [slug, record] of [[group.canonicalSlug, canonical], [group.supersededSlug, historical]]) {
-    if (record.status !== 'REDUNDANT_REVISION_PAIR') throw new Error(`deferred switch route changed status early: ${slug}`);
-    if (record.canonicalDecision !== 'PENDING_CLAIM_LEVEL_REVIEW') throw new Error(`deferred switch route changed decision early: ${slug}`);
-    if (record.canonicalSlug !== null) throw new Error(`deferred switch route asserted winner early: ${slug}`);
+  for (const [slug, record, expectedRole] of [
+    [group.canonicalSlug, canonical, group.canonicalRoleTarget],
+    [group.supersededSlug, historical, group.supersededRoleTarget]
+  ]) {
+    if (record.status !== 'REDUNDANT_REVISION_PAIR') throw new Error(`canonical switch route status changed unexpectedly: ${slug}`);
+    if (record.canonicalDecision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED') throw new Error(`canonical switch route decision invalid: ${slug}`);
+    if (record.canonicalSlug !== group.canonicalSlug) throw new Error(`canonical winner binding mismatch: ${slug}`);
+    if (record.canonicalRole !== expectedRole) throw new Error(`canonical role application mismatch: ${slug}`);
     if (record.canonicalGroup !== group.canonicalGroup) throw new Error(`canonical group mismatch: ${slug}`);
     if (record.claimReview !== group.claimReview) throw new Error(`claim-review binding mismatch: ${slug}`);
     if (record.lineageReview !== group.lineageReview) throw new Error(`lineage-review binding mismatch: ${slug}`);
-    if (record.canonicalDecisionReadiness !== 'EVIDENCE_COMPLETE_SWITCH_DEFERRED') throw new Error(`canonical readiness receipt mismatch: ${slug}`);
+    if (record.canonicalDecisionReadiness !== 'APPLIED_PREVIEW_ONLY') throw new Error(`canonical readiness receipt mismatch: ${slug}`);
   }
   if (canonical.pair !== group.supersededSlug || historical.pair !== group.canonicalSlug) throw new Error(`canonical plan pair is not reciprocal: ${group.canonicalGroup}`);
 }
 
 for (const file of plan.coordinatedFiles || []) await access(join(root, file));
-if (!Array.isArray(plan.coordinatedFiles) || plan.coordinatedFiles.length !== 4) throw new Error('coordinated file-set receipt mismatch');
-if (!Array.isArray(plan.activationPreconditions) || plan.activationPreconditions.length < 8) throw new Error('activation preconditions incomplete');
+if (!Array.isArray(plan.coordinatedFiles) || plan.coordinatedFiles.length !== 6) throw new Error('coordinated file-set receipt mismatch');
+if (!Array.isArray(plan.validationRequirements) || plan.validationRequirements.length < 8) throw new Error('canonical validation requirements incomplete');
 
 const governance = plan.governance || {};
 if (governance.deleteRoutes !== false || governance.redirectRoutes !== false) throw new Error('canonical plan must preserve routes before separate authorization');

@@ -118,10 +118,10 @@ if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guid
 if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source binding missing');
 if (!guidesHtml.includes('/api/public-guides.json')) throw new Error('/guides canonical metadata source binding missing');
 if (!guidesHtml.includes('data-canonical-source')) throw new Error('/guides canonical-source receipt missing');
-if (guidesHtml.includes('data-guide-truth-boundary')) throw new Error('/guides index must not render direct-article truth boundary');
+if (guidesHtml.includes('<aside class="guide-truth-boundary"')) throw new Error('/guides index must not render direct-article truth boundary');
 
 const directGuideHtml = await readFile(join(dist, 'guides/risk-freymvork-dlya-kripto-botov/index.html'), 'utf8');
-if (!directGuideHtml.includes('data-guide-truth-boundary')) throw new Error('direct guide truth boundary missing from built high-risk route');
+if (!directGuideHtml.includes('<aside class="guide-truth-boundary"')) throw new Error('direct guide truth boundary missing from built high-risk route');
 if (!directGuideHtml.includes('RESTORED CONTENT · REVIEW REQUIRED')) throw new Error('direct guide review warning missing');
 if (!directGuideHtml.includes('YMYL review boundary')) throw new Error('direct guide YMYL warning copy missing');
 if (!directGuideHtml.includes('/guides-index.json')) throw new Error('direct guide truth boundary metadata source missing');

@@ -25,7 +25,7 @@ const fundingConvergenceArticle = String.raw`<article class="article-page public
       <ul>
         <li>универсальный восьмичасовой cadence;</li>
         <li>формулировки о независимости результата от движения цены и гарантированной арбитражной прибыли;</li>
-        <li>жёстко заданные 15% annualized spread, 50% margin ratio, 20 bps rebalance и 5% delta-drift как будто это универсальные безопасные настройки;</li>
+        <li>жёстко заданные spread, margin, rebalance и delta-drift thresholds как будто это универсальные безопасные настройки;</li>
         <li>утверждения о работающем боте, автоматическом ребалансе и переводах средств без отдельного runtime evidence.</li>
       </ul>
     </section>
@@ -95,7 +95,11 @@ export const publicGuideRepairs = [
       { label: 'legacy Binance endpoint', pattern: /fapi\.binance\.com\/fapi\/v1\/premiumIndex/iu },
       { label: 'legacy Bybit ticker endpoint', pattern: /api\.bybit\.com\/v5\/market\/tickers/iu },
       { label: 'universal eight-hour cadence', pattern: /каждые\s+8\s+часов/iu },
-      { label: 'price-independent overclaim', pattern: /не\s+зависит\s+от\s+движения\s+цены/iu }
+      { label: 'price-independent overclaim', pattern: /не\s+зависит\s+от\s+движения\s+цены/iu },
+      { label: 'legacy annualized threshold literal', pattern: /15%\s+annualized\s+spread/iu },
+      { label: 'legacy margin threshold literal', pattern: /50%\s+margin\s+ratio/iu },
+      { label: 'legacy rebalance threshold literal', pattern: /20\s+bps\s+rebalance/iu },
+      { label: 'legacy delta threshold literal', pattern: /5%\s+delta-drift/iu }
     ]
   }
 ];

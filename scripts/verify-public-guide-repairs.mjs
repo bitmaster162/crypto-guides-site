@@ -8,8 +8,8 @@ const dist = join(root, 'dist');
 const overrideConfig = JSON.parse(await readFile(join(root, 'src/data/public-review-overrides.json'), 'utf8'));
 const overrides = overrideConfig.records || {};
 
-if (!Array.isArray(publicGuideRepairs) || publicGuideRepairs.length !== 1) {
-  throw new Error(`expected exactly one bounded public guide repair in R1, got ${publicGuideRepairs?.length ?? 'invalid'}`);
+if (!Array.isArray(publicGuideRepairs) || publicGuideRepairs.length !== 2) {
+  throw new Error(`expected exactly two bounded public guide repairs in R2, got ${publicGuideRepairs?.length ?? 'invalid'}`);
 }
 
 for (const repair of publicGuideRepairs) {

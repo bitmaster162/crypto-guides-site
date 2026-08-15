@@ -1,60 +1,58 @@
 # Liquidation Cascades public repair evidence R1
 
-Date: 2026-08-14
+Date: 2026-08-15
 Scope: `liquidation-cascades-arbitrage`
-State: `EVIDENCE_READY_PUBLIC_REPAIR_NOT_APPLIED`
+State: `SOURCE_REPAIR_APPLIED_EXACT_HEAD_BUILD_REVERIFY_PENDING`
 Review status: `YMYL_TRADING_REVIEW_REQUIRED`
 Currentness: `HISTORICAL_REVERIFY_REQUIRED`
+Repair ID: `liquidation-cascades-r1`
 
-This document prepares the evidence boundary for a later public-copy repair. It deliberately does **not** add another post-build repair while the existing `funding-convergence-r1` repair has not yet received a full exact-head build execution.
+The prior implementation hold is cleared: the predecessor exact head `20ed5033aa7211a37e28665701646a65a8a9c278` received a real Vercel build that executed both `PUBLIC_GUIDE_REPAIR_*` for funding convergence and the global `DIRECT_GUIDE_SANITIZER_*` gates successfully. This document now binds the next bounded public-copy repair. The new liquidation repair remains source-only until a fresh exact-head build executes after this change.
 
 ## Decision
 
 The restored liquidation-cascade article must not treat a user-account force-order REST endpoint as a public liquidation feed, must not rely on a deprecated Bybit liquidation topic, and must not present liquidation/OI thresholds as exchange rules or deterministic bottom/squeeze predictors.
 
-A future bounded public repair should preserve the educational microstructure concept while removing stale integration paths, zero-risk language, deterministic market-bottom claims, and executable-looking universal thresholds.
+The bounded public repair preserves the educational microstructure concept while removing stale integration paths, zero-risk language, deterministic market-bottom claims, executable-looking universal thresholds and unproven runtime implications.
 
 ## Current venue/API evidence
 
 ### Binance USDⓈ-M Futures
 
-Primary source: Binance official `binance/binance-connector-go` repository, source commit `a0c61d1ef7539023322e3b138a16cc077f9ea1d1`.
+Primary sources rechecked 2026-08-15:
 
-Public WebSocket market-stream documentation:
-`clients/derivativestradingusdsfutures/src/websocketstreams/docs/MarketAPI.md`
+- Binance official futures connector source/documentation:
+  `https://github.com/binance/binance-futures-connector-python/blob/main/binance/websocket/um_futures/websocket_client.py`
+- Binance official CLI USDⓈ-M Futures examples:
+  `https://github.com/binance/binance-cli/blob/master/examples/derivatives-trading-usds-futures.md`
 
-The generated official connector documentation exposes:
-- `LiquidationOrderStreams` at `/<symbol>@forceOrder`;
-- `AllMarketLiquidationOrderStreams` at `/!forceOrder@arr`;
-- both as market WebSocket streams with no authorization requirement in the generated API docs.
+The official WebSocket client documents:
+- symbol liquidation stream `<symbol>@forceOrder`;
+- all-market liquidation stream `!forceOrder@arr`.
 
-User-account REST documentation:
-`clients/derivativestradingusdsfutures/src/restapi/docs/TradeAPI.md`
-
-The same official connector documentation exposes:
+The official CLI documentation exposes:
 - `GET /fapi/v1/forceOrders` as **User's Force Orders (USER_DATA)**.
 
 ### Binance disposition
 
-`GET /fapi/v1/forceOrders` must not be presented as the public global liquidation stream. The current public integration surface documented by Binance's official connector is the `forceOrder` WebSocket market stream, while the REST force-orders route belongs to user-account data.
+`GET /fapi/v1/forceOrders` must not be presented as the public global liquidation stream. The documented public market integration surface is the `forceOrder` WebSocket stream, while the REST force-orders route belongs to user-account data.
 
 This evidence does not claim that the WebSocket stream is a complete historical liquidation database or that it is sufficient by itself for backtesting. Collection semantics, gaps, reconnection, sampling, retention, symbol coverage and timestamp handling remain implementation concerns.
 
 ### Bybit V5
 
-Primary source: Bybit V5 API documentation.
+Primary sources rechecked 2026-08-15:
 
-Current public liquidation topic:
-`https://bybit-exchange.github.io/docs/v5/websocket/public/all-liquidation`
+- current public liquidation topic:
+  `https://bybit-exchange.github.io/docs/v5/websocket/public/all-liquidation`
+- V5 changelog:
+  `https://bybit-exchange.github.io/docs/changelog/v5`
 
-The page documents:
+The current page documents:
 - topic `allLiquidation.{symbol}`;
 - coverage for USDT, USDC and inverse contracts;
 - push frequency 500 ms;
 - event fields including symbol, side, executed size and bankruptcy price.
-
-Changelog authority:
-`https://bybit-exchange.github.io/docs/changelog/v5`
 
 The 2025-02-20 V5 changelog states:
 - `All Liquidation` was introduced as a new topic for full liquidation events;
@@ -69,8 +67,8 @@ A current public guide must use the `allLiquidation.{symbol}` evidence boundary 
 ### KEEP_VERIFIED / bounded
 
 - Liquidation events and forced position closures are observable exchange events on supported derivatives venues.
-- Public liquidation feeds exist on Binance and Bybit, but the API transport, stream naming and event semantics are venue-specific.
-- A cascade can create concentrated forced order flow and short-lived liquidity stress; this should be described as a market-microstructure mechanism, not a guaranteed trading edge.
+- Public liquidation feeds exist on Binance and Bybit, but API transport, stream naming and event semantics are venue-specific.
+- A cascade can create concentrated forced order flow and short-lived liquidity stress; this is a market-microstructure mechanism, not a guaranteed trading edge.
 
 ### REVERIFY_CURRENT
 
@@ -90,7 +88,7 @@ These values are not exchange rules and are not promoted to current public recom
 
 ### REMOVE_OR_REWRITE
 
-- the legacy public-feed claim around `https://fapi.binance.com/fapi/v1/liquidationOrders` or any equivalent stale/public-REST framing not established by current official documentation;
+- the legacy public-feed claim around `https://fapi.binance.com/fapi/v1/liquidationOrders` or equivalent stale/public-REST framing not established by current official documentation;
 - use of `GET /fapi/v1/forceOrders` as if it were public market-wide liquidation data;
 - stale Bybit liquidation-topic instructions that ignore the current `allLiquidation.{symbol}` stream and deprecation history;
 - “without price risk”, “risk-free” or equivalent zero-risk language;
@@ -98,9 +96,9 @@ These values are not exchange rules and are not promoted to current public recom
 - claims that a liquidation cluster deterministically predicts squeeze boundaries without an evaluated model, dataset, error distribution, fees/slippage treatment and out-of-sample evidence;
 - runtime wording that implies a live rebalance/transfer/trading bot without a separate runtime/effect receipt.
 
-## Required risk boundary for future public repair
+## Required risk boundary
 
-A future public copy must state that liquidation-event strategies retain, at minimum:
+The repaired public copy must state that liquidation-event strategies retain, at minimum:
 - adverse directional and basis movement during/after forced flow;
 - partial or delayed stream observation;
 - gaps/reconnect and timestamp-ordering risk;
@@ -112,26 +110,31 @@ A future public copy must state that liquidation-event strategies retain, at min
 
 Delta-neutral or hedged construction does not erase these risks.
 
-## Future deterministic public-repair gate
+## Deterministic public-repair gate
 
-Do not implement this gate until `funding-convergence-r1` has an executed full-build proof. When implementation resumes, the liquidation route gate should fail if generated public HTML contains any of the following as current/executable guidance:
+The source repair is now registered as `liquidation-cascades-r1`. Its generated public HTML must fail verification if it contains any of the following as current/executable guidance:
 
 - `fapi.binance.com/fapi/v1/liquidationOrders`;
-- `/fapi/v1/forceOrders` described as public market-wide liquidation data;
-- the deprecated Bybit liquidation topic presented as the preferred current full feed;
-- `funding_arbitrage_annualized_trigger`;
-- `max_margin_ratio`;
-- `oi_drop_rebound_threshold_pct`;
-- `max_delta_drift`;
-- `rebalance_portfolio`;
-- zero-risk / price-risk-free wording;
-- deterministic local-bottom or squeeze-boundary claims.
+- legacy internal constants `funding_arbitrage_annualized_trigger`, `max_margin_ratio`, `oi_drop_rebound_threshold_pct`, `max_delta_drift`;
+- `rebalance_portfolio` runtime implication;
+- zero-price-risk wording;
+- deterministic guaranteed-bottom or guaranteed-squeeze claims.
 
-The future gate must also require current review/currentness/YMYL labels and an explicit non-execution boundary.
+The gate also requires current review/currentness/YMYL labels, the current Binance/Bybit source markers, the distinction between `/fapi/v1/forceOrders` and public market streams, an explicit non-execution boundary and the shared risk/review qualification text.
+
+## Evidence ladder after this source change
+
+- Evidence: READY.
+- Public repair source: APPLIED ON DRAFT BRANCH.
+- Exact-head BUILD for the new repair: PENDING.
+- Deployment/readback for the new repair: PENDING.
+- Production effect: NONE.
+
+No BUILD PASS may be claimed for `liquidation-cascades-r1` until Vercel or another exact-head executor actually runs the build and emits `PUBLIC_GUIDE_REPAIR_APPLY` and `PUBLIC_GUIDE_REPAIR_GATE` receipts for this slug.
 
 ## Governance
 
-- Public repair applied: **no**.
+- Public repair applied in source: **yes, draft branch only**.
 - Route deletion: **no**.
 - Redirect: **no**.
 - Merge authorization: **no**.

@@ -1,111 +1,133 @@
 # Crypto Guides — Anthropic Vendor-State Evidence R1
 
-Status: EVIDENCE_READY / PUBLIC_REPAIR_NOT_APPLIED / NO_PRODUCTION_EFFECT
-
-Source baseline reviewed: `1c95c899b6e561fae9b15e3305c208b422033604`
-
+Date: 2026-08-15
+Status: SOURCE_REPAIRS_APPLIED_EXACT_HEAD_BUILD_REVERIFY_PENDING
 Scope:
-
 - `anthropic-models-and-upgrade`
 - `fable-mythos-agents-2026`
-- adjacent Anthropic/Fable/Mythos claims in restored vendor-state content
 
-This document is evidence-only. It does not rewrite public guide content, deploy, change billing, select a vendor/model, or authorize production/trading behavior.
+Repair IDs:
+- `anthropic-models-vendor-state-r1`
+- `fable-mythos-vendor-state-r1`
 
-## Repository claim cluster observed
+Review status for both routes remains `VOLATILE_VENDOR_STATE`.
+Currentness remains `REVERIFY_REQUIRED`.
+No production, vendor-selection, billing, runtime or trading effect is authorized.
 
-The restored `anthropic-models-and-upgrade` route currently contains present-tense vendor assertions including:
+## Why repair is required
 
+The restored vendor-state narrative contained present-tense claims tied to a short-lived June 2026 snapshot:
 - Fable 5 / Mythos 5 availability described as unstable;
-- Claude Opus 4.8 described as the most reliable and powerful public Anthropic option for current production systems;
-- static per-million-token prices for Fable 5, Opus 4.8 and Sonnet 4.6;
-- routing/upgrade recommendations framed against that vendor snapshot.
+- Opus 4.8 framed as the durable current public Anthropic default/frontier choice;
+- static model pricing and upgrade recommendations bound to that snapshot;
+- a model inventory that omitted later releases.
 
-The restored guide source also contains Fable/Mythos export-control/current-access narrative and comparative model claims that are inherently time-sensitive.
+Fresh official Anthropic evidence materially changes those claims. The public repair therefore converts vendor-state assertions into dated facts and leaves inherently volatile fields under `REVERIFY_REQUIRED` rather than replacing one brittle snapshot with another.
 
-These claims remain correctly classified by repository policy as `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED` until fresh primary-vendor evidence is attached.
+## Fresh primary-vendor evidence rechecked 2026-08-15
 
-## Fresh primary-vendor evidence
+### Fable 5 / Mythos 5 timeline
 
-Primary authority reviewed: Anthropic official announcements.
+Official Anthropic sources:
+- `https://www.anthropic.com/news/claude-fable-5-mythos-5`
+- `https://www.anthropic.com/news/fable-mythos-access`
+- `https://www.anthropic.com/news/redeploying-fable-5`
+- `https://www.anthropic.com/news/fable-safeguards-jailbreak-framework`
+- `https://www.anthropic.com/claude/fable`
+- `https://www.anthropic.com/claude/mythos`
 
-### Fable 5 / Mythos 5 availability
+Bounded facts:
+- 2026-06-09: Anthropic announced Claude Fable 5 and Claude Mythos 5.
+- 2026-06-12: Anthropic suspended access after a US-government export-control directive.
+- 2026-06-30: Anthropic announced that the export controls had been lifted and that Fable 5 would return globally on July 1.
+- 2026-07-01: Anthropic's updates state that access to Fable 5 and Mythos 5 was restored.
+- 2026-07-02: Anthropic stated that Fable 5 had been re-deployed and was globally available.
 
-Anthropic states that Fable 5 and Mythos 5 were initially released on 2026-06-09, access was suspended on 2026-06-12 following a U.S. government directive, and the export controls were later lifted. Anthropic's 2026-06-30 redeployment announcement states that Fable 5 would return globally on 2026-07-01 and that access to Fable 5 and Mythos 5 was restored.
+Disposition: the June suspension is retainable as a dated historical event. An undated present-tense statement that Fable 5 is unavailable or generally unstable is stale.
 
-Evidence anchors:
+### Fable / Mythos relationship and access scope
 
-- Anthropic — `Claude Fable 5 and Claude Mythos 5` (2026-06-09, with later status updates)
-- Anthropic — `Statement on the US government directive to suspend access to Fable 5 and Mythos 5` (2026-06-12)
-- Anthropic — `Redeploying Fable 5` (2026-06-30; restoration effective 2026-07-01)
-- Anthropic — `More details on Fable 5’s cyber safeguards and our jailbreak framework` (2026-07-02), which states Fable 5 is re-deployed and globally available
+Anthropic states that Fable 5 and Mythos 5 share the same underlying model with different safeguard/access profiles. Fable is designed for broader use with safeguards; Mythos access is more restricted and tied to trusted/research programs where specified safeguards may be lifted.
 
-Disposition: the restored blanket/current framing that Fable 5 availability is unstable and therefore Opus 4.8 is the current default public Anthropic choice is stale as a current fact claim. Historical description of the June suspension is retainable only with dates and a restored-access update.
+Disposition: the model relationship is source-supported, but exact trusted-access eligibility and provider/plan distribution remain volatile and must be reverified before operational use.
 
-### Anthropic model-family currentness
+### Sonnet 5 changes the model inventory
 
-Anthropic announced Claude Sonnet 5 on 2026-06-30. Therefore any route presenting Sonnet 4.6 / Opus 4.8 as the complete current Anthropic public-model frontier without acknowledging later vendor releases is an incomplete vendor snapshot.
+Official source:
+- `https://www.anthropic.com/news/claude-sonnet-5`
 
-Disposition: model-family ranking and upgrade recommendations require a dated current-model inventory before public present-tense use.
+Anthropic announced Claude Sonnet 5 on 2026-06-30 and documented API identifier `claude-sonnet-5` in that announcement. Therefore a current-model inventory limited to Sonnet 4.6 and Opus 4.8 is incomplete as of that date.
 
-### Fable / Mythos relationship
+Disposition: the repair does not substitute a new permanent ranking. It removes durable `best/current/default` framing and requires task-specific, dated revalidation.
 
-Anthropic states that Fable 5 and Mythos 5 share the same underlying model, with Fable carrying stronger safeguards for general use and Mythos having fewer safeguards and restricted defensive-cybersecurity availability.
+## Pricing / plans / provider state
 
-Disposition: this relationship is primary-source-supported, but access scope, plan availability and provider distribution remain volatile and must be dated.
+Official announcements contain dated prices and plan/distribution statements, including time-bounded introductory pricing for Sonnet 5 and rollout/usage-policy details for Fable 5.
+
+Those fields are intentionally not promoted into a static public pricing table in the bounded repair because:
+- the Sonnet 5 announcement itself includes a scheduled pricing transition;
+- Fable subscription inclusion/usage-credit rules have changed during rollout;
+- cloud-provider and trusted-access distribution can change independently of model capability.
+
+Exact current pricing, plan inclusion, rate limits, context/output limits, API identifiers and cloud-provider availability must be checked against current Anthropic documentation at the time of use.
 
 ## Claim-level decisions
 
 ### KEEP, but date and source
+- June 9 launch of Fable 5 / Mythos 5;
+- June 12 suspension;
+- June 30 lifting of export controls;
+- July 1 restoration;
+- Fable/Mythos underlying-model relationship with different safeguard/access profiles;
+- June 30 Sonnet 5 announcement and its dated API identifier.
 
-- Fable 5 and Mythos 5 share an underlying model with different safeguard/access profiles.
-- The June 2026 suspension occurred.
-- The suspension was later lifted and access was restored.
-- Mythos access is more restricted than general Fable access.
+### REMOVE_OR_REWRITE
+- `availability is unstable` as an undated current state;
+- `Fable 5 is unavailable` as present-tense current truth after restoration;
+- Opus 4.8 as permanent default/best/current Anthropic authority;
+- a complete-current-lineup claim omitting Sonnet 5;
+- static token prices presented as durable billing authority;
+- upgrade/routing recommendations whose premise depends on the stale June snapshot.
 
-### REWRITE before current public use
-
-- `availability is unstable` as an undated present-tense statement;
-- `Opus 4.8 is the most reliable/powerful public Anthropic option` as current vendor truth;
-- current model hierarchy that omits later Anthropic releases;
-- any upgrade recommendation whose premise depends on the stale availability snapshot.
-
-### REVERIFY separately
-
+### REVERIFY on each operational use
 - exact current API model identifiers;
 - exact context/output limits;
-- exact token pricing and caching economics;
-- subscription-plan inclusion / usage-credit policy;
+- exact token/caching/batch pricing;
+- plan inclusion and usage-credit policy;
 - cloud-provider availability;
-- comparative benchmark superiority;
-- latency and routing recommendations.
+- rate limits;
+- benchmark comparisons and methodology;
+- latency/routing recommendations;
+- Mythos trusted-access eligibility and safeguards.
 
-Static prices in restored content are not current billing authority until checked against Anthropic's current pricing/API documentation on the repair execution date.
+## Public repair contract
 
-## Public repair requirements
+Both generated pages must:
+1. retain `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED`;
+2. present the suspension/restoration as a dated timeline;
+3. avoid undated `best/current/default` model rankings;
+4. avoid static pricing as current billing authority;
+5. distinguish capability, safeguard profile and access authority;
+6. state exactly: `This vendor snapshot is dated, not durable authority.`;
+7. preserve routes with no redirect/delete;
+8. expose no restored MemIR / Executable Parameters surfaces after the global sanitizer.
 
-A future bounded public repair for these routes should:
+## Evidence ladder after this source change
 
-1. convert vendor-state claims to explicitly dated facts;
-2. distinguish the June 12 suspension from the July 1 restoration;
-3. remove or reverify present-tense `best/current/default` model recommendations;
-4. remove static pricing from current-authority framing unless bound to fresh official pricing evidence;
-5. preserve architectural observations that do not depend on vendor currentness, but label them as design recommendations rather than vendor facts;
-6. preserve `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED` until an exact-head build executes the repair verifier.
+- Evidence: READY.
+- Two public repairs: APPLIED IN SOURCE ON DRAFT BRANCH.
+- Exact-head BUILD for the new vendor repairs: PENDING.
+- Deployment/readback: PENDING.
+- Production effect: NONE.
 
-## Evidence ceiling
-
-This evidence proves a currentness contradiction in the restored vendor-state narrative. It does **not** prove that every numerical/model claim in the article is wrong, nor does it establish a complete current Anthropic pricing/benchmark matrix.
-
-No public rewrite was applied in this step.
+No BUILD PASS may be claimed for either vendor repair until an exact-head executor emits their route-specific `PUBLIC_GUIDE_REPAIR_APPLY` and `PUBLIC_GUIDE_REPAIR_GATE` receipts plus the sanitizer/public-contract gates.
 
 ## Governance
 
-- source/evidence only;
-- no deployment;
 - no merge;
 - no production promotion;
 - no billing/plan change;
+- no vendor/model selection authority;
 - no credential/API-key mutation;
 - no runtime effect;
 - no trading/capital effect;

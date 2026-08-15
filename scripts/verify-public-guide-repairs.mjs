@@ -8,8 +8,8 @@ const dist = join(root, 'dist');
 const overrideConfig = JSON.parse(await readFile(join(root, 'src/data/public-review-overrides.json'), 'utf8'));
 const overrides = overrideConfig.records || {};
 
-if (!Array.isArray(repairs) || repairs.length !== 5) {
-  throw new Error(`expected exactly five bounded public guide repairs in R4, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 7) {
+  throw new Error(`expected exactly seven bounded public guide repairs in R5, got ${repairs?.length ?? 'invalid'}`);
 }
 
 for (const repair of repairs) {
@@ -18,7 +18,9 @@ for (const repair of repairs) {
   if (!review) throw new Error(`review override missing for repaired guide: ${repair.slug}`);
   if (review.status !== repair.expectedReviewStatus) throw new Error(`repair must not upgrade review status: ${repair.slug} ${review.status}`);
   if (review.currentness !== repair.expectedCurrentness) throw new Error(`repair must not upgrade currentness: ${repair.slug} ${review.currentness}`);
-  if (review.ymyl !== true) throw new Error(`repair must preserve YMYL boundary: ${repair.slug}`);
+  if (repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED' && review.ymyl !== true) {
+    throw new Error(`trading repair must preserve YMYL boundary: ${repair.slug}`);
+  }
 
   const outPath = join(dist, 'guides', repair.slug, 'index.html');
   const html = await readFile(outPath, 'utf8');
@@ -34,9 +36,17 @@ for (const repair of repairs) {
   for (const forbidden of repair.forbiddenPatterns) {
     if (forbidden.pattern.test(html)) throw new Error(`public repair leaked ${forbidden.label}: ${repair.slug}`);
   }
-  if (!html.includes('Эта страница не является торговым разрешением')) throw new Error(`non-execution boundary missing: ${repair.slug}`);
-  if (!html.includes('delta-neutral не означает risk-neutral')) throw new Error(`risk qualification heading missing: ${repair.slug}`);
-  if (!html.includes('Исправление публичной копии не является сертификацией стратегии')) throw new Error(`review-state qualification missing: ${repair.slug}`);
+
+  if (repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED') {
+    if (!html.includes('Эта страница не является торговым разрешением')) throw new Error(`non-execution boundary missing: ${repair.slug}`);
+    if (!html.includes('delta-neutral не означает risk-neutral')) throw new Error(`risk qualification heading missing: ${repair.slug}`);
+    if (!html.includes('Исправление публичной копии не является сертификацией стратегии')) throw new Error(`review-state qualification missing: ${repair.slug}`);
+  }
+
+  if (repair.expectedReviewStatus === 'VOLATILE_VENDOR_STATE') {
+    if (review.ymyl !== false) throw new Error(`vendor-state repair unexpectedly marked YMYL: ${repair.slug}`);
+    if (!html.includes('This vendor snapshot is dated, not durable authority.')) throw new Error(`dated vendor-state boundary missing: ${repair.slug}`);
+  }
 
   console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.status} currentness=${review.currentness} ymyl=${review.ymyl}`);
 }

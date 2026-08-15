@@ -1,9 +1,11 @@
 import { publicGuideRepairs } from './public-guide-repairs.mjs';
 import { btcFuturesRepairs } from './public-guide-repairs-btc-futures.mjs';
 import { riskFrameworkRepairs } from './public-guide-repairs-risk-framework.mjs';
+import { anthropicVendorRepairs } from './public-guide-repairs-anthropic.mjs';
 
 export const allPublicGuideRepairs = [
   ...publicGuideRepairs,
   ...btcFuturesRepairs,
-  ...riskFrameworkRepairs
+  ...riskFrameworkRepairs,
+  ...anthropicVendorRepairs
 ];

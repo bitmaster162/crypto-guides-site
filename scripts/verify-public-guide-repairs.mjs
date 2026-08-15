@@ -8,8 +8,8 @@ const dist = join(root, 'dist');
 const overrideConfig = JSON.parse(await readFile(join(root, 'src/data/public-review-overrides.json'), 'utf8'));
 const overrides = overrideConfig.records || {};
 
-if (!Array.isArray(repairs) || repairs.length !== 8) {
-  throw new Error(`expected exactly eight bounded public guide repairs in R6, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 9) {
+  throw new Error(`expected exactly nine bounded public guide repairs in R7, got ${repairs?.length ?? 'invalid'}`);
 }
 
 for (const repair of repairs) {
@@ -48,6 +48,13 @@ for (const repair of repairs) {
     const hasVendorBoundary = html.includes('This vendor snapshot is dated, not durable authority.');
     const hasPricingBoundary = html.includes('This pricing snapshot is dated, not billing authority.');
     if (!hasVendorBoundary && !hasPricingBoundary) throw new Error(`dated vendor-state boundary missing: ${repair.slug}`);
+  }
+
+  if (repair.expectedReviewStatus === 'INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED') {
+    if (review.ymyl !== false) throw new Error(`infrastructure repair unexpectedly marked YMYL: ${repair.slug}`);
+    if (!html.includes('This historical infrastructure specification is not current runtime authority.')) {
+      throw new Error(`historical infrastructure authority boundary missing: ${repair.slug}`);
+    }
   }
 
   console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.status} currentness=${review.currentness} ymyl=${review.ymyl}`);

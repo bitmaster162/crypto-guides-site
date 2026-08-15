@@ -2,17 +2,19 @@ import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { publicGuideRepairs } from '../src/data/public-guide-repairs.mjs';
+import { btcFuturesRepairs } from '../src/data/public-guide-repairs-btc-futures.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const overrideConfig = JSON.parse(await readFile(join(root, 'src/data/public-review-overrides.json'), 'utf8'));
 const overrides = overrideConfig.records || {};
+const repairs = [...publicGuideRepairs, ...btcFuturesRepairs];
 
-if (!Array.isArray(publicGuideRepairs) || publicGuideRepairs.length !== 2) {
-  throw new Error(`expected exactly two bounded public guide repairs in R2, got ${publicGuideRepairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 4) {
+  throw new Error(`expected exactly four bounded public guide repairs in R3, got ${repairs?.length ?? 'invalid'}`);
 }
 
-for (const repair of publicGuideRepairs) {
+for (const repair of repairs) {
   await access(join(root, repair.evidenceDoc));
   const review = overrides[repair.slug];
   if (!review) throw new Error(`review override missing for repaired guide: ${repair.slug}`);
@@ -41,4 +43,4 @@ for (const repair of publicGuideRepairs) {
   console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.status} currentness=${review.currentness} ymyl=${review.ymyl}`);
 }
 
-console.log(`PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=${publicGuideRepairs.length}`);
+console.log(`PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=${repairs.length}`);

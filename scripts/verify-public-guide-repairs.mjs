@@ -11,8 +11,8 @@ const reviewBySlug = new Map((publicApi.records || []).map((record) => [record.s
 if (publicApi.schema !== 'crypto-guides.public-api.v1') {
   throw new Error(`public API schema mismatch: ${publicApi.schema || '<missing>'}`);
 }
-if (!Array.isArray(repairs) || repairs.length !== 11) {
-  throw new Error(`expected exactly eleven bounded public guide repairs in R8, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 12) {
+  throw new Error(`expected exactly twelve bounded public guide repairs in R9, got ${repairs?.length ?? 'invalid'}`);
 }
 
 for (const repair of repairs) {
@@ -37,7 +37,6 @@ for (const repair of repairs) {
     if (!html.includes(required)) throw new Error(`public repair required marker missing for ${repair.slug}: ${required}`);
   }
 
-  // Forbidden patterns are about repaired guide content, not route/canonical metadata.
   const articleMatch = html.match(/<article\b[^>]*class="article-page[^>]*>[\s\S]*?<\/article>/iu);
   if (!articleMatch) throw new Error(`repaired article boundary missing: ${repair.slug}`);
   const forbiddenSurface = articleMatch[0].replace(/\sdata-public-guide-repair="[^"]+"/gu, '');
@@ -62,6 +61,16 @@ for (const repair of repairs) {
     if (review.ymyl !== false) throw new Error(`infrastructure repair unexpectedly marked YMYL: ${repair.slug}`);
     if (!html.includes('This historical infrastructure specification is not current runtime authority.')) {
       throw new Error(`historical infrastructure authority boundary missing: ${repair.slug}`);
+    }
+  }
+
+  if (repair.expectedReviewStatus === 'SECURITY_SAFETY_REVIEW_REQUIRED') {
+    if (review.ymyl !== false) throw new Error(`security repair unexpectedly marked YMYL: ${repair.slug}`);
+    if (!html.includes('This security architecture is defense in depth, not compromise-proof authority.')) {
+      throw new Error(`security defense-in-depth boundary missing: ${repair.slug}`);
+    }
+    if (!html.includes('Эта страница не является разрешением на создание или использование exchange credentials')) {
+      throw new Error(`security no-effect boundary missing: ${repair.slug}`);
     }
   }
 

@@ -11,9 +11,14 @@ const reviewBySlug = new Map((publicApi.records || []).map((record) => [record.s
 if (publicApi.schema !== 'crypto-guides.public-api.v1') {
   throw new Error(`public API schema mismatch: ${publicApi.schema || '<missing>'}`);
 }
-if (!Array.isArray(repairs) || repairs.length !== 12) {
-  throw new Error(`expected exactly twelve bounded public guide repairs in R9, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 13) {
+  throw new Error(`expected exactly thirteen bounded public guide repairs in R10, got ${repairs?.length ?? 'invalid'}`);
 }
+
+const escapeHtmlText = (value) => String(value)
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;');
 
 for (const repair of repairs) {
   await access(join(root, repair.evidenceDoc));
@@ -21,8 +26,12 @@ for (const repair of repairs) {
   if (!review) throw new Error(`routed public review record missing for repaired guide: ${repair.slug}`);
   if (review.reviewStatus !== repair.expectedReviewStatus) throw new Error(`repair must preserve routed review status: ${repair.slug} ${review.reviewStatus}`);
   if (review.currentness !== repair.expectedCurrentness) throw new Error(`repair must preserve routed currentness: ${repair.slug} ${review.currentness}`);
-  if (repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED' && review.ymyl !== true) {
-    throw new Error(`trading repair must preserve YMYL boundary: ${repair.slug}`);
+
+  const expectedYmyl = typeof repair.expectedYmyl === 'boolean'
+    ? repair.expectedYmyl
+    : repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED';
+  if (review.ymyl !== expectedYmyl) {
+    throw new Error(`repair must preserve routed YMYL state: ${repair.slug} expected=${expectedYmyl} actual=${review.ymyl}`);
   }
 
   const outPath = join(dist, 'guides', repair.slug, 'index.html');
@@ -37,6 +46,15 @@ for (const repair of repairs) {
     if (!html.includes(required)) throw new Error(`public repair required marker missing for ${repair.slug}: ${required}`);
   }
 
+  if (repair.publicTitle !== undefined || repair.sourceTitle !== undefined) {
+    if (!repair.publicTitle || !repair.sourceTitle) throw new Error(`public metadata repair requires sourceTitle + publicTitle: ${repair.slug}`);
+    if (review.title !== repair.publicTitle) throw new Error(`public API repaired title mismatch: ${repair.slug} ${review.title}`);
+    const newHeadTitle = `<title>${escapeHtmlText(repair.publicTitle)} · Crypto Guides</title>`;
+    const oldHeadTitle = `<title>${escapeHtmlText(repair.sourceTitle)} · Crypto Guides</title>`;
+    if (!html.includes(newHeadTitle)) throw new Error(`repaired direct-page title missing: ${repair.slug}`);
+    if (html.includes(oldHeadTitle)) throw new Error(`source direct-page title survived metadata repair: ${repair.slug}`);
+  }
+
   const articleMatch = html.match(/<article\b[^>]*class="article-page[^>]*>[\s\S]*?<\/article>/iu);
   if (!articleMatch) throw new Error(`repaired article boundary missing: ${repair.slug}`);
   const forbiddenSurface = articleMatch[0].replace(/\sdata-public-guide-repair="[^"]+"/gu, '');
@@ -44,28 +62,30 @@ for (const repair of repairs) {
     if (forbidden.pattern.test(forbiddenSurface)) throw new Error(`public repair leaked ${forbidden.label}: ${repair.slug}`);
   }
 
+  if (expectedYmyl) {
+    if (!html.includes('Эта страница не является торговым разрешением')) throw new Error(`YMYL non-execution boundary missing: ${repair.slug}`);
+  }
+
   if (repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED') {
-    if (!html.includes('Эта страница не является торговым разрешением')) throw new Error(`non-execution boundary missing: ${repair.slug}`);
     if (!html.includes('delta-neutral не означает risk-neutral')) throw new Error(`risk qualification heading missing: ${repair.slug}`);
     if (!html.includes('Исправление публичной копии не является сертификацией стратегии')) throw new Error(`review-state qualification missing: ${repair.slug}`);
   }
 
   if (repair.expectedReviewStatus === 'VOLATILE_VENDOR_STATE') {
-    if (review.ymyl !== false) throw new Error(`vendor-state repair unexpectedly marked YMYL: ${repair.slug}`);
     const hasVendorBoundary = html.includes('This vendor snapshot is dated, not durable authority.');
     const hasPricingBoundary = html.includes('This pricing snapshot is dated, not billing authority.');
     if (!hasVendorBoundary && !hasPricingBoundary) throw new Error(`dated vendor-state boundary missing: ${repair.slug}`);
   }
 
   if (repair.expectedReviewStatus === 'INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED') {
-    if (review.ymyl !== false) throw new Error(`infrastructure repair unexpectedly marked YMYL: ${repair.slug}`);
-    if (!html.includes('This historical infrastructure specification is not current runtime authority.')) {
-      throw new Error(`historical infrastructure authority boundary missing: ${repair.slug}`);
+    const hasHistoricalInfraBoundary = html.includes('This historical infrastructure specification is not current runtime authority.');
+    const hasInfraBoundary = html.includes('This infrastructure specification is not current runtime authority.');
+    if (!hasHistoricalInfraBoundary && !hasInfraBoundary) {
+      throw new Error(`infrastructure authority boundary missing: ${repair.slug}`);
     }
   }
 
   if (repair.expectedReviewStatus === 'SECURITY_SAFETY_REVIEW_REQUIRED') {
-    if (review.ymyl !== false) throw new Error(`security repair unexpectedly marked YMYL: ${repair.slug}`);
     if (!html.includes('This security architecture is defense in depth, not compromise-proof authority.')) {
       throw new Error(`security defense-in-depth boundary missing: ${repair.slug}`);
     }

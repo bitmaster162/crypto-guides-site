@@ -34,5 +34,9 @@ export const publicGuideTitleRepairs = {
   'python-rt-architecture': {
     sourceTitle: 'Архитектура Python-контура для жесткого реального времени (hb <= 0.5 мс)',
     publicTitle: 'Python low-latency contour: RT mechanisms, WCET and measurement instead of a 0.5 ms guarantee'
+  },
+  'regime-timing-30-120-min': {
+    sourceTitle: 'Тайминг регима: входить через 30-120 минут после смены тренда',
+    publicTitle: 'Возраст рыночного режима: как проверять timing buckets без универсального окна 30–120 минут'
   }
 };

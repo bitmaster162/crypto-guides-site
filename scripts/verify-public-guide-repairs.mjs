@@ -12,8 +12,8 @@ const reviewBySlug = new Map((publicApi.records || []).map((record) => [record.s
 if (publicApi.schema !== 'crypto-guides.public-api.v1') {
   throw new Error(`public API schema mismatch: ${publicApi.schema || '<missing>'}`);
 }
-if (!Array.isArray(repairs) || repairs.length !== 14) {
-  throw new Error(`expected exactly fourteen bounded public guide repairs in R12, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 15) {
+  throw new Error(`expected exactly fifteen bounded public guide repairs in R13, got ${repairs?.length ?? 'invalid'}`);
 }
 
 const escapeHtmlText = (value) => String(value)
@@ -89,8 +89,15 @@ for (const repair of repairs) {
   }
 
   if (repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED') {
-    if (!html.includes('delta-neutral не означает risk-neutral')) throw new Error(`risk qualification heading missing: ${repair.slug}`);
-    if (!html.includes('Исправление публичной копии не является сертификацией стратегии')) throw new Error(`review-state qualification missing: ${repair.slug}`);
+    const boundaryMarkers = Array.isArray(repair.ymylBoundaryMarkers) && repair.ymylBoundaryMarkers.length > 0
+      ? repair.ymylBoundaryMarkers
+      : [
+          'delta-neutral не означает risk-neutral',
+          'Исправление публичной копии не является сертификацией стратегии'
+        ];
+    for (const boundary of boundaryMarkers) {
+      if (!html.includes(boundary)) throw new Error(`YMYL route-specific boundary missing for ${repair.slug}: ${boundary}`);
+    }
   }
 
   if (repair.expectedReviewStatus === 'VOLATILE_VENDOR_STATE') {
@@ -125,6 +132,6 @@ for (const repair of repairs) {
   console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.reviewStatus} currentness=${review.currentness} ymyl=${review.ymyl}`);
 }
 
-if (metadataRepairCount !== 10) throw new Error(`expected ten title-authority repairs in R12, got ${metadataRepairCount}`);
+if (metadataRepairCount !== 11) throw new Error(`expected eleven title-authority repairs in R13, got ${metadataRepairCount}`);
 console.log(`PUBLIC_TITLE_AUTHORITY_GATE_SUMMARY=PASS repairs=${metadataRepairCount}`);
 console.log(`PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=${repairs.length}`);

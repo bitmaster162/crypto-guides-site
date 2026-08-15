@@ -30,5 +30,9 @@ export const publicGuideTitleRepairs = {
   'tee-agent-secrets': {
     sourceTitle: 'TEE & MPC: Безопасное управление ключами автономных ИИ-агентов',
     publicTitle: 'TEE и threshold cryptography для agent secrets: defense in depth, а не гарантия'
+  },
+  'python-rt-architecture': {
+    sourceTitle: 'Архитектура Python-контура для жесткого реального времени (hb <= 0.5 мс)',
+    publicTitle: 'Python low-latency contour: RT mechanisms, WCET and measurement instead of a 0.5 ms guarantee'
   }
 };

@@ -7,6 +7,7 @@ import { infrastructureRepairs } from './public-guide-repairs-infrastructure.mjs
 import { strategyFailureRepairs } from './public-guide-repairs-strategy-failure.mjs';
 import { securityRepairs } from './public-guide-repairs-security.mjs';
 import { hyperliquidInfrastructureRepairs } from './public-guide-repairs-hyperliquid.mjs';
+import { pythonRtInfrastructureRepairs } from './public-guide-repairs-python-rt.mjs';
 
 export const allPublicGuideRepairs = [
   ...publicGuideRepairs,
@@ -17,5 +18,6 @@ export const allPublicGuideRepairs = [
   ...infrastructureRepairs,
   ...strategyFailureRepairs,
   ...securityRepairs,
-  ...hyperliquidInfrastructureRepairs
+  ...hyperliquidInfrastructureRepairs,
+  ...pythonRtInfrastructureRepairs
 ];

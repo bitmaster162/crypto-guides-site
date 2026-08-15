@@ -1,12 +1,10 @@
 import { access, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { publicGuideRepairs } from '../src/data/public-guide-repairs.mjs';
-import { btcFuturesRepairs } from '../src/data/public-guide-repairs-btc-futures.mjs';
+import { allPublicGuideRepairs as repairs } from '../src/data/public-guide-repair-registry.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
-const repairs = [...publicGuideRepairs, ...btcFuturesRepairs];
 
 if (!Array.isArray(repairs) || repairs.length === 0) {
   throw new Error('public guide repair registry is empty');

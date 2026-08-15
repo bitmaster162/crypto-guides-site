@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { publicGuideRepairs } from '../src/data/public-guide-repairs.mjs';
+import { allPublicGuideRepairs as repairs } from '../src/data/public-guide-repair-registry.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
@@ -11,7 +11,7 @@ const records = Array.isArray(manifest.records) ? manifest.records : [];
 if (manifest.schema !== 'crypto-guides.public-index.v1') throw new Error(`guide index schema mismatch: ${manifest.schema || '<missing>'}`);
 if (records.length < 150 || manifest.uniqueGuides !== records.length) throw new Error(`guide route census invalid: records=${records.length} declared=${manifest.uniqueGuides}`);
 
-const repairBySlug = new Map(publicGuideRepairs.map((repair) => [repair.slug, repair]));
+const repairBySlug = new Map(repairs.map((repair) => [repair.slug, repair]));
 const slugs = new Set();
 let memirRemoved = 0;
 let paramsRemoved = 0;

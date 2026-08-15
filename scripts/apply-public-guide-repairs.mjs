@@ -2,6 +2,7 @@ import { access, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { allPublicGuideRepairs as repairs } from '../src/data/public-guide-repair-registry.mjs';
+import { publicGuideTitleRepairs } from '../src/data/public-guide-title-repairs.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
@@ -21,6 +22,20 @@ const guidesIndex = JSON.parse(await readFile(guidesIndexPath, 'utf8'));
 const publicApi = JSON.parse(await readFile(publicApiPath, 'utf8'));
 const guidesIndexBySlug = new Map((guidesIndex.records || []).map((record) => [record.slug, record]));
 const publicApiBySlug = new Map((publicApi.records || []).map((record) => [record.slug, record]));
+const repairSlugs = new Set(repairs.map((repair) => repair.slug));
+const orphanTitleRepairs = Object.keys(publicGuideTitleRepairs).filter((slug) => !repairSlugs.has(slug));
+if (orphanTitleRepairs.length) throw new Error(`title repairs reference non-repaired routes: ${orphanTitleRepairs.join(', ')}`);
+
+function metadataSpecFor(repair) {
+  const central = publicGuideTitleRepairs[repair.slug] || null;
+  const inline = repair.publicTitle !== undefined || repair.sourceTitle !== undefined
+    ? { sourceTitle: repair.sourceTitle, publicTitle: repair.publicTitle }
+    : null;
+  if (central && inline && (central.sourceTitle !== inline.sourceTitle || central.publicTitle !== inline.publicTitle)) {
+    throw new Error(`central/inline public title repair mismatch: ${repair.slug}`);
+  }
+  return central || inline;
+}
 
 const seen = new Set();
 let metadataRepairs = 0;
@@ -40,21 +55,23 @@ for (const repair of repairs) {
   let repaired = html.replace(articlePattern, repair.articleHtml.trim());
   if (repaired === html) throw new Error(`public guide repair made no change: ${repair.slug}`);
 
-  if (repair.publicTitle !== undefined || repair.sourceTitle !== undefined) {
-    if (!repair.publicTitle || !repair.sourceTitle) throw new Error(`public metadata repair requires sourceTitle + publicTitle: ${repair.slug}`);
+  const metadataSpec = metadataSpecFor(repair);
+  if (metadataSpec) {
+    const { sourceTitle, publicTitle } = metadataSpec;
+    if (!sourceTitle || !publicTitle) throw new Error(`public metadata repair requires sourceTitle + publicTitle: ${repair.slug}`);
 
-    const oldHeadTitle = `<title>${escapeHtmlText(repair.sourceTitle)} · Crypto Guides</title>`;
-    const newHeadTitle = `<title>${escapeHtmlText(repair.publicTitle)} · Crypto Guides</title>`;
+    const oldHeadTitle = `<title>${escapeHtmlText(sourceTitle)} · Crypto Guides</title>`;
+    const newHeadTitle = `<title>${escapeHtmlText(publicTitle)} · Crypto Guides</title>`;
     if (!repaired.includes(oldHeadTitle)) throw new Error(`source direct-page title missing before metadata repair: ${repair.slug}`);
     repaired = repaired.replace(oldHeadTitle, newHeadTitle);
 
     const indexRecord = guidesIndexBySlug.get(repair.slug);
     const apiRecord = publicApiBySlug.get(repair.slug);
     if (!indexRecord || !apiRecord) throw new Error(`public metadata record missing: ${repair.slug}`);
-    if (indexRecord.title !== repair.sourceTitle) throw new Error(`guides-index source title drift before metadata repair: ${repair.slug}`);
-    if (apiRecord.title !== repair.sourceTitle) throw new Error(`public-api source title drift before metadata repair: ${repair.slug}`);
-    indexRecord.title = repair.publicTitle;
-    apiRecord.title = repair.publicTitle;
+    if (indexRecord.title !== sourceTitle) throw new Error(`guides-index source title drift before metadata repair: ${repair.slug}`);
+    if (apiRecord.title !== sourceTitle) throw new Error(`public-api source title drift before metadata repair: ${repair.slug}`);
+    indexRecord.title = publicTitle;
+    apiRecord.title = publicTitle;
     metadataRepairs += 1;
     console.log(`PUBLIC_GUIDE_METADATA_REPAIR=PASS slug=${repair.slug} repair=${repair.repairId}`);
   }

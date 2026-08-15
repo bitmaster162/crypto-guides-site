@@ -2,6 +2,7 @@ import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { allPublicGuideRepairs as repairs } from '../src/data/public-guide-repair-registry.mjs';
+import { publicGuideTitleRepairs } from '../src/data/public-guide-title-repairs.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
@@ -12,7 +13,7 @@ if (publicApi.schema !== 'crypto-guides.public-api.v1') {
   throw new Error(`public API schema mismatch: ${publicApi.schema || '<missing>'}`);
 }
 if (!Array.isArray(repairs) || repairs.length !== 13) {
-  throw new Error(`expected exactly thirteen bounded public guide repairs in R10, got ${repairs?.length ?? 'invalid'}`);
+  throw new Error(`expected exactly thirteen bounded public guide repairs in R11, got ${repairs?.length ?? 'invalid'}`);
 }
 
 const escapeHtmlText = (value) => String(value)
@@ -20,6 +21,22 @@ const escapeHtmlText = (value) => String(value)
   .replaceAll('<', '&lt;')
   .replaceAll('>', '&gt;');
 
+const repairSlugs = new Set(repairs.map((repair) => repair.slug));
+const orphanTitleRepairs = Object.keys(publicGuideTitleRepairs).filter((slug) => !repairSlugs.has(slug));
+if (orphanTitleRepairs.length) throw new Error(`title repairs reference non-repaired routes: ${orphanTitleRepairs.join(', ')}`);
+
+function metadataSpecFor(repair) {
+  const central = publicGuideTitleRepairs[repair.slug] || null;
+  const inline = repair.publicTitle !== undefined || repair.sourceTitle !== undefined
+    ? { sourceTitle: repair.sourceTitle, publicTitle: repair.publicTitle }
+    : null;
+  if (central && inline && (central.sourceTitle !== inline.sourceTitle || central.publicTitle !== inline.publicTitle)) {
+    throw new Error(`central/inline public title repair mismatch: ${repair.slug}`);
+  }
+  return central || inline;
+}
+
+let metadataRepairCount = 0;
 for (const repair of repairs) {
   await access(join(root, repair.evidenceDoc));
   const review = reviewBySlug.get(repair.slug);
@@ -46,13 +63,18 @@ for (const repair of repairs) {
     if (!html.includes(required)) throw new Error(`public repair required marker missing for ${repair.slug}: ${required}`);
   }
 
-  if (repair.publicTitle !== undefined || repair.sourceTitle !== undefined) {
-    if (!repair.publicTitle || !repair.sourceTitle) throw new Error(`public metadata repair requires sourceTitle + publicTitle: ${repair.slug}`);
-    if (review.title !== repair.publicTitle) throw new Error(`public API repaired title mismatch: ${repair.slug} ${review.title}`);
-    const newHeadTitle = `<title>${escapeHtmlText(repair.publicTitle)} · Crypto Guides</title>`;
-    const oldHeadTitle = `<title>${escapeHtmlText(repair.sourceTitle)} · Crypto Guides</title>`;
+  const metadataSpec = metadataSpecFor(repair);
+  if (metadataSpec) {
+    const { sourceTitle, publicTitle } = metadataSpec;
+    if (!sourceTitle || !publicTitle) throw new Error(`public metadata repair requires sourceTitle + publicTitle: ${repair.slug}`);
+    metadataRepairCount += 1;
+    if (review.title !== publicTitle) throw new Error(`public API repaired title mismatch: ${repair.slug} ${review.title}`);
+    const newHeadTitle = `<title>${escapeHtmlText(publicTitle)} · Crypto Guides</title>`;
+    const oldHeadTitle = `<title>${escapeHtmlText(sourceTitle)} · Crypto Guides</title>`;
     if (!html.includes(newHeadTitle)) throw new Error(`repaired direct-page title missing: ${repair.slug}`);
     if (html.includes(oldHeadTitle)) throw new Error(`source direct-page title survived metadata repair: ${repair.slug}`);
+    if (!html.includes(`<h1>${publicTitle}</h1>`)) throw new Error(`repaired title/body H1 authority mismatch: ${repair.slug}`);
+    console.log(`PUBLIC_TITLE_AUTHORITY_GATE=PASS slug=${repair.slug} title=${publicTitle}`);
   }
 
   const articleMatch = html.match(/<article\b[^>]*class="article-page[^>]*>[\s\S]*?<\/article>/iu);
@@ -97,4 +119,6 @@ for (const repair of repairs) {
   console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.reviewStatus} currentness=${review.currentness} ymyl=${review.ymyl}`);
 }
 
+if (metadataRepairCount !== 9) throw new Error(`expected nine title-authority repairs in R11, got ${metadataRepairCount}`);
+console.log(`PUBLIC_TITLE_AUTHORITY_GATE_SUMMARY=PASS repairs=${metadataRepairCount}`);
 console.log(`PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=${repairs.length}`);

@@ -108,7 +108,7 @@ export const securityRepairs = [
       { label: 'legacy Binance allowlist endpoint', pattern: /fapi\.binance\.com/iu },
       { label: 'legacy implemented revoke command', pattern: /revoke_session_keys/iu },
       { label: 'legacy fixed quorum example as policy', pattern: /(?:2\s+из\s+3|2-of-3)[\s\S]{0,100}(?:требует|обязат|default|лимит|policy)/iu },
-      { label: 'compromise-proof overclaim', pattern: /(?:невзламываем|compromise[- ]?proof|полностью\s+защищ)/iu }
+      { label: 'compromise-proof overclaim', pattern: /(?:невзламываем|полностью\s+защищ|guaranteed[\s\S]{0,40}compromise[- ]?proof)/iu }
     ]
   }
 ];

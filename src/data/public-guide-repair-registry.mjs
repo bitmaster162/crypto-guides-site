@@ -4,6 +4,7 @@ import { riskFrameworkRepairs } from './public-guide-repairs-risk-framework.mjs'
 import { anthropicVendorRepairs } from './public-guide-repairs-anthropic.mjs';
 import { frontierVendorRepairs } from './public-guide-repairs-frontier-routing.mjs';
 import { infrastructureRepairs } from './public-guide-repairs-infrastructure.mjs';
+import { strategyFailureRepairs } from './public-guide-repairs-strategy-failure.mjs';
 
 export const allPublicGuideRepairs = [
   ...publicGuideRepairs,
@@ -11,5 +12,6 @@ export const allPublicGuideRepairs = [
   ...riskFrameworkRepairs,
   ...anthropicVendorRepairs,
   ...frontierVendorRepairs,
-  ...infrastructureRepairs
+  ...infrastructureRepairs,
+  ...strategyFailureRepairs
 ];

@@ -5,19 +5,22 @@ import { allPublicGuideRepairs as repairs } from '../src/data/public-guide-repai
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
-const overrideConfig = JSON.parse(await readFile(join(root, 'src/data/public-review-overrides.json'), 'utf8'));
-const overrides = overrideConfig.records || {};
+const publicApi = JSON.parse(await readFile(join(dist, 'api', 'public-guides.json'), 'utf8'));
+const reviewBySlug = new Map((publicApi.records || []).map((record) => [record.slug, record]));
 
-if (!Array.isArray(repairs) || repairs.length !== 9) {
-  throw new Error(`expected exactly nine bounded public guide repairs in R7, got ${repairs?.length ?? 'invalid'}`);
+if (publicApi.schema !== 'crypto-guides.public-api.v1') {
+  throw new Error(`public API schema mismatch: ${publicApi.schema || '<missing>'}`);
+}
+if (!Array.isArray(repairs) || repairs.length !== 11) {
+  throw new Error(`expected exactly eleven bounded public guide repairs in R8, got ${repairs?.length ?? 'invalid'}`);
 }
 
 for (const repair of repairs) {
   await access(join(root, repair.evidenceDoc));
-  const review = overrides[repair.slug];
-  if (!review) throw new Error(`review override missing for repaired guide: ${repair.slug}`);
-  if (review.status !== repair.expectedReviewStatus) throw new Error(`repair must not upgrade review status: ${repair.slug} ${review.status}`);
-  if (review.currentness !== repair.expectedCurrentness) throw new Error(`repair must not upgrade currentness: ${repair.slug} ${review.currentness}`);
+  const review = reviewBySlug.get(repair.slug);
+  if (!review) throw new Error(`routed public review record missing for repaired guide: ${repair.slug}`);
+  if (review.reviewStatus !== repair.expectedReviewStatus) throw new Error(`repair must preserve routed review status: ${repair.slug} ${review.reviewStatus}`);
+  if (review.currentness !== repair.expectedCurrentness) throw new Error(`repair must preserve routed currentness: ${repair.slug} ${review.currentness}`);
   if (repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED' && review.ymyl !== true) {
     throw new Error(`trading repair must preserve YMYL boundary: ${repair.slug}`);
   }
@@ -35,8 +38,6 @@ for (const repair of repairs) {
   }
 
   // Forbidden patterns are about repaired guide content, not route/canonical metadata.
-  // Scan only the repaired article so an intentionally preserved slug such as
-  // fleet-coordinator-drift-monitoring cannot self-trigger a legacy task-name rule.
   const articleMatch = html.match(/<article\b[^>]*class="article-page[^>]*>[\s\S]*?<\/article>/iu);
   if (!articleMatch) throw new Error(`repaired article boundary missing: ${repair.slug}`);
   const forbiddenSurface = articleMatch[0].replace(/\sdata-public-guide-repair="[^"]+"/gu, '');
@@ -64,7 +65,7 @@ for (const repair of repairs) {
     }
   }
 
-  console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.status} currentness=${review.currentness} ymyl=${review.ymyl}`);
+  console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.reviewStatus} currentness=${review.currentness} ymyl=${review.ymyl}`);
 }
 
 console.log(`PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=${repairs.length}`);

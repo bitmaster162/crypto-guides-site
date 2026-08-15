@@ -3,88 +3,99 @@
 Date: 2026-08-15
 State: PREVIEW_BRANCH_ONLY
 
-This registry tracks source-controlled public-artifact repairs and their evidence ladder. A repair may narrow or replace unsafe restored public copy, but it must not silently upgrade review status, currentness, trading authorization, vendor selection, runtime state or production state.
+This registry tracks bounded generated-public-artifact repairs. Source provenance is preserved; repair does not upgrade a route to current verified truth, production authority or trading authority.
 
-## Latest executed proof before this source change
+## Last exact-head executed baseline before R8
 
-Exact head `9f24a8d3a7d0e455dc8557952ba5bc8da09f95ff` received a real Vercel build and READY preview deployment `dpl_D738ZEr3feCXW5EejYT9yARFcZ6H`.
+Exact head `3ec57de8aba28a1ac173641f1237f37f03c5f8e6` received a real Vercel build and READY deployment `dpl_Dki1tEviaYTnmq1a6RBdA5L7QZYg`.
 
-Executed proof includes:
-- 166 pages / 162 guide routes;
-- `DISCOVERY_GENERATION=PASS`;
-- `REVIEW_STATUS_GATE=PASS ... restored_unreviewed=0`;
-- `PUBLIC_API_GENERATION=PASS ... winners=2 superseded=2`;
-- eight route-specific `PUBLIC_GUIDE_REPAIR_APPLY=PASS` receipts;
-- `PUBLIC_GUIDE_REPAIR_APPLY_SUMMARY=PASS repairs=8`;
-- `DIRECT_GUIDE_SANITIZER_APPLY=PASS routes=162 memir_removed=154 params_removed=154 repaired_zero_target=8`;
+Executed proof on that head:
+- 166 pages / 162 guides;
+- discovery/review/public-API gates PASS;
 - canonical/public-contract gates PASS;
-- eight route-specific `PUBLIC_GUIDE_REPAIR_GATE=PASS` receipts;
-- `PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=8`;
-- `DIRECT_GUIDE_SANITIZER_GATE=PASS routes=162 preserved=162 repaired_routes=8 forbidden_surface_hits=0 structural_holds=0`;
-- deployment state `READY`.
+- `PUBLIC_GUIDE_REPAIR_APPLY_SUMMARY=PASS repairs=9`;
+- `PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=9`;
+- `DIRECT_GUIDE_SANITIZER_GATE=PASS routes=162 preserved=162 repaired_routes=9 forbidden_surface_hits=0 structural_holds=0`;
+- deployment `READY`.
 
-Exact-head GitHub Actions remained runner-provisioning blocked: run `31876395241`, job `94992667338`, `runner_id=0`, empty runner name and `steps=[]`. GitHub project code did not execute; Vercel is the exact-head executed build proof.
+GitHub Actions on that head remained runner-provisioning blocked (`runner_id=0`, empty runner name, `steps=[]`), so GitHub project code did not execute. Vercel is the exact-head executed build proof.
 
-Exact deployment body/API readback remains protected by Vercel SSO, so no external READBACK PASS is inferred for `9f24a8d...`.
+## BUILD-validated repairs — 9
 
-## BUILD-validated trading/YMYL cluster — 5/5
-
+### Trading / YMYL — 5
 1. `funding-convergence-arbitrage` / `funding-convergence-r1`;
 2. `liquidation-cascades-arbitrage` / `liquidation-cascades-r1`;
 3. `bitcoin-futures-2026` / `bitcoin-futures-2026-r1`;
 4. `btc-futures-trading-strategies` / `btc-futures-trading-strategies-r1`;
 5. `risk-freymvork-dlya-kripto-botov` / `risk-framework-crypto-bots-r1`.
 
-All remain `YMYL_TRADING_REVIEW_REQUIRED / HISTORICAL_REVERIFY_REQUIRED`.
+### Volatile vendor state — 3
+6. `anthropic-models-and-upgrade` / `anthropic-models-vendor-state-r1`;
+7. `fable-mythos-agents-2026` / `fable-mythos-vendor-state-r1`;
+8. `frontier-models-cost-routing` / `frontier-cost-routing-vendor-state-r1`.
 
-## BUILD-validated volatile vendor-state cluster — 3/3
+### Historical infrastructure redaction — 1
+9. `fleet-coordinator-drift-monitoring` / `fleet-coordinator-public-redaction-r1`.
 
-1. `anthropic-models-and-upgrade` / `anthropic-models-vendor-state-r1`;
-2. `fable-mythos-agents-2026` / `fable-mythos-vendor-state-r1`;
-3. `frontier-models-cost-routing` / `frontier-cost-routing-vendor-state-r1`.
+## Newly active R8 source repairs — exact-head BUILD pending
 
-All remain `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED`, `ymyl=false`.
+### `pochemu-strategii-teryayut-dengi`
+- Repair ID: `strategy-failure-methodology-ru-r1`
+- Evidence: `docs/CONTENT_REPAIR_STRATEGY_FAILURE_EVIDENCE_R1.md`
+- Routed review/currentness: `YMYL_TRADING_REVIEW_REQUIRED / REVIEW_REQUIRED`
+- Main boundary: keep expectancy-after-costs, payoff geometry, wiring/ablation and OOS methodology; remove unbound Arena counters/performance proof and universal validation thresholds.
 
-The frontier cost-routing exact-head pass follows a real intermediate verifier failure at `7ce2d895c8a0676d1cd9c841c4bb8fba19730bc1`; `9f24a8d...` fixed the class-level vendor-state boundary while preserving route-specific markers.
+### `why-90-percent-strategies-lose`
+- Repair ID: `strategy-failure-methodology-alt-r1`
+- Evidence: same R8 evidence document
+- Routed review/currentness: `YMYL_TRADING_REVIEW_REQUIRED / REVIEW_REQUIRED`
+- Same methodological boundary; route remains addressable with no redirect/delete.
 
-## Newly active infrastructure public-redaction repair — exact-head BUILD pending
+The restored fixed `66k` / `90%` / 150+ / survivor-count style claims are not replaced with invented newer numbers. A fresh Sovereign Arena homepage readback currently exposes different live-looking counters, while the repository-local `/sovereign-arena-dataset` page is a hard-coded research snapshot rather than an independently bound raw dataset receipt. Therefore the public repair removes headline counters from empirical authority until reproducible provenance exists.
 
-### fleet-coordinator-drift-monitoring
-- Repair ID: `fleet-coordinator-public-redaction-r1`
-- Evidence: `docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md`
-- Review/currentness remain: `INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED / HISTORICAL_REVERIFY_REQUIRED`
-- Source finding: historical public copy exposed host aliases/IP addresses, host-to-service mapping, scheduler/API assumptions, internal filenames/paths and an environment-variable name.
-- Secret classification: `NO_CONFIRMED_SECRET_VALUE`; no credential/private-key/token value was observed.
-- Public repair boundary: preserve generic reconciliation/drift/fail-closed/audit concepts while removing concrete operational topology from generated HTML.
-- Exact boundary: `This historical infrastructure specification is not current runtime authority.`
-- Route retained; no redirect/delete; no runtime/firewall/scheduler/credential effect.
-- Exact-head BUILD proof: PENDING after this source change.
+## Review-routing repair in R8
+
+`pochemu-strategii-teryayut-dengi` was semantically trading/YMYL but did not reliably match the slug-based trading rule. R8 explicitly adds that slug to the conservative trading-YMYL rule so both equivalent strategy-failure pages route consistently.
+
+The public-repair verifier is also upgraded to verify the **final generated public API review record** rather than requiring every repaired route to have an explicit override. This makes rule-routed and override-routed review states first-class and testable through the same final contract.
 
 ## Aggregate repair/sanitizer architecture
 
-`src/data/public-guide-repair-registry.mjs` is the single aggregate registry consumed by public-repair and direct-guide-sanitizer apply/verify stages. After this source change it contains nine repairs:
-- 5 trading/YMYL;
+`src/data/public-guide-repair-registry.mjs` is the single aggregate registry consumed by:
+- public repair apply;
+- public repair verification;
+- direct-guide sanitizer apply;
+- direct-guide sanitizer verification.
+
+After R8 source changes the registry contains 11 repairs:
+- 7 trading/YMYL;
 - 3 volatile vendor-state;
-- 1 historical infrastructure public-redaction repair.
+- 1 historical infrastructure redaction.
 
-Class-specific verification keeps trading non-execution/risk boundaries, vendor-state dated/reverification boundaries and infrastructure no-current-runtime-authority boundaries distinct.
+The next exact-head build must prove:
+- `PUBLIC_GUIDE_REPAIR_APPLY_SUMMARY=PASS repairs=11`;
+- route-specific PASS for both strategy-failure repairs;
+- `PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=11`;
+- sanitizer `repaired_routes=11` with zero forbidden-surface hits and zero structural holds;
+- existing canonical/public-contract gates remain green.
 
-## Next inventory lane after exact-head proof
+## Evidence hierarchy
 
-Read-only source inventory found additional classes requiring evidence before any repair:
-- trading-performance/data-provenance claims around Sovereign Arena / 66k paper trades / raw infrastructure links;
-- other generic trading guides with universal-looking risk/performance statements;
-- historical infrastructure/automation descriptions that may make current implementation claims in article copy even though generated MemIR/parameter blocks are globally sanitized.
+1. exact executed build/readback evidence;
+2. source-bound immutable/reproducible dataset or runtime receipts;
+3. routed review metadata and primary-source claim evidence;
+4. public landing-page counters and restored prose as discovery evidence only.
 
-No next public rewrite should be stacked until the fleet repair receives exact-head execution.
+A changed public counter is not a dataset identity, and a source-defined static dataset page is not independently replayed provenance unless its underlying bytes/manifest are bound.
 
 ## Invariants
 
-1. Restored monolithic source remains provenance and is not silently promoted to current authority.
-2. Generated public HTML for active repairs must not expose targeted legacy executable-looking parameters, operational topology or unsupported overclaims.
-3. Each repair binds to source-controlled evidence and deterministic verification.
-4. Evidence readiness is not implementation; implementation is not BUILD PASS; BUILD PASS is not production promotion.
-5. Repairing public copy is not equivalent to `CURRENT_VERIFIED`, current billing authority or current runtime authority.
-6. GitHub runner/provisioning failure with zero executed steps is not a code-test failure.
-7. No repair authorizes orders, transfers, leverage/margin changes, vendor purchase, billing/plan change, provider addition, credential/runtime/firewall/scheduler mutation, deployment promotion or production mutation.
-8. `can_trade=false` and `capital_permission=DENY` remain invariant.
+- no route deletion or redirect;
+- no merge or production promotion;
+- no invented performance replacement numbers;
+- no Arena runtime/DNS/firewall/dashboard mutation;
+- no billing/provider mutation;
+- no credential/scheduler mutation;
+- no trading/capital effect;
+- `can_trade=false`;
+- `capital_permission=DENY`.

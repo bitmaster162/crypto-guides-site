@@ -45,7 +45,9 @@ for (const repair of repairs) {
 
   if (repair.expectedReviewStatus === 'VOLATILE_VENDOR_STATE') {
     if (review.ymyl !== false) throw new Error(`vendor-state repair unexpectedly marked YMYL: ${repair.slug}`);
-    if (!html.includes('not durable authority.')) throw new Error(`dated vendor-state boundary missing: ${repair.slug}`);
+    const hasVendorBoundary = html.includes('This vendor snapshot is dated, not durable authority.');
+    const hasPricingBoundary = html.includes('This pricing snapshot is dated, not billing authority.');
+    if (!hasVendorBoundary && !hasPricingBoundary) throw new Error(`dated vendor-state boundary missing: ${repair.slug}`);
   }
 
   console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.status} currentness=${review.currentness} ymyl=${review.ymyl}`);

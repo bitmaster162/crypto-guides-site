@@ -34,10 +34,12 @@ for (const repair of repairs) {
     if (!html.includes(required)) throw new Error(`public repair required marker missing for ${repair.slug}: ${required}`);
   }
 
-  // The repair marker is deterministic verifier metadata, not public guide prose.
-  // Exclude only that attribute from forbidden-pattern scanning so a repair ID
-  // cannot accidentally match the legacy identifier it is designed to remove.
-  const forbiddenSurface = html.replace(/\sdata-public-guide-repair="[^"]+"/gu, '');
+  // Forbidden patterns are about repaired guide content, not route/canonical metadata.
+  // Scan only the repaired article so an intentionally preserved slug such as
+  // fleet-coordinator-drift-monitoring cannot self-trigger a legacy task-name rule.
+  const articleMatch = html.match(/<article\b[^>]*class="article-page[^>]*>[\s\S]*?<\/article>/iu);
+  if (!articleMatch) throw new Error(`repaired article boundary missing: ${repair.slug}`);
+  const forbiddenSurface = articleMatch[0].replace(/\sdata-public-guide-repair="[^"]+"/gu, '');
   for (const forbidden of repair.forbiddenPatterns) {
     if (forbidden.pattern.test(forbiddenSurface)) throw new Error(`public repair leaked ${forbidden.label}: ${repair.slug}`);
   }

@@ -33,8 +33,13 @@ for (const repair of repairs) {
   for (const required of repair.requiredMarkers) {
     if (!html.includes(required)) throw new Error(`public repair required marker missing for ${repair.slug}: ${required}`);
   }
+
+  // The repair marker is deterministic verifier metadata, not public guide prose.
+  // Exclude only that attribute from forbidden-pattern scanning so a repair ID
+  // cannot accidentally match the legacy identifier it is designed to remove.
+  const forbiddenSurface = html.replace(/\sdata-public-guide-repair="[^"]+"/gu, '');
   for (const forbidden of repair.forbiddenPatterns) {
-    if (forbidden.pattern.test(html)) throw new Error(`public repair leaked ${forbidden.label}: ${repair.slug}`);
+    if (forbidden.pattern.test(forbiddenSurface)) throw new Error(`public repair leaked ${forbidden.label}: ${repair.slug}`);
   }
 
   if (repair.expectedReviewStatus === 'YMYL_TRADING_REVIEW_REQUIRED') {

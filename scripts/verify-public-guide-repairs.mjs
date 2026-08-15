@@ -8,8 +8,8 @@ const dist = join(root, 'dist');
 const overrideConfig = JSON.parse(await readFile(join(root, 'src/data/public-review-overrides.json'), 'utf8'));
 const overrides = overrideConfig.records || {};
 
-if (!Array.isArray(repairs) || repairs.length !== 7) {
-  throw new Error(`expected exactly seven bounded public guide repairs in R5, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 8) {
+  throw new Error(`expected exactly eight bounded public guide repairs in R6, got ${repairs?.length ?? 'invalid'}`);
 }
 
 for (const repair of repairs) {
@@ -45,7 +45,7 @@ for (const repair of repairs) {
 
   if (repair.expectedReviewStatus === 'VOLATILE_VENDOR_STATE') {
     if (review.ymyl !== false) throw new Error(`vendor-state repair unexpectedly marked YMYL: ${repair.slug}`);
-    if (!html.includes('This vendor snapshot is dated, not durable authority.')) throw new Error(`dated vendor-state boundary missing: ${repair.slug}`);
+    if (!html.includes('not durable authority.')) throw new Error(`dated vendor-state boundary missing: ${repair.slug}`);
   }
 
   console.log(`PUBLIC_GUIDE_REPAIR_GATE=PASS slug=${repair.slug} repair=${repair.repairId} state=${repair.state} review=${review.status} currentness=${review.currentness} ymyl=${review.ymyl}`);

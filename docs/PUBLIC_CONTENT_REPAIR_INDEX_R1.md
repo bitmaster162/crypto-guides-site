@@ -7,22 +7,23 @@ This registry tracks source-controlled public-artifact repairs and their evidenc
 
 ## Latest executed proof before this source change
 
-Exact head `0e44dd076e6d2e53eddd2fd53709c5af114c9323` received a real Vercel build and READY preview deployment `dpl_5Wtju7DUTNKLV9945uHa761BaYLo`.
+Exact head `ce135b25eacc079ba708274c87225d7abb4befa7` received a real Vercel build and READY preview deployment `dpl_BT3nxij4RoG6uWRCpaKokoMHurzt`.
 
-Executed proof:
+Executed proof includes:
 - 166 pages / 162 guide routes;
 - `DISCOVERY_GENERATION=PASS`;
 - `REVIEW_STATUS_GATE=PASS ... restored_unreviewed=0`;
 - `PUBLIC_API_GENERATION=PASS ... winners=2 superseded=2`;
-- `PUBLIC_GUIDE_REPAIR_APPLY_SUMMARY=PASS repairs=5`;
-- `DIRECT_GUIDE_SANITIZER_APPLY=PASS routes=162 memir_removed=157 params_removed=157 repaired_zero_target=5`;
+- seven route-specific `PUBLIC_GUIDE_REPAIR_APPLY=PASS` receipts;
+- `PUBLIC_GUIDE_REPAIR_APPLY_SUMMARY=PASS repairs=7`;
+- `DIRECT_GUIDE_SANITIZER_APPLY=PASS routes=162 memir_removed=155 params_removed=155 repaired_zero_target=7`;
 - canonical/public-contract gates PASS;
-- five route-specific `PUBLIC_GUIDE_REPAIR_GATE=PASS` receipts;
-- `PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=5`;
-- `DIRECT_GUIDE_SANITIZER_GATE=PASS routes=162 preserved=162 repaired_routes=5 forbidden_surface_hits=0 structural_holds=0`;
-- Vercel deployment state `READY`.
+- seven route-specific `PUBLIC_GUIDE_REPAIR_GATE=PASS` receipts;
+- `PUBLIC_GUIDE_REPAIR_GATE_SUMMARY=PASS repairs=7`;
+- `DIRECT_GUIDE_SANITIZER_GATE=PASS routes=162 preserved=162 repaired_routes=7 forbidden_surface_hits=0 structural_holds=0`;
+- deployment state `READY`.
 
-Current exact-deployment API/body readback remains SSO-protected, so no external READBACK PASS is inferred from this deployment. The executed exact-head build gates are the artifact proof.
+GitHub Actions on the same SHA remained runner-provisioning blocked: run `31876127792`, job `94992006647`, `runner_id=0`, empty runner name and `steps=[]`. Therefore GitHub project code did not execute; Vercel is the exact-head executed build proof.
 
 ## BUILD-validated trading/YMYL cluster — 5/5
 
@@ -32,42 +33,41 @@ Current exact-deployment API/body readback remains SSO-protected, so no external
 4. `btc-futures-trading-strategies` / `btc-futures-trading-strategies-r1`;
 5. `risk-freymvork-dlya-kripto-botov` / `risk-framework-crypto-bots-r1`.
 
-All five remain `YMYL_TRADING_REVIEW_REQUIRED / HISTORICAL_REVERIFY_REQUIRED`. BUILD validation proves the bounded public-copy contract and sanitizer, not current strategy truth or trading authorization.
+All remain `YMYL_TRADING_REVIEW_REQUIRED / HISTORICAL_REVERIFY_REQUIRED`. BUILD validation proves bounded public-copy contracts and generated-artifact sanitation, not current strategy truth or trading authorization.
 
-## Newly active vendor-state source repairs — exact-head BUILD pending
+## BUILD-validated Anthropic volatile vendor-state repairs — 2/2
 
 ### anthropic-models-and-upgrade
 - Repair ID: `anthropic-models-vendor-state-r1`
 - Evidence: `docs/CONTENT_REVIEW_ANTHROPIC_VENDOR_STATE_EVIDENCE_R1.md`
-- Review/currentness remain: `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED`
-- Main boundary: replace stale undated Fable/Mythos availability and permanent Opus-default framing with dated vendor facts; acknowledge the later Sonnet 5 release; do not publish static pricing as durable billing authority.
+- Review/currentness: `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED`
+- Exact-head BUILD proof: PASS on `ce135b25...` / `dpl_BT3nxij4RoG6uWRCpaKokoMHurzt`.
 
 ### fable-mythos-agents-2026
 - Repair ID: `fable-mythos-vendor-state-r1`
 - Evidence: `docs/CONTENT_REVIEW_ANTHROPIC_VENDOR_STATE_EVIDENCE_R1.md`
-- Review/currentness remain: `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED`
-- Main boundary: preserve the June suspension and July restoration as dated facts; distinguish shared underlying model from different safeguard/access profiles; keep trusted-access/provider state under revalidation.
+- Review/currentness: `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED`
+- Exact-head BUILD proof: PASS on `ce135b25...` / `dpl_BT3nxij4RoG6uWRCpaKokoMHurzt`.
 
-Both vendor-state routes are retained with no redirect/delete and no model-selection, billing, runtime or production effect. Their exact-head BUILD proof is pending after this source change.
+The repair converts suspension/restoration and model-lineup claims into dated vendor facts and does not turn a static pricing table into current billing authority.
+
+## Newly active frontier cost-routing source repair — exact-head BUILD pending
+
+### frontier-models-cost-routing
+- Repair ID: `frontier-cost-routing-vendor-state-r1`
+- Evidence: `docs/CONTENT_REVIEW_FRONTIER_COST_ROUTING_EVIDENCE_R1.md`
+- Review/currentness remain: `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED`
+- Main boundary: replace the restored static cross-vendor price/context/ranking matrix with a versioned provider-state + workload-evaluation routing contract.
+- Current primary-source review found material drift in multiple restored rows across Google, xAI and DeepSeek, while even currently matching rows remain time-bound provider state.
+- Exact model IDs, prices, aliases, context/output limits, lifecycle, provider availability and performance must be revalidated before operational use.
+- No purchase, billing-limit increase, provider addition or production-routing authority.
+- Exact-head BUILD proof: PENDING after this source change.
 
 ## Aggregate repair/sanitizer architecture
 
-`src/data/public-guide-repair-registry.mjs` is the single aggregate registry consumed by:
-- public repair apply;
-- public repair verifier;
-- direct-guide sanitizer apply;
-- direct-guide sanitizer verifier.
+`src/data/public-guide-repair-registry.mjs` is the single aggregate registry consumed by public-repair and direct-guide-sanitizer apply/verify stages. After this source change it contains eight repairs: five YMYL trading repairs and three volatile vendor-state repairs.
 
-This prevents a repaired route from being misclassified as an ordinary restored route in later sanitizer stages.
-
-The repair verifier now enforces class-specific boundaries:
-- trading repairs must preserve YMYL/non-execution/risk qualification;
-- volatile vendor-state repairs must preserve dated vendor-state/reverification boundaries.
-
-## Next vendor-state queue after exact-head proof
-
-- `frontier-models-cost-routing` remains `VOLATILE_VENDOR_STATE / REVERIFY_REQUIRED` and has not yet received a bounded public rewrite.
-- Exact current provider/model/pricing/routing facts must be sourced from primary vendor documentation before repair.
+Class-specific verification keeps trading non-execution/risk boundaries distinct from vendor-state dated/reverification boundaries.
 
 ## Invariants
 
@@ -75,7 +75,7 @@ The repair verifier now enforces class-specific boundaries:
 2. Generated public HTML for active repairs must not expose targeted legacy executable-looking parameters or unsupported overclaims.
 3. Each repair binds to source-controlled evidence and deterministic verification.
 4. Evidence readiness is not implementation; implementation is not BUILD PASS; BUILD PASS is not production promotion.
-5. Repairing public copy is not equivalent to `CURRENT_VERIFIED` or current vendor billing authority.
+5. Repairing public copy is not equivalent to `CURRENT_VERIFIED` or current billing authority.
 6. GitHub runner/provisioning failure with zero executed steps is not a code-test failure.
-7. No repair authorizes orders, transfers, leverage/margin changes, vendor purchase, billing/plan change, deployment promotion or production mutation.
+7. No repair authorizes orders, transfers, leverage/margin changes, vendor purchase, billing/plan change, provider addition, deployment promotion or production mutation.
 8. `can_trade=false` and `capital_permission=DENY` remain invariant.

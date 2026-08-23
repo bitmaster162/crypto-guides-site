@@ -1,0 +1,136 @@
+{
+  "schema": "crypto-guides.review-overrides.v1",
+  "defaultStatus": "RESTORED_UNREVIEWED",
+  "records": {
+    "ai-agent-reliability-audit": {
+      "status": "LEGACY_COMMERCIAL_CONFLICT",
+      "ymyl": false,
+      "currentness": "HISTORICAL",
+      "claimReview": "docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md",
+      "note": "Predates the canonical BitEvo Agent Authority & Evidence Audit doctrine and must not be treated as the current commercial authority."
+    },
+    "bitcoin-futures-2026": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review rejects unsupported win-rate/per-trade performance wording, universal funding thresholds, generic profitability claims and uncited leverage/venue-state assumptions as current guidance. Retain only as restored research pending copy repair and fresh primary-source verification."
+    },
+    "btc-futures-trading-strategies": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review classifies return ranges, leverage/risk constants, legal/tax assertions and risk-free arbitrage wording as rewrite/reverify material rather than current guidance."
+    },
+    "liquidation-cascades-arbitrage": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review requires current API-path verification and treats 20% OI, funding, margin and delta-drift constants as internal heuristics; zero-risk and deterministic-bottom language must be rewritten."
+    },
+    "funding-convergence-arbitrage": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Claim-level review rejects universal 8-hour funding cadence and risk-free/fully price-independent framing. Venue/product cadence and operational mechanics require fresh primary-source verification; numeric thresholds remain internal heuristics."
+    },
+    "risk-freymvork-dlya-kripto-botov": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_RISK_CLUSTER_R1.md",
+      "note": "Research concepts may be retained, but prescriptive DD/latency/re-entry thresholds and '2026 institutional standard' claims are not established as universal current facts and require rewrite/reverification."
+    },
+    "trading-discipline-journal-mae-mfe": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "PRIMARY_BEHAVIORAL_EFFECT_SUPPORTED_METHOD_REVIEW_REQUIRED",
+      "pair": "trading-discipline-journal-psychology",
+      "canonicalGroup": "trading-discipline-journal",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "trading-discipline-journal-mae-mfe",
+      "canonicalRole": "CANONICAL",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_DISCIPLINE_R1.md",
+      "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Canonical within this restored revision pair because claim-level review gives it the lower-overclaim profile and repository lineage independently removed the paired psychology revision during the prior duplicate cleanup. This selection does not upgrade unresolved numeric or method claims to current verified guidance."
+    },
+    "trading-discipline-journal-psychology": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "PRIMARY_BEHAVIORAL_EFFECT_SUPPORTED_NUMERIC_AND_METHOD_REVIEW_REQUIRED",
+      "pair": "trading-discipline-journal-mae-mfe",
+      "canonicalGroup": "trading-discipline-journal",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "trading-discipline-journal-mae-mfe",
+      "canonicalRole": "SUPERSEDED_HISTORICAL_REVISION",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_TRADING_DISCIPLINE_R1.md",
+      "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Preserved as a historical revision for provenance. The preferred route is trading-discipline-journal-mae-mfe; the approximately-2x loss-aversion shorthand and internal safety-control labels here remain qualification/review material rather than current universal guidance."
+    },
+    "microstructure-delisting-data-integrity-2026": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
+      "pair": "microstructure-delisting-2026",
+      "canonicalGroup": "microstructure-delisting-data-integrity",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "microstructure-delisting-data-integrity-2026",
+      "canonicalRole": "CANONICAL",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_MICROSTRUCTURE_R1.md",
+      "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Canonical within this restored revision pair because claim-level review separates exchange-confirmed events from derived calibration and repository lineage independently removed the paired microstructure-delisting-2026 revision during the prior duplicate cleanup. Derived thresholds still require qualification."
+    },
+    "microstructure-delisting-2026": {
+      "status": "REDUNDANT_REVISION_PAIR",
+      "ymyl": true,
+      "currentness": "PRIMARY_EVENT_CONFIRMED_DERIVED_RULES_REVIEW_REQUIRED",
+      "pair": "microstructure-delisting-data-integrity-2026",
+      "canonicalGroup": "microstructure-delisting-data-integrity",
+      "canonicalDecision": "EVIDENCE_REVIEWED_CANONICAL_SELECTED",
+      "canonicalSlug": "microstructure-delisting-data-integrity-2026",
+      "canonicalRole": "SUPERSEDED_HISTORICAL_REVISION",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_MICROSTRUCTURE_R1.md",
+      "lineageReview": "docs/CANONICAL_LINEAGE_DECISION_R1.md",
+      "canonicalDecisionReadiness": "APPLIED_PREVIEW_ONLY",
+      "note": "Preserved as a historical revision for provenance. The preferred route is microstructure-delisting-data-integrity-2026; universal-looking 0.5 calibration and exact DRS threshold metadata remain derived/internal review material rather than exchange rules."
+    },
+    "anthropic-models-and-upgrade": {
+      "status": "VOLATILE_VENDOR_STATE",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_VOLATILE_VENDOR_STATE_R1.md"
+    },
+    "fable-mythos-agents-2026": {
+      "status": "VOLATILE_VENDOR_STATE",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_VOLATILE_VENDOR_STATE_R1.md"
+    },
+    "frontier-models-cost-routing": {
+      "status": "VOLATILE_VENDOR_STATE",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_VOLATILE_VENDOR_STATE_R1.md"
+    },
+    "monetization-matrix-4x3": {
+      "status": "COMMERCIAL_PRODUCT_STATE_REVIEW_REQUIRED",
+      "ymyl": false,
+      "currentness": "REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md",
+      "note": "Historical business-strategy article contains time-sensitive product, pricing, guide-count and go-to-market state claims; retain as research until those assertions are rebound to current product evidence."
+    },
+    "fleet-coordinator-drift-monitoring": {
+      "status": "INFRASTRUCTURE_IMPLEMENTATION_REVIEW_REQUIRED",
+      "ymyl": false,
+      "currentness": "HISTORICAL_REVERIFY_REQUIRED",
+      "claimReview": "docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md",
+      "note": "Historical fleet-coordination specification exposes infrastructure-era host identities, addresses, scheduler/API assumptions and implementation parameters; treat as historical engineering material until current source/runtime/public-boundary review."
+    }
+  }
+}

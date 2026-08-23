@@ -1,0 +1,48 @@
+{
+  "schema": "crypto-guides.review-rules.v1",
+  "description": "Conservative topic-level review routing. These rules classify review obligations; they do not certify factual correctness or currentness. Explicit per-slug overrides take precedence for primary review status. YMYL classification is conservative and may be inherited from any matching rule. The final residual rule deliberately fails closed into generic content review rather than leaving restored routes unrouted.",
+  "rules": [
+    {
+      "id": "volatile-vendor-state",
+      "pattern": "(?:anthropic|frontier-model|fable-mythos|gemini|claude|gpt-56|model-cost-routing)",
+      "status": "VOLATILE_VENDOR_STATE",
+      "currentness": "REVERIFY_REQUIRED",
+      "ymyl": false
+    },
+    {
+      "id": "security-safety",
+      "pattern": "(?:security|sandbox|tee-|secrets|approval-safety|flashbots|threat|bezopas|defensive-veto|mev-sandwich|multi-agent-system-safety|blockchain-forensics|forensics|modelirovanie-ugroz)",
+      "status": "SECURITY_SAFETY_REVIEW_REQUIRED",
+      "currentness": "REVIEW_REQUIRED",
+      "ymyl": false
+    },
+    {
+      "id": "infrastructure-implementation",
+      "pattern": "(?:deploy|migratsiya|postgres|rust|architecture|arkhitektura|api|af-xdp|dpdk|avx512|python-rt|latency-optimization|bridge-contract|backup|restore|daemon|collector|kolektora|perekhvata|messendzher|framework|freymvorka|ustoychivost-gcp|source)",
+      "status": "INFRA_IMPLEMENTATION_REVIEW_REQUIRED",
+      "currentness": "REVIEW_REQUIRED",
+      "ymyl": false
+    },
+    {
+      "id": "project-system-research",
+      "pattern": "(?:continuityos|archiveos|mirrorcore|omnicore|sovereign-core|sovereign-agent|multigpt|fractal-intelligence|state-authority-plane|reflex-layer|capability-passports|agent-self-healing|anti-looping|decision-trace|instructed-retriever|context-garbage|prompt-compression|lsh-deduplication|vector-graph|multi-model-debate|mixture-of-agents|managed-coevolution|multiagent-orchestration|orkestratsiya)",
+      "status": "SYSTEM_RESEARCH_REVIEW_REQUIRED",
+      "currentness": "REVIEW_REQUIRED",
+      "ymyl": false
+    },
+    {
+      "id": "trading-ymyl",
+      "pattern": "(?:trading|trade|bitcoin|btc-|crypto|kripto|kriptobirzh|funding|basis|arbitrage|arbitrazh|market-|market_|ryn|liquidity|likvid|order-book|order-flow|spread|volatility|vpin|pairs|cointegration|hawkes|grid|delist|liquidation|queue-|candle|trend|risk-fng|risk-freymvork|slippage|inventory|execution|ispolneniya|regime|crowd-fade|macro-liquidity|eth-btc|survival-math|kelly|scalper|microstructure|obi-|lob-|price-impact|depth-liquidity|lead-lag|bybit|hyperliquid|funding-convergence|avellaneda|score-core-hft|hft|pnl|futures?|perpetual|derivatives?|leverage|margin|position-sizing|stop-loss|take-profit|sector-divergence|read-market-risk|why-90-percent-strategies|pochemu-strategii-teryayut-dengi|strategiya-sovereign-arena|three-btc|torgov|treyd|ekonomika-premialnykh-treyding|epizodicheskaya-pamyat-v-algotreydinge|diversification-illusion|edge-oos|cross-exchange|okx-nft|order-lifetime|tilt-index|volume-profile|walkforward)",
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "currentness": "REVIEW_REQUIRED",
+      "ymyl": true
+    },
+    {
+      "id": "residual-content-review",
+      "pattern": ".+",
+      "status": "CONTENT_REVIEW_REQUIRED",
+      "currentness": "REVIEW_REQUIRED",
+      "ymyl": false
+    }
+  ]
+}

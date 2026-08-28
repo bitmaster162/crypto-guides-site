@@ -12,8 +12,17 @@ const reviewBySlug = new Map((publicApi.records || []).map((record) => [record.s
 if (publicApi.schema !== 'crypto-guides.public-api.v1') {
   throw new Error(`public API schema mismatch: ${publicApi.schema || '<missing>'}`);
 }
-if (!Array.isArray(repairs) || repairs.length !== 17) {
-  throw new Error(`expected exactly seventeen bounded public guide repairs, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 19) {
+  throw new Error(`expected exactly nineteen bounded public guide repairs, got ${repairs?.length ?? 'invalid'}`);
+}
+
+const requiredNewRepairs = new Map([
+  ['kriptotreyding-i-quant-issledovaniya', 'quant-research-unsupported-removal-r1'],
+  ['obzor-vsekh-torgovykh-strategiy', 'strategy-overview-education-only-r1']
+]);
+for (const [slug, repairId] of requiredNewRepairs) {
+  const matches = repairs.filter((repair) => repair.slug === slug && repair.repairId === repairId);
+  if (matches.length !== 1) throw new Error(`required unsupported-surface repair binding invalid: ${slug} ${repairId} count=${matches.length}`);
 }
 
 const escapeHtmlText = (value) => String(value)

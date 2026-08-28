@@ -25,17 +25,6 @@
       "reverifyAfter": null,
       "note": "Disputed liquidation-feed claims remain source-unbound; the adjudication receipt records the HOLD only and does not satisfy the missing primary-source requirement."
     },
-    "simulyatsiya-ispolneniya-kripto-strategiy": {
-      "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
-      "evidenceAsOf": "2026-08-28",
-      "evidenceRefs": [
-        "docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md"
-      ],
-      "latestVerdict": "HOLD_RESEARCH_CANDIDATE_NOT_IMPLEMENTATION_GUIDANCE",
-      "primarySourceRequired": true,
-      "reverifyAfter": null,
-      "note": "Research/simulation material must not be treated as implementation guidance until claim-level source evidence and execution assumptions are rebound."
-    },
     "kriptotreyding-i-quant-issledovaniya": {
       "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
       "evidenceAsOf": "2026-08-28",

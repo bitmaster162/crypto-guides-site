@@ -12,8 +12,8 @@ const reviewBySlug = new Map((publicApi.records || []).map((record) => [record.s
 if (publicApi.schema !== 'crypto-guides.public-api.v1') {
   throw new Error(`public API schema mismatch: ${publicApi.schema || '<missing>'}`);
 }
-if (!Array.isArray(repairs) || repairs.length !== 16) {
-  throw new Error(`expected exactly sixteen bounded public guide repairs, got ${repairs?.length ?? 'invalid'}`);
+if (!Array.isArray(repairs) || repairs.length !== 17) {
+  throw new Error(`expected exactly seventeen bounded public guide repairs, got ${repairs?.length ?? 'invalid'}`);
 }
 
 const escapeHtmlText = (value) => String(value)

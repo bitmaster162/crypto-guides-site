@@ -10,6 +10,7 @@ import { hyperliquidInfrastructureRepairs } from './public-guide-repairs-hyperli
 import { pythonRtInfrastructureRepairs } from './public-guide-repairs-python-rt.mjs';
 import { regimeTimingTradingRepairs } from './public-guide-repairs-regime-timing.mjs';
 import { marketNeutralRepairs } from './public-guide-repairs-market-neutral.mjs';
+import { executionSimulationRepairs } from './public-guide-repairs-execution-simulation.mjs';
 
 export const allPublicGuideRepairs = [
   ...publicGuideRepairs,
@@ -23,5 +24,6 @@ export const allPublicGuideRepairs = [
   ...hyperliquidInfrastructureRepairs,
   ...pythonRtInfrastructureRepairs,
   ...regimeTimingTradingRepairs,
-  ...marketNeutralRepairs
+  ...marketNeutralRepairs,
+  ...executionSimulationRepairs
 ];

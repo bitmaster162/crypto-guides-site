@@ -138,6 +138,13 @@
       "currentness": "REVIEW_REQUIRED",
       "claimReview": "docs/CONTENT_CLAIM_REVIEW_MARKET_NEUTRAL_R1.md",
       "note": "Latest-verdict propagation repair: rejected basis/funding/residual families remain rejected or historical, funding lead/lag remains research-only, and pairs/DRL/outcome-market methods are retained only as research candidates. Public copy is not current trading authority and primary-source re-verification remains required."
+    },
+    "simulyatsiya-ispolneniya-kripto-strategiy": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "REVIEW_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_EXECUTION_SIMULATION_R1.md",
+      "note": "Research-boundary repair: execution simulation remains a methodology for testing assumptions and discrepancies, not production implementation guidance. Fixed latency/queue/fee/infrastructure constants and live-readiness promotion are removed; primary-source re-verification remains required."
     }
   }
 }

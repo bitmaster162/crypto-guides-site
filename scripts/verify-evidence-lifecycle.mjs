@@ -53,12 +53,12 @@ const apiBySlug = new Map(api.records.map((record) => [record.slug, record]));
 const lifecycleRecords = lifecycleConfig.records || {};
 const expectedHolds = {
   'analiz-fidov-likvidatsiy-kriptovalyut': 'HOLD_DISPUTED_LIQUIDATION_FEED_CLAIMS',
-  'simulyatsiya-ispolneniya-kripto-strategiy': 'HOLD_RESEARCH_CANDIDATE_NOT_IMPLEMENTATION_GUIDANCE',
   'kriptotreyding-i-quant-issledovaniya': 'HOLD_UNSUPPORTED_QUANT_EXECUTION_CLAIMS_SOURCE_REMOVAL_REQUIRED',
   'obzor-vsekh-torgovykh-strategiy': 'HOLD_UNSUPPORTED_STRATEGY_CLAIMS_SOURCE_REMOVAL_REQUIRED'
 };
 const resolvedReviewDocTargets = {
-  'rynochno-neytralnye-kriptostrategii-2026': 'docs/CONTENT_CLAIM_REVIEW_MARKET_NEUTRAL_R1.md'
+  'rynochno-neytralnye-kriptostrategii-2026': 'docs/CONTENT_CLAIM_REVIEW_MARKET_NEUTRAL_R1.md',
+  'simulyatsiya-ispolneniya-kripto-strategiy': 'docs/CONTENT_CLAIM_REVIEW_EXECUTION_SIMULATION_R1.md'
 };
 const counts = {
   REVIEW_DOC_BOUND: 0,

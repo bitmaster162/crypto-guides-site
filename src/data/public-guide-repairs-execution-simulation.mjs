@@ -12,12 +12,12 @@ const articleHtml = String.raw`<article class="article-page public-repair-page" 
         <span>YMYL_TRADING_REVIEW_REQUIRED</span>
         <span>REVIEW_REQUIRED</span>
       </div>
-      <p class="public-repair-lead">Execution simulation помогает проверять, насколько результат стратегии зависит от идеализированных fills, очереди, задержек и издержек. Но historical replay не доказывает собственный market impact и не превращает research candidate в готовую live-реализацию. Каждое допущение должно быть явно задано, откалибровано и проверено на независимых наблюдениях.</p>
+      <p class="public-repair-lead">Execution simulation помогает проверять, насколько результат стратегии зависит от идеализированных fills, очереди, задержек и издержек. Но historical replay не доказывает собственный market impact и не превращает research candidate в разрешённую систему исполнения. Каждое допущение должно быть явно задано, откалибровано и проверено на независимых наблюдениях.</p>
     </header>
 
     <section class="public-repair-card" aria-labelledby="es-boundary">
       <h2 id="es-boundary">1. RESEARCH_CANDIDATE_NOT_IMPLEMENTATION_GUIDANCE</h2>
-      <p><strong>Эта страница не является торговым разрешением.</strong> Она описывает методологию исследования execution realism, а не production blueprint, runtime-конфигурацию, deployment plan или capital instruction. Прохождение simulator-а не доказывает прибыльность, currentness, безопасность или готовность стратегии к live.</p>
+      <p><strong>Эта страница не является торговым разрешением.</strong> Она описывает методологию исследования execution realism, а не production blueprint, runtime-конфигурацию, deployment plan или capital instruction. Прохождение simulator-а не доказывает прибыльность, currentness, безопасность и не создаёт разрешение на live execution.</p>
     </section>
 
     <section class="public-repair-card" aria-labelledby="es-replay">

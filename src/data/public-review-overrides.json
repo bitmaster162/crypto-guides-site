@@ -131,6 +131,13 @@
       "currentness": "HISTORICAL_REVERIFY_REQUIRED",
       "claimReview": "docs/CONTENT_DISPOSITION_LEGACY_SURFACES_R1.md",
       "note": "Historical fleet-coordination specification exposes infrastructure-era host identities, addresses, scheduler/API assumptions and implementation parameters; treat as historical engineering material until current source/runtime/public-boundary review."
+    },
+    "rynochno-neytralnye-kriptostrategii-2026": {
+      "status": "YMYL_TRADING_REVIEW_REQUIRED",
+      "ymyl": true,
+      "currentness": "REVIEW_REQUIRED",
+      "claimReview": "docs/CONTENT_CLAIM_REVIEW_MARKET_NEUTRAL_R1.md",
+      "note": "Latest-verdict propagation repair: rejected basis/funding/residual families remain rejected or historical, funding lead/lag remains research-only, and pairs/DRL/outcome-market methods are retained only as research candidates. Public copy is not current trading authority and primary-source re-verification remains required."
     }
   }
 }

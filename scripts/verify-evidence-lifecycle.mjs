@@ -53,10 +53,12 @@ const apiBySlug = new Map(api.records.map((record) => [record.slug, record]));
 const lifecycleRecords = lifecycleConfig.records || {};
 const expectedHolds = {
   'analiz-fidov-likvidatsiy-kriptovalyut': 'HOLD_DISPUTED_LIQUIDATION_FEED_CLAIMS',
-  'rynochno-neytralnye-kriptostrategii-2026': 'HOLD_LATER_REJECTION_OR_NON_PROMOTION_CONFLICT',
   'simulyatsiya-ispolneniya-kripto-strategiy': 'HOLD_RESEARCH_CANDIDATE_NOT_IMPLEMENTATION_GUIDANCE',
   'kriptotreyding-i-quant-issledovaniya': 'HOLD_UNSUPPORTED_QUANT_EXECUTION_CLAIMS_SOURCE_REMOVAL_REQUIRED',
   'obzor-vsekh-torgovykh-strategiy': 'HOLD_UNSUPPORTED_STRATEGY_CLAIMS_SOURCE_REMOVAL_REQUIRED'
+};
+const resolvedReviewDocTargets = {
+  'rynochno-neytralnye-kriptostrategii-2026': 'docs/CONTENT_CLAIM_REVIEW_MARKET_NEUTRAL_R1.md'
 };
 const counts = {
   REVIEW_DOC_BOUND: 0,
@@ -139,6 +141,23 @@ for (const [slug, verdict] of Object.entries(expectedHolds)) {
   }
 }
 
+for (const [slug, reviewRef] of Object.entries(resolvedReviewDocTargets)) {
+  const sourceEntry = lifecycleRecords[slug];
+  const review = overrideConfig.records?.[slug] || null;
+  const builtEntry = manifest.records.find((record) => record.slug === slug);
+  if (sourceEntry) throw new Error(`Resolved review-doc target must not retain an explicit post-R13 lifecycle entry: ${slug}`);
+  if (!review || review.claimReview !== reviewRef || review.currentness !== 'REVIEW_REQUIRED' || review.ymyl !== true) {
+    throw new Error(`Resolved review-doc target has incorrect review binding: ${slug}`);
+  }
+  if (!builtEntry) throw new Error(`Resolved review-doc target missing from manifest: ${slug}`);
+  if (builtEntry.evidenceState !== 'REVIEW_DOC_BOUND' || builtEntry.latestVerdict !== 'REVIEW_DOC_BOUND_NO_CURRENTNESS_UPGRADE') {
+    throw new Error(`Resolved review-doc target failed lifecycle transition: ${slug}`);
+  }
+  if (JSON.stringify(builtEntry.evidenceRefs) !== JSON.stringify([reviewRef]) || builtEntry.primarySourceRequired !== true || builtEntry.evidenceAsOf !== null || builtEntry.reverifyAfter !== null) {
+    throw new Error(`Resolved review-doc target has unsafe evidence semantics: ${slug}`);
+  }
+}
+
 const explicitReviewDocBound = Object.entries(overrideConfig.records || {}).filter(([slug, review]) => {
   if (slug in expectedHolds) return false;
   return Boolean(review?.claimReview || review?.lineageReview);
@@ -150,7 +169,7 @@ if (counts.POST_R13_CONTENT_TRUTH_HOLD !== Object.keys(expectedHolds).length) {
   throw new Error(`Post-R13 hold count mismatch: ${counts.POST_R13_CONTENT_TRUTH_HOLD}`);
 }
 if (counts.REVIEW_DOC_BOUND + counts.POST_R13_CONTENT_TRUTH_HOLD + counts.UNBOUND_REVIEW_REQUIRED !== manifest.records.length) {
-  throw new Error('Evidence lifecycle counts do not cover the full corpus');
+  throw new Error('Manifest evidence lifecycle counts do not cover the full corpus');
 }
 if (JSON.stringify(manifest.evidenceLifecycleCounts) !== JSON.stringify(counts)) {
   throw new Error('Manifest evidenceLifecycleCounts mismatch');
@@ -159,4 +178,4 @@ if (JSON.stringify(api.evidenceLifecycleCounts) !== JSON.stringify(counts)) {
   throw new Error('Public API evidenceLifecycleCounts mismatch');
 }
 
-console.log(`EVIDENCE_LIFECYCLE_GATE=PASS records=${manifest.records.length} review_doc_bound=${counts.REVIEW_DOC_BOUND} post_r13_holds=${counts.POST_R13_CONTENT_TRUTH_HOLD} unbound=${counts.UNBOUND_REVIEW_REQUIRED} checked_refs=${checkedRefs.size} post_r13_ref=${postR13AdjudicationRef} evidence_as_of=${postR13EvidenceAsOf}`);
+console.log(`EVIDENCE_LIFECYCLE_GATE=PASS records=${manifest.records.length} review_doc_bound=${counts.REVIEW_DOC_BOUND} post_r13_holds=${counts.POST_R13_CONTENT_TRUTH_HOLD} unbound=${counts.UNBOUND_REVIEW_REQUIRED} checked_refs=${checkedRefs.size} resolved_review_docs=${Object.keys(resolvedReviewDocTargets).length} post_r13_ref=${postR13AdjudicationRef} evidence_as_of=${postR13EvidenceAsOf}`);

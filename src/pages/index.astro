@@ -1,637 +1,161 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const guides = [
-	{"slug": "ai-agents-2026", "title": "Эволюция ИИ-агентов: глобальный ландшафт, токеномика и локальная безопасность в 2026 году", "date": "2026-07-07", "category": "Trading", "kicker": "Ai Agents 2026", "desc": "С середины 2026 года глобальный ландшафт ИИ претерпел значительные изменения, перейдя от простых диалоговых систем к высокоавтономным агентам. Это стало возможным благодаря новым моделям, таким как Cl", "tags": ["ИИ-агенты", "токеномика", "безопасность ИИ", "Claude Fable", "Claude Mythos", "Open Weights", "Mem0", "MCP", "локальное развертывание", "2026"]},
-	{"slug": "ai-agents-ecosystem-2026", "title": "Экосистема ИИ-агентов 2026: что взять и применить", "date": "2026-07-07", "category": "Trading", "kicker": "Ai Agents Ecosystem 2026", "desc": "Период 2025–2026 годов знаменует собой фундаментальный переход от традиционных диалоговых моделей к суверенным автономным агентам. Эта эволюция сделала агентскую инфраструктуру вопросом национальной б", "tags": ["AI agents", "ecosystem", "2026", "paradigms", "infrastructure", "security", "frameworks", "trading", "ContinuityOS", "autonomous agents", "Computer Use"]},
-	{"slug": "ai-companion-market-analysis", "title": "Анализ рынка AI-компаньонов: GTM-реалии и рыночная карта 2025–2026", "date": "2026-07-07", "category": "Trading", "kicker": "Ai Companion Market Analysis", "desc": "Глобальный рынок AI-компаньонов находится на пороге экспоненциального роста, прогнозируясь с 28,19 млрд долларов в 2024 году до 140,75 млрд долларов к 2030 году при среднегодовом темпе роста 30,8%. Эт", "tags": ["AI", "Искусственный интеллект", "Маркетинг", "GTM", "Монетизация", "Приватность", "Telegram", "Рост рынка", "Голосовые интерфейсы", "AI-компаньоны"]},
-	{"slug": "anthropic-models-and-upgrade", "title": "Аналитический отчёт по моделям уровня Fable Mythos и по апгрейду Sovereign Arena до Hybrid LLM plus RL", "date": "2026-07-07", "category": "Trading", "kicker": "Anthropic Models And Upgrade", "desc": "Anthropic Claude Fable 5 и Mythos 5 представляют собой две конфигурации одной передовой модели, однако их доступность нестабильна, что делает Claude Opus 4.8 наиболее надёжным и мощным публичным вариа", "tags": ["Anthropic", "Claude", "Fable 5", "Mythos 5", "Opus 4.8", "Hybrid LLM + RL", "Sovereign Arena", "Trading System", "Agent Frameworks", "Geo-optimized"]},
-	{"slug": "best-longterm-memory-systems-for-ai", "title": "Лучшие системы долговременной памяти для ИИ: Полное руководство по выбору и архитектуре", "date": "2026-07-07", "category": "Trading", "kicker": "Best Longterm Memory Systems For Ai", "desc": "Выбор оптимальной системы долговременной памяти для ИИ зависит от конкретных потребностей приложения, а не от универсальных решений. Для корпоративных RAG-систем и поиска в production-средах часто под", "tags": ["долговременная память", "память ИИ", "RAG", "векторные базы данных", "MemGPT", "GraphRAG", "иерархическая память", "Pinecone", "Qdrant", "Weaviate", "Milvus", "Chroma", "FAISS", "LangChain", "LlamaIndex", "бенчмарки ИИ"]},
-	{"slug": "bitcoin-futures-2026", "title": "Комплексный анализ микроструктуры рынка и рабочие стратегии торговли фьючерсами на Bitcoin в 2026 году", "date": "2026-07-07", "category": "Trading", "kicker": "Bitcoin Futures 2026", "desc": "", "tags": ["Bitcoin", "фьючерсы", "криптовалюты", "торговые стратегии", "микроструктура рынка", "регулирование", "DeFi", "CEX", "стакан ордеров", "открытый интерес", "ставки финансирования", "CVD", "ликвидность", "хеджирование", "арбитраж", "Европейский Союз"]},
-	{"slug": "blockchain-forensics-methodology", "title": "Блокчейн-форензика: методология ончейн-расследований", "date": "2026-07-07", "category": "Trading", "kicker": "Blockchain Forensics Methodology", "desc": "Блокчейн-форензика — это систематический подход к расследованию и анализу транзакций и активности в децентрализованных сетях. Она позволяет реконструировать Sybil-фермы, отслеживать происхождение сред", "tags": ["blockchain", "forensics", "on-chain analysis", "sybil detection", "gas trail", "smart contracts", "investigations", "automation", "risk management", "web3"]},
-	{"slug": "btc-futures-trading-strategies", "title": "GEO-оптимизированный гид по стратегиям торговли фьючерсами на биткоин", "date": "2026-07-07", "category": "Trading", "kicker": "Btc Futures Trading Strategies", "desc": "Торговля BTC-фьючерсами сопряжена с высокой волатильностью и риском, что делает разработку и строгое следование четкой торговой стратегии абсолютной необходимостью. Стратегия предоставляет структуриро", "tags": ["BTC-фьючерсы", "криптовалюты", "трейдинг", "стратегии", "риск-менеджмент", "бэктестинг", "алготрейдинг"]},
-	{"slug": "cross-vendor-order-flow-imbalance", "title": "Взаимный Дисбаланс Кросс-Вендорных Потоков Ордеров: Арбитраж Задержек, Детекция Level 3 и Моделирование Стабильности Рынка", "date": "2026-07-07", "category": "Trading", "kicker": "Cross Vendor Order Flow Imbalance", "desc": "В летний сезон 2026 года, высокочастотная торговля сталкивается с фундаментальными ограничениями сетевой инфраструктуры и консенсус-протоколов, что порождает устойчивые задержки схождения цен между це", "tags": ["HFT", "арбитраж", "Hyperliquid", "Bybit", "Level3", "MBO", "айсберг-ордера", "Hawkes-процесс", "рыночная_микроструктура", "задержка", "алгоритмическая_торговля"]},
-	{"slug": "crypto-microstructure-2026", "title": "Микроструктурный анализ криптодеривативного рынка 2026: Односторонний открытый интерес Bybit, механика ликвидационных каскадов и портфельное маржирование Coinbase", "date": "2026-07-07", "category": "Trading", "kicker": "Crypto Microstructure 2026", "desc": "Переход Bybit на односторонний метод расчета открытого интереса (Unilateral Open Interest), реализованный 11 июня 2026 года, устранил историческое несоответствие между криптодеривативными платформами ", "tags": ["Bybit", "Coinbase", "криптовалюты", "деривативы", "открытый интерес", "ликвидация", "портфельное маржирование", "API", "алгоритмическая торговля", "риск-менеджмент"]},
-	{"slug": "fable-mythos-agents-2026", "title": "Как поднять агентов до уровня Fable/Mythos: target-архитектура 2026", "date": "2026-07-07", "category": "Trading", "kicker": "Fable Mythos Agents 2026", "desc": "Ключевое отличие Fable 5 и Mythos 5 от обычных агентов заключается не столько в базовых способностях модели, сколько в превосходной системной инженерии, обеспечивающей стабильный режим поведения при д", "tags": ["AI agents", "agent architecture", "LLM orchestration", "system engineering", "prompt engineering", "Fable", "Mythos", "memory management", "guardrails", "observability", "evaluation", "production AI"]},
-	{"slug": "frontier-models-cost-routing", "title": "Ландшафт frontier-моделей и cost-routing (середина 2026)", "date": "2026-07-07", "category": "Trading", "kicker": "Frontier Models Cost Routing", "desc": "К середине 2026 года ландшафт frontier-моделей претерпел значительные изменения: рынок сместился от оценки «умных чат-ботов» к инструментам, способным доводить полезную работу до конца. Вендоры теперь", "tags": ["AI models", "frontier models", "cost routing", "LLM", "agentic production", "mid-2026", "model landscape", "pricing"]},
-	{"slug": "hyperliquid-l1-tokyo-deploy", "title": "GEO-оптимизированный Чек-лист Деплоя Невалидирующей Ноды Hyperliquid L1 (Equinix TY3, Токио)", "date": "2026-07-07", "category": "Trading", "kicker": "Hyperliquid L1 Tokyo Deploy", "desc": "Для достижения ультра-низкой задержки и минимизации сетевого джиттера при деплое невалидирующей ноды Hyperliquid L1 в дата-центре Equinix TY3 (Токио) необходимо выполнить комплексную оптимизацию опера", "tags": ["Hyperliquid", "L1", "нода", "деплой", "оптимизация", "HFT", "низкая задержка", "Linux", "AF_XDP", "Zero-Copy", "Mellanox", "cgroups", "real-time", "Equinix", "Токио", "tmpfs"]},
-	{"slug": "market-inefficiency", "title": "Анатомия рыночной неэффективности: количественная верификация, микроструктурные барьеры и когнитивные технологии систематического трейдинга", "date": "2026-07-07", "category": "Trading", "kicker": "Market Inefficiency", "desc": "\\( \\text{EV} = (WR \\times \\bar{W}) - (LR \\times \\bar{L}) \\)", "tags": ["рыночная неэффективность", "квантовый трейдинг", "микроструктура рынка", "бэктестинг", "когнитивные технологии", "машинное обучение в финансах", "Sharpe Ratio", "Expected Value", "арбитраж", "финансовые ИИ-агенты"]},
-	{"slug": "microstructure-delisting-2026", "title": "Микроструктура и риск делистинга 2026: data-integrity для квант-движка", "date": "2026-07-07", "category": "Trading", "kicker": "Microstructure Delisting 2026", "desc": "Переход Bybit на односторонний расчет открытого интереса (OI) и развитие системы раннего предупреждения о делистинге на Binance представляют собой ключевые структурные изменения 2026 года, критически ", "tags": ["microstructure", "delisting", "data integrity", "Open Interest", "Bybit", "Binance", "quant engine", "risk management", "liquidity"]},
-	{"slug": "python-rt-architecture", "title": "Архитектура Python-контура для жесткого реального времени (hb <= 0.5 мс)", "date": "2026-07-07", "category": "Trading", "kicker": "Python Rt Architecture", "desc": "Для достижения жесткого реального времени (hard real-time) в Python-контуре с задержкой цикла (hot path) менее 0.5 мс необходимо выделить критически важные операции в отдельный RT-процесс на изолирова", "tags": ["Python", "Real-time", "Linux", "Performance", "Low Latency", "IPC", "CPU Isolation", "GIL", "Shared Memory"]},
-	{"slug": "trading-discipline-journal-psychology", "title": "Дисциплина трейдинга: дневник, MAE/MFE и психология убытков", "date": "2026-07-07", "category": "Trading", "kicker": "Trading Discipline Journal Psychology", "desc": "Дисциплина трейдинга, основанная на строгой системе обратной связи, отличает профессионала от любителя, преобразуя рыночные данные в ценные знания. Ведение дневника и анализ метрик, таких как MAE и MF", "tags": ["trading discipline", "trading journal", "MAE", "MFE", "loss psychology", "algorithmic trading", "feedback system", "cognitive biases", "risk management"]},
-	{"slug": "vector-graph-hybrid-search", "title": "Сравнительный анализ векторного, графового и гибридного поиска для систем памяти", "date": "2026-07-07", "category": "Trading", "kicker": "Vector Graph Hybrid Search", "desc": "Графовые методы памяти (GraphRAG, Graphiti, HippoRAG) оптимальны для задач с явными связями и \"многопрыжковыми\" запросами, поскольку они эффективно моделируют отношения и временные контексты. Векторны", "tags": ["векторный поиск", "графовый поиск", "гибридный поиск", "RAG", "LLM", "память", "эмбеддинги", "ANN", "SQLite", "ранжирование", "бенчмарки"]},
-	{"slug": "pochemu-strategii-teryayut-dengi", "title": "Почему 90% paper-trading стратегий теряют деньги: 3 механических дефекта на данных 66 000 сделок", "date": "2026-07-07", "category": "Trading", "kicker": "Pochemu Strategii Teryayut Dengi", "desc": "Даже когда цена дошла до твоего тейка — сделка в минус. Почему? На суб-центовых монетах ход цены, который видит движок, округляется почти в ноль, а фиксированная комиссия + спред съедают всё. **Физиче", "tags": ["paper trading", "торговые стратегии", "криптовалюты", "анализ сделок", "управление рисками", "прибыльность", "технический аудит", "Sovereign Arena", "trade analysis", "risk management", "profitability", "mechanical defects"]},
-	{"slug": "active-inference-agents", "title": "Active Inference Agents: Принцип Свободной Энергии, Одеяло Маркова и Механика Тильта", "date": "2026-06-25", "category": "Trading", "kicker": "Active Inference Agents", "desc": "Введение в Активный Вывод (Active Inference)\n\nАктивный Вывод (Active Inference) — это обобщенная физико-когнитивная теория, разработанная профессором Карлом Фристоном, которая описывает поведение любы", "tags": ["active-inference", "fep", "markov-blanket", "free-energy", "precision-weighting", "tilt-recovery"]},
-	{"slug": "adaptive-delegation-gate", "title": "Adaptive Delegation Gate: Шлюз адаптивного делегирования полномочий ИИ-агентов", "date": "2026-06-25", "category": "Trading", "kicker": "Adaptive Delegation Gate", "desc": "Введение\nПри работе с автономными ИИ-агентами ключевой угрозой является дрейф автономии (autonomy drift) — ситуация, когда агент расширяет свои полномочия в процессе сессии, ссылаясь на контекстную не", "tags": ["ai-safety", "coordination", "delegation-gate", "authority", "permission-control"]},
-	{"slug": "af-xdp-dpdk-bypass", "title": "Ingress-пайплайн: DPDK / AF_XDP Kernel Bypass и Gossip-сеть", "date": "2026-06-25", "category": "Trading", "kicker": "Af Xdp Dpdk Bypass", "desc": "Механика Kernel Bypass\nДля достижения микросекундных задержек в обработке котировок HFT-боты используют технологию обхода сетевого стека ядра Linux (Kernel Bypass).", "tags": ["ingress", "dpdk", "af-xdp", "kernel-bypass", "f-stack", "core-pinning"]},
-	{"slug": "agent-self-healing", "title": "Self-Healing & Anti-Drift: Детерминированная отказоустойчивость ИИ-агентов", "date": "2026-06-25", "category": "Trading", "kicker": "Agent Self Healing", "desc": "Введение\nПри работе автономных ИИ-агентов в реальном времени возникает феномен агентного дрейфа (agentic drift) — постепенное накопление отклонений в контексте, состоянии памяти, правах доступа или ло", "tags": ["ai-safety", "self-healing", "anti-drift", "ooda", "governance"]},
-	{"slug": "anti-looping-monitor", "title": "Anti-Looping Monitor: Обнаружение и предотвращение бесконечных циклов ИИ-агентов", "date": "2026-06-25", "category": "Trading", "kicker": "Anti Looping Monitor", "desc": "Введение\nОдна из частых ловушек автономных ИИ-агентов — зацикливание (looping).", "tags": ["ai-safety", "anti-looping", "watchdog", "self-healing", "runaway-process"]},
-	{"slug": "avellaneda-stoikov-inventory", "title": "Модель Авелланеда-Стойкова: Контроль инвентарного риска в крипто-маркетмейкинге", "date": "2026-06-25", "category": "Trading", "kicker": "Avellaneda Stoikov Inventory", "desc": "Введение\nПри маркетмейкинге на волатильных криптоактивах ключевой риск дилера — инвентарный риск (inventory risk): накопление слишком большой длинной или короткой позиции, которая обесценится в случае", "tags": ["trading", "market-making", "inventory-risk", "avellaneda-stoikov", "microstructure"]},
-	{"slug": "avx512-hawkes-engine", "title": "AVX-512 Vectorized Hawkes Engine & Real-time Iceberg Detector", "date": "2026-06-25", "category": "Trading", "kicker": "Avx512 Hawkes Engine", "desc": "Введение\nВ высокочастотном маркет-мейкинге (HFT) скорость принятия решений и вычисления вероятности сквиза стакана критически зависят от латентности вычислений.", "tags": ["hft", "avx-512", "hawkes-process", "iceberg-detector", "order-book", "c++"]},
-	{"slug": "bybit-uta-defensive-veto", "title": "Bybit UTA Stress-Test Grid & Defensive Veto", "date": "2026-06-25", "category": "Trading", "kicker": "Bybit Uta Defensive Veto", "desc": "Механика Bybit UTA Portfolio Margin\nВ рамках Единого Торгового Аккаунта Bybit (Unified Trading Account) с поддержкой портфельной маржи (Portfolio Margin) биржа оценивает риски портфеля по сетке стресс", "tags": ["risk-management", "bybit-uta", "stress-test", "margin", "safety-guard", "defensive-veto"]},
-	{"slug": "bybit-uta-sbe", "title": "Bybit UTA SBE (Simple Binary Encoding) DMA protocol & In-Memory L3 Orderbook Engine", "date": "2026-06-25", "category": "Trading", "kicker": "Bybit Uta Sbe", "desc": "Введение\nВ высокочастотной торговле (HFT) традиционный сериализатор JSON или протокол FIX Tag-Value создают недопустимые задержки (latency) и джиттер (jitter) из-за динамического выделения памяти в ку", "tags": ["hft", "sbe", "bybit", "low-latency", "dma", "orderbook-engine"]},
-	{"slug": "candle-atr-grid-scaling", "title": "Candle ATR & Grid Scaling: Оптимизация шага сетки под волатильность и фильтрация комиссионного трения", "date": "2026-06-25", "category": "Trading", "kicker": "Candle Atr Grid Scaling", "desc": "Введение\nТрадиционные пробойные и сеточные алгоритмы часто совершают ошибку, рассчитывая параметры уровней стоп-лосса (SL) и тейк-профита (TP) на основе секундной (тиковой) волатильности без учета ком", "tags": ["trading", "grid", "atr", "volatility", "fees"]},
-	{"slug": "capability-passports-sap", "title": "Capability Passports & SAP: Делегирование прав доступа ИИ-агентов и цифровые подписи", "date": "2026-06-25", "category": "Security", "kicker": "Capability Passports Sap", "desc": "Введение\nПредоставление автономным ИИ-агентам доступа к разрушительным инструментам (модификация кода, управление процессами, переводы средств) требует строгого разграничения прав доступа.", "tags": ["ai-safety", "state-authority-plane", "capability-passports", "cryptography", "security"]},
-	{"slug": "cointegration-pairs-trading", "title": "Cointegration & Pairs Trading: Статистический арбитраж коррелированных пар", "date": "2026-06-25", "category": "Trading", "kicker": "Cointegration Pairs Trading", "desc": "Введение\nПростая торговля по тренду или уровням подвержена рыночному шуму и ложным пробоям.", "tags": ["trading", "pairs-trading", "cointegration", "statistical-arbitrage", "mean-reversion"]},
-	{"slug": "context-garbage-collection", "title": "Context Garbage Collection: Очистка контекста и предотвращение дрейфа внимания ИИ", "date": "2026-06-25", "category": "Trading", "kicker": "Context Garbage Collection", "desc": "Введение\nПри длительном взаимодействии ИИ-агента с окружением (просмотр логов, выполнение bash-команд, чтение файлов) его контекстное окно быстро заполняется.", "tags": ["ai-safety", "context-window", "garbage-collection", "attention-drift", "optimization"]},
-	{"slug": "cross-exchange-divergence", "title": "Cross-Exchange Divergence: Межбиржевой арбитраж в периоды ликвидационных сквизов", "date": "2026-06-25", "category": "Trading", "kicker": "Cross Exchange Divergence", "desc": "Введение\nВ обычных условиях цены на высоколиквидные активы (такие как BTCUSDT) на различных биржах (Binance, OKX, Bybit) идут практически вровень, а спред между ними удерживается арбитражными алгоритм", "tags": ["trading", "arbitrage", "cross-exchange", "liquidation-cascade", "correlation-divergence"]},
-	{"slug": "cross-vendor-latency-arbitrage", "title": "Cross-Vendor Latency Arbitrage (Bybit CLOB vs Hyperliquid L1)", "date": "2026-06-25", "category": "Trading", "kicker": "Cross Vendor Latency Arbitra", "desc": "Введение\nКросс-вендорный арбитраж задержек (Latency Arbitrage) основывается на эксплуатации разницы в скорости схождения цен (Price Convergence Latency) между ведущей (ведущим ценообразованием CLOB, н", "tags": ["arbitrage", "latency", "bybit", "hyperliquid", "order-flow", "hft"]},
-	{"slug": "decision-trace-audit", "title": "Decision Trace: Логирование трассировки решений и аудит шагов ИИ-агентов", "date": "2026-06-25", "category": "Trading", "kicker": "Decision Trace Audit", "desc": "Введение\nПри работе автономных ИИ-агентов «черный ящик» нейросети создает высокие операционные риски.", "tags": ["ai-safety", "decision-trace", "audit-trail", "observability", "blackboard"]},
-	{"slug": "delist-early-warning", "title": "Delist Early Warning System: Система раннего предупреждения делистингов", "date": "2026-06-25", "category": "Trading", "kicker": "Delist Early Warning", "desc": "Введение\nВнезапный делистинг токена на крупной бирже (например, Binance) ведет к мгновенной потере ликвидности и падению цены актива на 50-90%.", "tags": ["monitoring", "delisting", "risk-management", "cms-scraping", "market-anomalies"]},
-	{"slug": "depth-liquidity-policy", "title": "Depth Liquidity Policy: Анализ глубины стакана и оценка проскальзывания ликвидности", "date": "2026-06-25", "category": "Trading", "kicker": "Depth Liquidity Policy", "desc": "Введение\nПри отправке крупных рыночных ордеров (или условных ордеров, исполняющихся как taker) цена исполнения ухудшается по мере пробития уровней стакана.", "tags": ["microstructure", "order-book", "liquidity-sweep", "slippage-protection"]},
-	{"slug": "execution-drift-daemon", "title": "Execution Drift Daemon: Контроль расхождения реального исполнения и бэктеста", "date": "2026-06-25", "category": "Trading", "kicker": "Execution Drift Daemon", "desc": "Введение\nПри переходе от тестирования стратегии на исторических данных (Backtest) к реальной торговле (Live) ключевым фактором потери доходности является дрейф параметров исполнения (Execution Drift).", "tags": ["monitoring", "execution-drift", "backtest-parity", "risk-management", "failsafe"]},
-	{"slug": "funding-basis-slippage", "title": "Arbitrage & Basis Convergence: Арбитраж ставок финансирования с учетом затухания проскальзывания", "date": "2026-06-25", "category": "Trading", "kicker": "Funding Basis Slippage", "desc": "Введение\nАрбитраж ставки финансирования (Funding Rate Arbitrage) заключается в одновременной покупке базового актива на спотовом рынке и открытии шорта по бессрочному фьючерсу (perpetual contract) для", "tags": ["trading", "arbitrage", "funding-rate", "basis-trading", "slippage-decay"]},
-	{"slug": "funding-convergence-arbitrage", "title": "Funding Convergence: Кросс-биржевой арбитраж расхождения ставок финансирования", "date": "2026-06-25", "category": "Trading", "kicker": "Funding Convergence Arbitrag", "desc": "Введение\nНа рынках бессрочных фьючерсов ставки финансирования (funding rates) определяются локальным спросом и предложением конкретной биржи.", "tags": ["trading", "funding-arbitrage", "cross-exchange", "delta-neutral", "convergence"]},
-	{"slug": "hft-latency-optimization", "title": "HFT Latency & Order Lifetime: Минимизация задержек и оптимизация времени жизни ордера", "date": "2026-06-25", "category": "Trading", "kicker": "Hft Latency Optimization", "desc": "Введение\nВ высокочастотном трейдинге (HFT) скорость — это не просто удобство, а основа выживания.", "tags": ["trading", "latency", "hft", "order-lifetime", "infrastructure"]},
-	{"slug": "instructed-retriever", "title": "Instructed Retriever: Детерминированные планы поиска для ИИ-агентов", "date": "2026-06-25", "category": "Trading", "kicker": "Instructed Retriever", "desc": "Введение в архитектуру Instructed Retriever\n\nКлассические конвейеры RAG (Retrieval-Augmented Generation) страдают от стохастического дрейфа (semantic drift): когда пользователь задает сложный или косв", "tags": ["instructed-retriever", "rag", "deterministic-search", "metadata-filtering", "query-translation", "rag-drift-mitigation"]},
-	{"slug": "lead-lag-cross-exchange", "title": "Lead-Lag Effect & Cross-Exchange: Кросс-биржевой арбитраж и референсное ценообразование", "date": "2026-06-25", "category": "Trading", "kicker": "Lead Lag Cross Exchange", "desc": "Введение\nКриптовалютный рынок крайне фрагментирован: один и тот же актив торгуется на десятках спотовых и фьючерсных площадок.", "tags": ["trading", "lead-lag", "cross-exchange", "arbitrage", "price-discovery"]},
-	{"slug": "liquidation-cascades-arbitrage", "title": "Liquidation Cascades & Funding Arbitrage: Использование каскадов принудительного закрытия позиций", "date": "2026-06-25", "category": "Trading", "kicker": "Liquidation Cascades Arbitra", "desc": "Введение\nКриптовалютные рынки характеризуются избыточным использованием кредитного плеча ритейл-трейдерами.", "tags": ["trading", "liquidation", "funding-rate", "arbitrage", "delta-neutral"]},
-	{"slug": "lob-queue-position", "title": "Queue Position Estimation: Оценка позиции в очереди стакана лимитных ордеров", "date": "2026-06-25", "category": "Trading", "kicker": "Lob Queue Position", "desc": "Введение\nПри торговле лимитными ордерами (Limit Orders) биржа исполняет их по принципу FIFO (First-In, First-Out): ордера, выставленные раньше по той же цене, исполняются первыми.", "tags": ["trading", "microstructure", "queue-position", "limit-order-book", "hft"]},
-	{"slug": "lsh-deduplication", "title": "MinHash & SimHash: Дедупликация и сжатие текстовых архивов", "date": "2026-06-25", "category": "Trading", "kicker": "Lsh Deduplication", "desc": "Введение в LSH-дедупликацию текстовых баз\n\nПри обработке сверхкрупных архивов сообщений и логов (от 100k до 500k строк) стандартные методы точного дедупликации (SHA-256) оказываются недостаточными из-", "tags": ["lsh", "minhash", "simhash", "deduplication", "jaccard-similarity", "hamming-distance", "compact-digest"]},
-	{"slug": "mirrorcore-compression", "title": "MirrorCore++: Временная согласованность и компрессия идентичности", "date": "2026-06-25", "category": "Trading", "kicker": "Mirrorcore Compression", "desc": "Введение в MirrorCore++\n\nMirrorCore++ — это продвинутый протокол компрессии больших архивов диалогов и логов активности ИИ с целью выделения «ядра идентичности» (identity kernel) и «ядра решений» (dec", "tags": ["mirrorcore", "temporal-consistency", "identity-compression", "nli-scoring", "hdbscan", "change-point-detection"]},
-	{"slug": "mixture-of-agents-consensus", "title": "Mixture-of-Agents (MoA): Консенсус и федеративное согласование ИИ-агентов", "date": "2026-06-25", "category": "Trading", "kicker": "Mixture Of Agents Consensus", "desc": "Введение\n\nПри решении сложных аналитических, логических или высокорисковых задач индивидуальные LLM (даже уровня frontier) склонны к галлюцинациям и локальным логическим тупикам.", "tags": ["ai-safety", "mixture-of-agents", "consensus", "arbitration", "composite-trader"]},
-	{"slug": "multi-model-debate", "title": "Multi-Model Debate: Консенсус и самокоррекция ИИ через дебаты моделей", "date": "2026-06-25", "category": "Trading", "kicker": "Multi Model Debate", "desc": "Введение\nОдиночная модель, даже обладающая продвинутыми способностями рассуждения (reasoning), склонна к незаметным логическим ошибкам и ложной уверенности (hallucinatory certainty).", "tags": ["ai-safety", "multi-model-debate", "consensus", "self-correction", "decision-verification"]},
-	{"slug": "obi-order-book-imbalance", "title": "Order Book Imbalance (OBI) & OFI: Торговля краткосрочными дисбалансами ликвидности", "date": "2026-06-25", "category": "Trading", "kicker": "Obi Order Book Imbalance", "desc": "Введение\nМикроструктурный анализ лимитного стакана (Limit Order Book, LOB) позволяет выявлять скрытый дисбаланс спроса и предложения до того, как он отразится на графике цен.", "tags": ["trading", "obi", "ofi", "microstructure", "market-making"]},
-	{"slug": "order-lifetime-cancellation", "title": "Order Lifetime & Cancellation Ratio: Фильтрация спуфинга в книге ордеров", "date": "2026-06-25", "category": "Trading", "kicker": "Order Lifetime Cancellation", "desc": "Введение\nНа ликвидных крипторынках HFT-маркетмейкеры и манипуляторы активно используют спуфинг (spoofing) — выставление крупных лимитных ордеров без намерения их исполнять.", "tags": ["trading", "microstructure", "order-lifetime", "cancellation-ratio", "spoofing"]},
-	{"slug": "pairs-trading-kalman", "title": "Kalman Cointegration: Адаптивный парный арбитраж на фильтре Калмана", "date": "2026-06-25", "category": "Trading", "kicker": "Pairs Trading Kalman", "desc": "Введение\nКлассический парный арбитраж основывается на поиске коинтегрированных активов (например, ETH и BTC), спред между которыми стационарен (возвращается к среднему).", "tags": ["trading", "statistical-arbitrage", "cointegration", "kalman-filter", "pairs-trading"]},
-	{"slug": "pnl-protection-daemons", "title": "PnL & Intraday Protection: Демоны контроля рисков и просадок", "date": "2026-06-25", "category": "Trading", "kicker": "Pnl Protection Daemons", "desc": "Введение\nВ торговых системах HFT критически важно иметь независимый контур мониторинга рисков, работающий параллельно с логикой входа в сделки.", "tags": ["trading", "risk-management", "pnl-protection", "drawdown-guard", "failsafe"]},
-	{"slug": "prompt-compression-entropy", "title": "Prompt Entropy Compression: Динамическое сжатие промптов на основе информационной энтропии", "date": "2026-06-25", "category": "Trading", "kicker": "Prompt Compression Entropy", "desc": "Введение\nПри работе ИИ-агентов в длинных циклах (например, суточный мониторинг логов) размер промпта растет экспоненциально.", "tags": ["ai-safety", "prompt-engineering", "entropy-compression", "perplexity", "context-optimization"]},
-	{"slug": "queue-admission-simulator", "title": "Queue Admission Simulator: Моделирование пропуска и исполнения ордеров в очереди", "date": "2026-06-25", "category": "Trading", "kicker": "Queue Admission Simulator", "desc": "Введение\nПри маркетмейкинге и пассивном котировании с использованием лимитных ордеров (Post-Only) простого нахождения цены на нужном уровне недостаточно для совершения сделки.", "tags": ["trading", "microstructure", "queue-admission", "order-book", "simulator"]},
-	{"slug": "queue-calibration-model", "title": "Entry Queue Calibration Model: Обратная связь и динамическая калибровка очереди ордеров", "date": "2026-06-25", "category": "Trading", "kicker": "Queue Calibration Model", "desc": "Введение\nДля точности прогнозирования заполнения лимитных ордеров недостаточно иметь статическую модель симуляции очереди.", "tags": ["microstructure", "queue-simulator", "calibration", "feedback-loop", "order-latency"]},
-	{"slug": "regime-gate-scorecard", "title": "Regime Gate Scorecard: Модель квантификации рыночных режимов", "date": "2026-06-25", "category": "Trading", "kicker": "Regime Gate Scorecard", "desc": "Введение\nВ трейдинге точность сигнала вторична по отношению к контексту рынка.", "tags": ["trading", "regime-detection", "scorecard", "market-microstructure", "risk-control"]},
-	{"slug": "reviewer-sandbox-split", "title": "ReviewerGate and SandboxPreflight Decoupled AI Security Architecture", "date": "2026-06-25", "category": "Security", "kicker": "Reviewer Sandbox Split", "desc": "Введение\nВ автономных системах на базе ИИ-агентов выполнение генерируемого кода несет критические риски безопасности (удаление файлов, утечка API-ключей, ботнет-активность).", "tags": ["ai-safety", "security", "sandbox", "reviewer-gate", "json-schema", "runtime-telemetry"]},
-	{"slug": "score-core-hft", "title": "S-CORE HFT Core: Нативное С++ Busy-Polling Ядро и Hawkes-математика", "date": "2026-06-25", "category": "Trading", "kicker": "Score Core Hft", "desc": "Введение в S-CORE v15.3\nS-CORE v15.3 представляет собой нативный C++ модуль сверхнизкой задержки (Ultra-Low Latency), скомпилированный под инструкции AVX-512 и FMA.", "tags": ["hft", "s-core", "c++", "mmap", "hawkes", "avx-512"]},
-	{"slug": "security-sandboxing", "title": "Security Sandboxing: Изоляция выполнения и контроль лимитов инструментов ИИ", "date": "2026-06-25", "category": "Security", "kicker": "Security Sandboxing", "desc": "Введение\nПри интеграции ИИ-агентов с внешним окружением (базы данных, локальная ОС, внешние API) ключевым риском является неконтролируемое выполнение команд (untrusted tool execution).", "tags": ["ai-safety", "sandboxing", "tool-isolation", "security", "runtime-protection"]},
-	{"slug": "sovereign-agent-core", "title": "Sovereign Agent Core: Безопасность MCP, MemIR Атомы и SSGM", "date": "2026-06-25", "category": "Trading", "kicker": "Sovereign Agent Core", "desc": "Введение в Sovereign Agent Core\nSovereign Agent Core представляет собой локальный/self-hosted слой безопасности (Agent Trust Layer), располагающийся между стохастической нейросетью и критическими инст", "tags": ["sovereign-core", "mcp-security", "memir", "ssgm", "ecs", "privacy-router"]},
-	{"slug": "spread-mean-reversion", "title": "Spread Mean Reversion: Торговля возвратом спреда и минимизация рыночного воздействия", "date": "2026-06-25", "category": "Trading", "kicker": "Spread Mean Reversion", "desc": "Введение\nНа микроструктурном уровне цена актива постоянно совершает колебания внутри спреда (bid-ask spread).", "tags": ["trading", "mean-reversion", "spread", "market-impact", "post-only"]},
-	{"slug": "tee-agent-secrets", "title": "TEE & MPC: Безопасное управление ключами автономных ИИ-агентов", "date": "2026-06-25", "category": "Security", "kicker": "Tee Agent Secrets", "desc": "Введение\nПредоставление автономному ИИ-агенту прямого доступа к API-ключам биржи или приватным ключам блокчейна несет критическую уязвимость.", "tags": ["ai-safety", "security", "tee", "mpc", "key-management"]},
-	{"slug": "tilt-index-antiself", "title": "Tilt Index & Anti-Self: Предотвращение тильта и когнитивных искажений в трейдинге", "date": "2026-06-25", "category": "Trading", "kicker": "Tilt Index Antiself", "desc": "Введение\nКогнитивные искажения трейдера (как человека, так и ИИ-агента) — одна из главных причин слива депозитов.", "tags": ["trading", "risk-management", "tilt-index", "anti-self", "safety-guard"]},
-	{"slug": "transient-price-impact-decay", "title": "Transient Price Impact Decay & Liquidation Sweeps", "date": "2026-06-25", "category": "Trading", "kicker": "Transient Price Impact Decay", "desc": "Введение\nКаскадные ликвидации маржинальных позиций с высоким плечом (50x–100x) приводят к выбросу крупных рыночных ордеров (market order sweeps) на бирже.", "tags": ["liquidation-cascades", "price-impact", "mean-reversion", "microstructure", "bybit"]},
-	{"slug": "volatility-sizing-policy", "title": "Volatility Sizing Policy: Адаптивное масштабирование ордеров на основе ATR", "date": "2026-06-25", "category": "Trading", "kicker": "Volatility Sizing Policy", "desc": "Введение\nВ условиях частой смены рыночных режимов фиксированный размер ордера (notional) ведет к завышенному риску в моменты высокой волатильности и неэффективному использованию капитала во время флэт", "tags": ["sizing", "volatility", "atr", "risk-management", "position-control"]},
-	{"slug": "volume-profile-value-area", "title": "Volume Profile & Value Area: Позиционирование по горизонтальным объемам и зоны ликвидности", "date": "2026-06-25", "category": "Trading", "kicker": "Volume Profile Value Area", "desc": "Введение\nКлассический технический анализ рассматривает цену во времени.", "tags": ["trading", "volume-profile", "poc", "value-area", "market-structure"]},
-	{"slug": "vpin-flow-toxicity", "title": "VPIN: Измерение токсичности потока ордеров и защита от неблагоприятного отбора", "date": "2026-06-25", "category": "Trading", "kicker": "Vpin Flow Toxicity", "desc": "Введение\nНа крипторынках HFT-алгоритмы и поставщики ликвидности постоянно сталкиваются с риском неблагоприятного отбора (adverse selection) — ситуацией, когда они исполняют ордера информированных учас", "tags": ["trading", "vpin", "order-flow", "hft", "toxicity"]},
-	{"slug": "walkforward-ensemble", "title": "Walk-Forward Ensemble: Форвардное скользящее тестирование и ансамбли стратегий", "date": "2026-06-25", "category": "Trading", "kicker": "Walkforward Ensemble", "desc": "Введение\nПри оптимизации торговых систем на исторических данных существует высокий риск переподгонки (overfitting), когда параметры идеально работают в прошлом, но теряют деньги в реальном времени.", "tags": ["trading", "quant", "walk-forward", "parameter-optimization", "ensemble"]},
-	{
-		slug: "regime-playbook-what-to-trade",
-		title: "Regime Playbook: что торговать в каждом режиме BTC",
-		date: "2026-06-19",
-		category: "Trading",
-		kicker: "Regime Playbook",
-		desc: "Из живой матрицы эджа: эдж это связка сигнал × направление × режим. Зелёные связки +$4457, красные −$25452 за 7 дней.",
-		tags: ["trading","regime","playbook","what","to","trade"]
-	},
-	{
-		slug: "ai-agent-trust-layer-reliability",
-		title: "AI-Agent Trust Layer: надёжность агентов как продукт",
-		date: "2026-06-14",
-		category: "AI",
-		kicker: "Agent Reliability",
-		desc: "Trust Layer между LLM и средой: threat model агентов = чек-лист аудита надёжности.",
-		tags: ["ai","ai","agent","trust","layer","reliability"]
-	},
-	{
-		slug: "blockchain-forensics-onchain-investigations",
-		title: "Blockchain-форензика: методология ончейн-расследований",
-		date: "2026-06-14",
-		category: "Security",
-		kicker: "Forensics",
-		desc: "Ончейн-форензика: gas trail, Sybil-фермы, идентификация контрактов — продаваемый OSINT-сервис.",
-		tags: ["security","blockchain","forensics","onchain","investigations"]
-	},
-	{
-		slug: "compression-no-mans-land-trap",
-		title: "S15: Паттерн «Compression / No-Man’s-Land» (Сжатие и Капкан-удушение)",
-		date: "2026-06-14",
-		category: "Trading",
-		kicker: "Range Compression",
-		desc: "Сжатие волатильности внутри диапазона и капкан для спешащих. Как не отдавать ликвидность в середине свинга.",
-		tags: ["trading","compression","no","mans","land","trap"]
-	},
-	{
-		slug: "grid-trading-os-institutional-spec",
-		title: "Grid Trading OS — институциональная спецификация (2026)",
-		date: "2026-06-14",
-		category: "Trading",
-		kicker: "Grid OS",
-		desc: "ATR-калибровка шага, fee-firewall, ±3σ range, GER soft-stop, regime switching — институциональная грид-спека.",
-		tags: ["trading","grid","trading","os","institutional","spec"]
-	},
-	{
-		slug: "microstructure-delisting-data-integrity-2026",
-		title: "Микроструктура и риск делистинга 2026: data-integrity для квант-движка",
-		date: "2026-06-14",
-		category: "Trading",
-		kicker: "Microstructure",
-		desc: "Bybit unilateral-OI (11.06.2026) ломает бэктесты; Delist-Risk Score для авто-флага токсичных активов.",
-		tags: ["trading","microstructure","delisting","data","integrity","2026"]
-	},
-	{
-		slug: "monetization-matrix-4x3",
-		title: "Матрица монетизации: от быстрых денег к инфраструктуре",
-		date: "2026-06-14",
-		category: "Business",
-		kicker: "Monetization",
-		desc: "Матрица 4 уровня × 3 горизонта: быстрые деньги финансируют moonshots, anti-кассовый-разрыв.",
-		tags: ["business","monetization","matrix","4x3"]
-	},
-	{
-		slug: "multiagent-orchestration-autonomous-research",
-		title: "Мультиагентная оркестрация и автономное исследование",
-		date: "2026-06-14",
-		category: "AI",
-		kicker: "Orchestration",
-		desc: "Граф-оркестрация, test-time compute, Arbiter/Clarifier; арена как автономная исследовательская система.",
-		tags: ["ai","multiagent","orchestration","autonomous","research"]
-	},
-	{
-		slug: "sector-divergence-fake-crown",
-		title: "S14: Паттерн «Один говорит, а три молчат» (Фейковая корона)",
-		date: "2026-06-14",
-		category: "Trading",
-		kicker: "Sector Divergence",
-		desc: "Резонанс сектора против ложного лидерства. Почему памп одного актива при тишине остальных — это приманка, и как это фильтровать.",
-		tags: ["trading","sector","divergence","fake","crown"]
-	},
-	{
-		slug: "survival-math-ergodicity-kelly",
-		title: "Математика выживания: эргодичность, Келли и expectancy",
-		date: "2026-06-14",
-		category: "Risk",
-		kicker: "Survival Math",
-		desc: "Эргодичность, Келли, expectancy: почему +EV может банкротить и как судить ботов по геом. росту.",
-		tags: ["risk","survival","math","ergodicity","kelly"]
-	},
-	{
-		slug: "trading-discipline-journal-mae-mfe",
-		title: "Дисциплина трейдинга: дневник, MAE/MFE и психология убытков",
-		date: "2026-06-14",
-		category: "Trading",
-		kicker: "Discipline",
-		desc: "Дневник, MAE/MFE-калибровка стопов/тейков, эффект диспозиции и как не зашить его в код.",
-		tags: ["trading","trading","discipline","journal","mae","mfe"]
-	},
-	{
-		slug: "anti-self-attention-trading-psychology",
-		title: "S10: Системы Внимания и контр-индикаторы «Анти-Я»",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Trading Psychology",
-		desc: "Управление поведенческим дрейфом в трейдинге: от ментальных якорей до контр-интуитивной торговли по сигналам реактивного «Анти-Я» и аватара Членикус.",
-		tags: ["trading","anti","self","attention","trading","psychology"]
-	},
-	{
-		slug: "candle-confirmation-data-alignment",
-		title: "Data Alignment: Правила подтверждения свечей и синхронизация",
-		date: "2026-06-13",
-		category: "Infrastructure",
-		kicker: "Trading Infrastructure",
-		desc: "Руководство по правильной обработке свечей, фильтрации незакрытых баров и синхронизации шага опроса для предотвращения пропусков данных и ложных входов.",
-		tags: ["infrastructure","candle","confirmation","data","alignment"]
-	},
-	{
-		slug: "crowd-fade-long-short-ratio",
-		title: "Crowd-fade: как читать long/short ratio фьючерсов и торговать против толпы",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Positioning",
-		desc: "Когда ритейл-толпа экстремально длинная, а смарт-мани нет — сигнал на разворот. Как читать данные позиционирования.",
-		tags: ["trading","crowd","fade","long","short","ratio"]
-	},
-	{
-		slug: "diversification-illusion-bots",
-		title: "Иллюзия диверсификации: почему 150 ботов — это часто 1 стратегия в 150 копиях",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Risk",
-		desc: "Много ботов ≠ много независимых эджей. Когда движок не в фазе с рынком — минусуют все разом.",
-		tags: ["trading","diversification","illusion","bots"]
-	},
-	{
-		slug: "fleet-coordinator-drift-monitoring",
-		title: "D11: Fleet Coordinator и технический дрейф",
-		date: "2026-06-13",
-		category: "Governance",
-		kicker: "Fleet Coordination",
-		desc: "Спецификация и протокол координации над всем флотом серверов и агентов. Автоматическое выявление и устранение дрейфа состояния систем.",
-		tags: ["governance","fleet","coordinator","drift","monitoring"]
-	},
-	{
-		slug: "fractal-intelligence-scouts-scribes-attention",
-		title: "S12: Фрактальный интеллект: Роли внимания, Q-score и AutoDigest",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Attention Networks",
-		desc: "Концепция фрактального интеллекта в трейдинге: роли Scout, Scribe, Sentinel, расчет Q-score сетапа и автоматическое сжатие AutoDigest.",
-		tags: ["trading","fractal","intelligence","scouts","scribes","attention"]
-	},
-	{
-		slug: "grid-trading-breakout-recentering-management",
-		title: "S11: Сеточные боты и управление выходом из диапазона (Recentering)",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Grid Trading",
-		desc: "Механика работы сеточных ботов, расчет шага под волатильность, Unit Economics комиссий и стратегии рецентрирования (Stop & Rebuild) при выходе из диапазона.",
-		tags: ["trading","grid","trading","breakout","recentering","management"]
-	},
-	{
-		slug: "how-to-validate-edge-oos-bootstrap",
-		title: "Как проверить торговый эдж по-честному: OOS, bootstrap CI и почему in-sample врёт",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Validation",
-		desc: "Методология, которая отсеяла 99% наших гипотез. Out-of-sample split, bootstrap доверительный интервал, бенчмарки.",
-		tags: ["trading","how","to","validate","edge","oos","bootstrap"]
-	},
-	{
-		slug: "macro-liquidity-eth-btc-relativity-gap",
-		title: "S13: Макро-режимы ликвидности и ETH-BTC Relativity Gap",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Liquidity Regimes",
-		desc: "Анализ расхождения относительной стоимости ETH/BTC в зависимости от макро-ликвидности ФРС, динамики индекса доллара DXY и протокола накопления ETH-Core.",
-		tags: ["trading","macro","liquidity","eth","btc","relativity","gap"]
-	},
-	{
-		slug: "mas-managed-coevolution-sandbox-isolation",
-		title: "D13: Управляемая коэволюция и изоляция многоагентных систем (MAS)",
-		date: "2026-06-13",
-		category: "Security",
-		kicker: "Multi-Agent Safety",
-		desc: "Архитектура Policy Gate, логирование Blackboard и изоляция исполнения в песочницах (Firecracker/gVisor) для безопасного коэволюционного MARL/MAS.",
-		tags: ["security","mas","managed","coevolution","sandbox","isolation"]
-	},
-	{
-		slug: "mild-vs-strong-trend-reversal",
-		title: "Парадокс mild-тренда: почему развороты работают в слабом тренде и сливают в сильном",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Regime Strength",
-		desc: "На данных 1450 сделок: разворотные сигналы дают +$8,599 в mild-трендах и −$2,923 в strong. Контринтуитивно, но объяснимо.",
-		tags: ["trading","mild","vs","strong","trend","reversal"]
-	},
-	{
-		slug: "mirrorcore-compactdigest-memory-compression",
-		title: "D12: MirrorCore++ и сжатие памяти по самосогласованности",
-		date: "2026-06-13",
-		category: "Security",
-		kicker: "Memory Management",
-		desc: "Технология сжатия логов переписок на основе самосогласованности для формирования ядер идентичности ИИ и дельта-компрессии CompactDigest.",
-		tags: ["security","mirrorcore","compactdigest","memory","compression"]
-	},
-	{
-		slug: "multigpt-bridge-federated-ai-arbitration",
-		title: "D15: MultiGPT-Bridge и Федеративный ИИ-Арбитраж",
-		date: "2026-06-13",
-		category: "Infrastructure",
-		kicker: "Federated Arbitration",
-		desc: "Архитектура федеративного взаимодействия ИИ-агентов через MultiGPT-Bridge: перенос идентичности через AnchorSet, Mixture-of-Agents консенсус и роль Цифрового Арбитра.",
-		tags: ["infrastructure","multigpt","bridge","federated","ai","arbitration"]
-	},
-	{
-		slug: "postgres-backup-sync-daemon",
-		title: "PostgreSQL Backup Daemon: Автоматическая синхронизация бэкапов",
-		date: "2026-06-13",
-		category: "Infrastructure",
-		kicker: "Infrastructure Sovereignty",
-		desc: "Спецификация автоматического демона резервного копирования баз данных PostgreSQL, сжатия дампов и их локальной синхронизации для обеспечения отказоустойчивости инфраструктуры.",
-		tags: ["infrastructure","postgres","backup","sync","daemon"]
-	},
-	{
-		slug: "regime-timing-30-120-min",
-		title: "Тайминг регима: входить через 30-120 минут после смены тренда",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Regime Timing",
-		desc: "Возраст тренда на момент входа предсказывает результат: 30-120мин = +$14.88, а 2-6ч = −$2.93.",
-		tags: ["trading","regime","timing","30","120","min"]
-	},
-	{
-		slug: "sovereign-scalper-drawdown-analysis",
-		title: "Sovereign Scalper: Глубокий анализ просадки",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "Drawdown Deep-dive",
-		desc: "Анализ пяти критических уязвимостей в логике ведения позиций и фильтрации сигналов робота Sovereign Core, приведших к полной просадке виртуального капитала.",
-		tags: ["trading","sovereign","scalper","drawdown","analysis"]
-	},
-	{
-		slug: "trading-performance-monitoring-ssot-ai",
-		title: "D14: Системы мониторинга торговой эффективности: Архитектура SSOT и ИИ-коучинг",
-		date: "2026-06-13",
-		category: "Security",
-		kicker: "Infrastructure",
-		desc: "Проектирование систем мониторинга трейдеров: Единый источник истины (SSOT), сравнение TraderSync/Tradervue/TradeZella, выявление тильта и интеграция ИИ-наставника.",
-		tags: ["security","trading","performance","monitoring","ssot","ai"]
-	},
-	{
-		slug: "trend-following-r-multiple-math",
-		title: "Как 50% winrate приносит прибыль: математика R-кратности в трендследовании",
-		date: "2026-06-13",
-		category: "Trading",
-		kicker: "R-Multiples",
-		desc: "На trend-aligned сделках средний тейк +$77.52 против стопа −$8.01 — асимметрия 6.8×. Редкие победы, но огромные.",
-		tags: ["trading","trend","following","r","multiple","math"]
-	},
-	{
-		slug: "ai-agent-reliability-audit",
-		title: "AI-Agent Reliability Audit — за 72 часа делаю ваших агентов безопасными",
-		date: "2026-06-11",
-		category: "Service",
-		kicker: "Flagship Service",
-		desc: "Подключили AI-агента в прод? Покажу, как его сломать инъекцией, дам Decision Trace и Rollback-модуль. От бесплатной диагностики до enterprise-аудита.",
-		tags: ["service","ai","agent","reliability","audit"]
-	},
-	{
-		slug: "read-market-risk-fng-funding",
-		title: "Как читать риск рынка за 60 секунд: FNG + funding + режим",
-		date: "2026-06-11",
-		category: "Trading",
-		kicker: "Risk Intelligence",
-		desc: "Три бесплатных индикатора, которые ловят риск ликвидационного каскада и разворота раньше графика. Методология Crypto Risk Desk.",
-		tags: ["trading","read","market","risk","fng","funding"]
-	},
-	{
-		slug: "why-90-percent-strategies-lose",
-		title: "Почему 90% paper-trading стратегий теряют: 3 механических дефекта на 66k сделок",
-		date: "2026-06-10",
-		category: "Trading",
-		kicker: "Strategy Reality Check",
-		desc: "Разбор на реальных данных Sovereign Arena: мёртвые монеты, геометрия R:R и театр индикаторов — почему большинство стратегий обречены до запуска.",
-		tags: ["trading","why","90","percent","strategies","lose"]
-	},
-	{
-		slug: "archiveos-multigpt-bridge-integration",
-		title: "ArchiveOS & MultiGPT-Bridge: Потоки памяти и арбитраж ИИ",
-		date: "2026-06-08",
-		category: "Infrastructure",
-		kicker: "Memory & Bridge",
-		desc: "Как правильно Continuity OS и BitEvo должны взаимодействовать с ArchiveOS API/Data для управления контекстом, переноса идентичности через AnchorSet и построения федеративного ИИ-арбитража.",
-		tags: ["infrastructure","archiveos","multigpt","bridge","integration"]
-	},
-	{
-		slug: "d3-tool-io-bridge-contract",
-		title: "D3: Tool-IO Bridge Спецификация и Контракт",
-		date: "2026-06-08",
-		category: "Security",
-		kicker: "Security Sandbox",
-		desc: "Спецификация безопасного вызова внешних инструментов и выполнения скриптов в изолированной песочнице с валидацией схемы и контролем лимитов.",
-		tags: ["security","d3","tool","io","bridge","contract"]
-	},
-	{
-		slug: "eth-btc-relativity-gap",
-		title: "ETH-BTC Relativity Gap: Торговля относительной силой и макро-индикаторы",
-		date: "2026-06-08",
-		category: "Trading",
-		kicker: "Regime Indicators",
-		desc: "Анализ расхождения относительной цены ETH к BTC, макроэкономических индикаторов (ставка ФРС, DXY) и механики принудительного делевериджа фьючерсов.",
-		tags: ["trading","eth","btc","relativity","gap"]
-	},
-	{
-		slug: "evm-approval-safety-flashbots",
-		title: "EVM: Безопасность аппрувов и защита от фронтраннинга через Flashbots",
-		date: "2026-06-08",
-		category: "Security",
-		kicker: "EVM Safety",
-		desc: "Спецификация безопасного управления аппрувами токенов в EVM-сетях и защиты транзакций от фронтраннинга с помощью Flashbots.",
-		tags: ["security","evm","approval","safety","flashbots"]
-	},
-	{
-		slug: "mirrorcore-seeding-identity-persistence",
-		title: "MirrorCore & Seeding: Техника переноса и устойчивости контекста ИИ",
-		date: "2026-06-08",
-		category: "Security",
-		kicker: "AI Safety",
-		desc: "Как переносить и восстанавливать контекст и идентичность ИИ-агентов через сессии с использованием капсул сидов и IdentityLock.",
-		tags: ["security","mirrorcore","seeding","identity","persistence"]
-	},
-	{
-		slug: "multi-agent-system-safety",
-		title: "Управляемая коэволюция и безопасность многоагентных систем (MAS)",
-		date: "2026-06-08",
-		category: "Security",
-		kicker: "Multi-Agent Safety",
-		desc: "Принципы безопасной управляемой коэволюции нескольких ИИ-агентов с использованием Policy Gate и изоляцией исполнения в песочницах.",
-		tags: ["security","multi","agent","system","safety"]
-	},
-	{
-		slug: "omnicore-loop-self-preservation",
-		title: "Omni Core Loop & Self-Preservation: Детерминированные фоновые циклы автономии",
-		date: "2026-06-08",
-		category: "Automation",
-		kicker: "OODA Loop",
-		desc: "Архитектура фонового планировщика OODA с автоматическими проверками дрейфа (DriftGuard), лог-ротацией и авто-чекпоинтами.",
-		tags: ["automation","omnicore","loop","self","preservation"]
-	},
-	{
-		slug: "reflex-layer-ooda-monitoring",
-		title: "Reflex Layer: Автономный OODA-мониторинг",
-		date: "2026-06-08",
-		category: "Automation",
-		kicker: "OODA Loop",
-		desc: "Реализация автономного OODA-мониторинга (Observe-Orient-Decide-Act) для отслеживания здоровья систем, перезапуска процессов и лог-ротации.",
-		tags: ["automation","reflex","layer","ooda","monitoring"]
-	},
-	{
-		slug: "state-authority-plane-evolution",
-		title: "State Authority Plane: Управление привилегиями агентов",
-		date: "2026-06-08",
-		category: "Governance",
-		kicker: "Agent Governance",
-		desc: "Эволюция контуров управления правами и привилегиями агентов SAP (Loop A -> B -> C) с использованием паспортов способностей и проверкой подписей.",
-		tags: ["governance","state","authority","plane","evolution"]
-	},
-	{
-		slug: "trading-system-v2-range-farm",
-		title: "Trading System v2.final: Сетки, дивергенции и ловушки маркет-мейкеров",
-		date: "2026-06-08",
-		category: "Trading",
-		kicker: "Trading System",
-		desc: "Техническая спецификация торговой системы v2.final: от борьбы со своими слабостями через ИИ-контр-индикаторы до сеточных стратегий (Si-Zi), Range-Farm BTC и Alt-Scouting.",
-		tags: ["trading","trading","system","v2","range","farm"]
-	},
-	{
-		slug: "solana-mev-sandwich-protection",
-		title: "Solana MEV: Защита от сэндвич-атак",
-		date: "2026-06-07",
-		category: "Infrastructure",
-		kicker: "MEV Mitigation",
-		desc: "Как защитить транзакции в Solana от сэндвич-атак MEV-ботов, используя Jito Block Engine и оптимизацию проскальзывания Jupiter API.",
-		tags: ["infrastructure","solana","mev","sandwich","protection"]
-	},
-	{
-		slug: "okx-nft-parasite-hunter",
-		title: "OKX NFT: Охота на паразитарные кошельки",
-		date: "2026-06-03",
-		category: "Trading",
-		kicker: "NFT Botting",
-		desc: "Стратегия выявления и мгновенного перебивания ставок паразитарных снайперов на OKX NFT и OpenSea.",
-		tags: ["trading","okx","nft","parasite","hunter"]
-	}
-];
+import taxonomyPolicy from '../data/public-taxonomy-policy.json';
+const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c');
 ---
 
-<Layout title="Crypto & Trading Guides Portal">
-	<!-- Hero Section -->
-	<section class="hero-section">
-		<div class="container hero-inner">
-			<div class="kicker">Knowledge Library</div>
-			<h1 class="display">Crypto & Trading Journal</h1>
-			<p class="copy">
-				Децентрализованные руководства и плейбуки по криптографии, DeFi, MEV и торговым стратегиям.
-			</p>
-		</div>
-	</section>
+<Layout
+  title="Crypto Guides · Reviewed research library"
+  description="Review-first Crypto Guides discovery surface backed by the same reviewed metadata authority as the public guide index."
+>
+  <section class="hero-section" data-root-discovery-authority="REVIEWED_CANONICAL_MERGED">
+    <div class="container hero-inner">
+      <div class="kicker">REVIEW-FIRST KNOWLEDGE LIBRARY</div>
+      <h1 class="display">Crypto Guides</h1>
+      <p class="copy">
+        Исследовательская библиотека по crypto, trading, AI и infrastructure. Главная страница не хранит отдельную копию корпуса:
+        карточки собираются из того же reviewed index и canonical metadata, что и полный каталог.
+      </p>
+      <div class="authority-note">
+        <strong>ONE DISCOVERY AUTHORITY</strong>
+        <span>Публикация маршрута не означает current verification. Review status, currentness, YMYL и canonical role сохраняются на discovery surface.</span>
+      </div>
+      <div class="hero-actions">
+        <a class="primary-action" href="/guides">Открыть полный индекс →</a>
+        <a class="secondary-action" href="/api/public-guides.json">Reviewed API</a>
+      </div>
+    </div>
+  </section>
 
-	<!-- Guides List -->
-	<section class="guides-section">
-		<div class="container">
-			<div class="guides-grid">
-				{guides.map(guide => (
-					<article class="guide-card">
-						<div class="card-meta">
-							<span class="category">{guide.category}</span>
-							<span class="dot">·</span>
-							<span class="date">{guide.date}</span>
-						</div>
-						<a href={`/guides/${guide.slug}`} class="title-link">
-							<h2 class="display-sm">{guide.title}</h2>
-						</a>
-						<p class="desc">{guide.desc}</p>
-						<div class="card-footer">
-							<div class="tags">
-								{guide.tags.map(tag => (
-									<span class="tag">#{tag}</span>
-								))}
-							</div>
-							<a href={`/guides/${guide.slug}`} class="read-more">Read Guide →</a>
-						</div>
-					</article>
-				))}
-			</div>
-		</div>
-	</section>
+  <section class="featured-section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">CANONICAL DISCOVERY</div>
+          <h2>Последние материалы</h2>
+        </div>
+        <div id="home-guide-count" aria-live="polite">Согласование authority…</div>
+      </div>
+      <div
+        id="home-guide-list"
+        class="guides-grid"
+        data-index-source="/guides-index.json"
+        data-canonical-source="/api/public-guides.json"
+      ></div>
+      <noscript>
+        <p class="fallback-copy">Для динамической canonical выдачи нужен JavaScript. Используйте <a href="/guides">полный reviewed index</a>.</p>
+      </noscript>
+    </div>
+  </section>
+
+  <script id="root-public-taxonomy-policy" type="application/json" set:html={taxonomyPolicyJson}></script>
+  <script>
+    const list = document.getElementById('home-guide-list');
+    const count = document.getElementById('home-guide-count');
+    const taxonomyNode = document.getElementById('root-public-taxonomy-policy');
+    const taxonomyPolicy = taxonomyNode?.textContent ? JSON.parse(taxonomyNode.textContent) : null;
+
+    const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    const publicCategory = (record) => {
+      const status = String(record.reviewStatus || '');
+      const direct = taxonomyPolicy?.statusMap?.[status];
+      if (direct) return direct;
+      for (const rule of taxonomyPolicy?.containsMap || []) {
+        if (rule?.token && status.includes(rule.token)) return rule.publicCategory;
+      }
+      return taxonomyPolicy?.fallback || 'Unclassified / Review';
+    };
+    const canonicalBadge = (record) => {
+      if (record.canonicalRole === 'CANONICAL') return '<span class="badge canonical">CANONICAL</span>';
+      return '';
+    };
+    const failClosed = (message) => {
+      if (count) count.textContent = 'Authority unavailable';
+      if (list) list.innerHTML = `<div class="authority-error"><strong>DISCOVERY FAIL-CLOSED</strong><span>${esc(message)}</span><a href="/guides">Открыть reviewed index →</a></div>`;
+    };
+
+    Promise.all([
+      fetch('/guides-index.json', { cache: 'no-store' }).then((response) => {
+        if (!response.ok) throw new Error(`index ${response.status}`);
+        return response.json();
+      }),
+      fetch('/api/public-guides.json', { cache: 'no-store' }).then((response) => {
+        if (!response.ok) throw new Error(`public api ${response.status}`);
+        return response.json();
+      })
+    ])
+      .then(([indexPayload, apiPayload]) => {
+        const indexRecords = Array.isArray(indexPayload.records) ? indexPayload.records : [];
+        const apiRecords = Array.isArray(apiPayload.records) ? apiPayload.records : [];
+        if (indexRecords.length !== apiRecords.length || indexRecords.length === 0) {
+          throw new Error(`authority count mismatch index=${indexRecords.length} api=${apiRecords.length}`);
+        }
+        if (apiPayload.canonicalization !== 'REVISION_PAIRS_CANONICAL_SELECTED_SUPERSEDED_PRESERVED') {
+          throw new Error(`canonical authority mode mismatch: ${apiPayload.canonicalization || 'missing'}`);
+        }
+
+        const apiBySlug = new Map(apiRecords.map((record) => [record.slug, record]));
+        const merged = indexRecords.map((record) => {
+          const canonical = apiBySlug.get(record.slug);
+          if (!canonical) throw new Error(`canonical metadata missing for ${record.slug}`);
+          if (canonical.title !== record.title) throw new Error(`title authority mismatch for ${record.slug}`);
+          return {
+            ...record,
+            canonicalGroup: canonical.canonicalGroup || null,
+            canonicalDecision: canonical.canonicalDecision || null,
+            canonicalSlug: canonical.canonicalSlug || null,
+            canonicalRole: canonical.canonicalRole || null,
+            claimReview: canonical.claimReview || null,
+            lineageReview: canonical.lineageReview || null
+          };
+        });
+
+        const mergedBySlug = new Map(merged.map((record) => [record.slug, record]));
+        const canonicalRecords = merged.filter((record) => record.canonicalRole === 'CANONICAL');
+        const supersededRecords = merged.filter((record) => record.canonicalRole === 'SUPERSEDED_HISTORICAL_REVISION');
+        if (canonicalRecords.length !== 2 || supersededRecords.length !== 2) {
+          throw new Error(`canonical role count mismatch winners=${canonicalRecords.length} superseded=${supersededRecords.length}`);
+        }
+        for (const record of canonicalRecords) {
+          if (record.canonicalDecision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED' || record.canonicalSlug !== record.slug) {
+            throw new Error(`canonical winner authority mismatch for ${record.slug}`);
+          }
+        }
+        for (const record of supersededRecords) {
+          const preferred = record.canonicalSlug ? mergedBySlug.get(record.canonicalSlug) : null;
+          if (record.canonicalDecision !== 'EVIDENCE_REVIEWED_CANONICAL_SELECTED' || !preferred || preferred.canonicalRole !== 'CANONICAL' || preferred.canonicalGroup !== record.canonicalGroup) {
+            throw new Error(`superseded authority target mismatch for ${record.slug}`);
+          }
+        }
+
+        const featured = merged
+          .filter((record) => record.canonicalRole !== 'SUPERSEDED_HISTORICAL_REVISION')
+          .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.slug).localeCompare(String(b.slug)))
+          .slice(0, 12);
+
+        if (count) count.textContent = `${featured.length} из ${merged.length} · superseded не промотируются`;
+        if (!list) return;
+        list.innerHTML = featured.map((record) => {
+          const category = publicCategory(record);
+          return `
+            <article class="guide-card" data-canonical-role="${esc(record.canonicalRole || '')}">
+              <div class="card-meta"><span>${esc(category)}</span><span>${esc(record.date || 'historical')}</span></div>
+              <div class="badges">
+                <span class="badge review">${esc(record.reviewStatus || 'UNREVIEWED')}</span>
+                <span class="badge currentness">${esc(record.currentness || 'UNKNOWN')}</span>
+                ${record.ymyl === true ? '<span class="badge ymyl">YMYL REVIEW</span>' : ''}
+                ${canonicalBadge(record)}
+              </div>
+              <a href="/guides/${encodeURIComponent(record.slug)}" class="title-link"><h3>${esc(record.title)}</h3></a>
+              <p>${esc((record.tags || []).slice(0, 5).join(' · '))}</p>
+              <a href="/guides/${encodeURIComponent(record.slug)}" class="read-more">Открыть материал →</a>
+            </article>`;
+        }).join('');
+      })
+      .catch((error) => failClosed(error instanceof Error ? error.message : String(error)));
+  </script>
 </Layout>
 
 <style>
-	.hero-section {
-		padding-block: 60px 30px;
-		text-align: center;
-	}
-	.kicker {
-		color: var(--gold);
-		font-size: 0.72rem;
-		font-weight: 900;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		margin-bottom: 6px;
-	}
-	.display {
-		font-family: 'Playfair Display', serif;
-		font-size: clamp(2.2rem, 5vw, 3.4rem);
-		font-weight: 900;
-		line-height: 1.15;
-		margin: 0;
-	}
-	.copy {
-		font-family: 'Lora', serif;
-		color: var(--muted);
-		max-width: 600px;
-		margin: 12px auto 0;
-		font-size: 1rem;
-	}
-
-	/* Grid */
-	.guides-section {
-		padding-block: 20px 60px;
-	}
-	.guides-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 24px;
-		max-width: 1000px;
-		margin-inline: auto;
-	}
-	@media (max-width: 768px) {
-		.guides-grid {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	.guide-card {
-		background: var(--paper-soft);
-		border: 1px solid var(--line);
-		border-radius: var(--radius);
-		padding: 30px;
-		display: flex;
-		flex-direction: column;
-		transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-	}
-	.guide-card:hover {
-		transform: translateY(-2px);
-		border-color: var(--gold);
-		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-	}
-
-	.card-meta {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		font-size: 0.72rem;
-		font-weight: 800;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--muted);
-		margin-bottom: 12px;
-	}
-	.category {
-		color: var(--blue);
-	}
-
-	.display-sm {
-		font-family: 'Playfair Display', serif;
-		font-size: 1.35rem;
-		margin: 0 0 12px;
-		line-height: 1.25;
-		transition: color 0.2s ease;
-	}
-	.display-sm:hover {
-		color: var(--gold);
-	}
-
-	.desc {
-		font-family: 'Lora', serif;
-		color: var(--muted);
-		font-size: 0.92rem;
-		line-height: 1.6;
-		margin: 0 0 20px;
-	}
-
-	.card-footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-top: auto;
-		border-top: 1px solid var(--line);
-		padding-top: 14px;
-	}
-
-	.tags {
-		display: flex;
-		gap: 8px;
-		font-size: 0.75rem;
-		font-weight: 700;
-		color: var(--muted);
-	}
-
-	.read-more {
-		font-size: 0.75rem;
-		font-weight: 800;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--gold);
-		transition: transform 0.2s ease;
-	}
-	.read-more:hover {
-		transform: translateX(2px);
-	}
+  .hero-section{padding:68px 0 36px;text-align:center}.hero-inner{max-width:900px}.kicker,.section-kicker{font:900 .68rem var(--font-mono);letter-spacing:.12em;color:var(--green);text-transform:uppercase}.display{font-size:clamp(2.8rem,7vw,5.8rem);line-height:.94;margin:12px 0 18px}.copy{max-width:760px;margin:0 auto;color:var(--muted);font-size:1rem}.authority-note{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:24px auto 0;padding:14px 16px;max-width:760px;border:1px solid rgba(255,178,46,.35);border-radius:var(--radius);background:rgba(255,178,46,.05)}.authority-note strong{color:var(--gold);font:800 .65rem var(--font-mono)}.authority-note span{color:var(--muted);font-size:.8rem}.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}.primary-action,.secondary-action{padding:10px 14px;border-radius:8px;font-weight:800}.primary-action{background:var(--green);color:#07100a}.secondary-action{border:1px solid var(--line);background:var(--paper-soft)}.featured-section{padding:28px 0 64px}.section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:16px}.section-heading h2{font-size:clamp(1.7rem,4vw,2.7rem);margin:6px 0 0}.section-heading #home-guide-count{font:700 .68rem var(--font-mono);color:var(--muted)}.guides-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.guide-card{display:flex;flex-direction:column;min-height:260px;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-soft)}.card-meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font:700 .62rem var(--font-mono)}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.badge{padding:4px 7px;border:1px solid var(--line);border-radius:999px;font:800 .53rem var(--font-mono);color:var(--muted)}.badge.review{color:var(--ink)}.badge.ymyl{border-color:rgba(255,178,46,.45);color:var(--gold)}.badge.canonical{border-color:rgba(52,229,122,.5);color:var(--green)}.title-link h3{font-size:1.05rem;line-height:1.35;margin:16px 0 10px}.guide-card p{margin:0;color:var(--muted);font-size:.76rem}.read-more{margin-top:auto;padding-top:20px;color:var(--green);font-weight:800}.authority-error{grid-column:1/-1;display:grid;gap:10px;padding:20px;border:1px solid rgba(255,84,104,.4);border-radius:var(--radius);background:rgba(255,84,104,.05)}.authority-error strong{color:var(--red);font:800 .7rem var(--font-mono)}.authority-error span,.fallback-copy{color:var(--muted)}.authority-error a,.fallback-copy a{color:var(--green);font-weight:800}@media(max-width:960px){.guides-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.hero-section{padding-top:42px}.guides-grid{grid-template-columns:1fr}.section-heading{align-items:start;flex-direction:column}.section-heading #home-guide-count{white-space:normal}}
 </style>

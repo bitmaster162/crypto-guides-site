@@ -16,26 +16,32 @@
   "records": {
     "analiz-fidov-likvidatsiy-kriptovalyut": {
       "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
-      "evidenceAsOf": null,
-      "evidenceRefs": [],
+      "evidenceAsOf": "2026-08-28",
+      "evidenceRefs": [
+        "docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md"
+      ],
       "latestVerdict": "HOLD_DISPUTED_LIQUIDATION_FEED_CLAIMS",
       "primarySourceRequired": true,
       "reverifyAfter": null,
-      "note": "Disputed liquidation-feed claims remain source-unbound; do not promote this route to current operational truth until exact primary-source paths and claim scope are reviewed."
+      "note": "Disputed liquidation-feed claims remain source-unbound; the adjudication receipt records the HOLD only and does not satisfy the missing primary-source requirement."
     },
     "rynochno-neytralnye-kriptostrategii-2026": {
       "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
-      "evidenceAsOf": null,
-      "evidenceRefs": [],
+      "evidenceAsOf": "2026-08-28",
+      "evidenceRefs": [
+        "docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md"
+      ],
       "latestVerdict": "HOLD_LATER_REJECTION_OR_NON_PROMOTION_CONFLICT",
       "primarySourceRequired": true,
       "reverifyAfter": null,
-      "note": "Later rejection/non-promotion evidence conflicts with current-looking guidance. Preserve route and history, but keep currentness fail-closed pending source reconciliation."
+      "note": "Later rejection/non-promotion evidence conflicts with current-looking guidance. The adjudication receipt preserves a fail-closed HOLD pending source reconciliation."
     },
     "simulyatsiya-ispolneniya-kripto-strategiy": {
       "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
-      "evidenceAsOf": null,
-      "evidenceRefs": [],
+      "evidenceAsOf": "2026-08-28",
+      "evidenceRefs": [
+        "docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md"
+      ],
       "latestVerdict": "HOLD_RESEARCH_CANDIDATE_NOT_IMPLEMENTATION_GUIDANCE",
       "primarySourceRequired": true,
       "reverifyAfter": null,
@@ -43,21 +49,25 @@
     },
     "kriptotreyding-i-quant-issledovaniya": {
       "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
-      "evidenceAsOf": null,
-      "evidenceRefs": [],
+      "evidenceAsOf": "2026-08-28",
+      "evidenceRefs": [
+        "docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md"
+      ],
       "latestVerdict": "HOLD_UNSUPPORTED_QUANT_EXECUTION_CLAIMS_SOURCE_REMOVAL_REQUIRED",
       "primarySourceRequired": true,
       "reverifyAfter": null,
-      "note": "Unsupported quant/execution claims remain in source history; lifecycle metadata must not imply that those claims have been source-removed or reverified."
+      "note": "Unsupported quant/execution claims remain source cleanup work; the adjudication receipt must not be read as proof that those claims were removed or verified."
     },
     "obzor-vsekh-torgovykh-strategiy": {
       "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
-      "evidenceAsOf": null,
-      "evidenceRefs": [],
+      "evidenceAsOf": "2026-08-28",
+      "evidenceRefs": [
+        "docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md"
+      ],
       "latestVerdict": "HOLD_UNSUPPORTED_STRATEGY_CLAIMS_SOURCE_REMOVAL_REQUIRED",
       "primarySourceRequired": true,
       "reverifyAfter": null,
-      "note": "Unsupported strategy claims remain source-level cleanup work. This explicit hold records the gap without deleting or silently upgrading historical material."
+      "note": "Unsupported strategy claims remain source-level cleanup work. The adjudication receipt records the unresolved state without deleting or silently upgrading historical material."
     }
   }
 }

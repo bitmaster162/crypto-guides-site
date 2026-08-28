@@ -52,13 +52,13 @@ const allowedStates = new Set([
 const apiBySlug = new Map(api.records.map((record) => [record.slug, record]));
 const lifecycleRecords = lifecycleConfig.records || {};
 const expectedHolds = {
-  'analiz-fidov-likvidatsiy-kriptovalyut': 'HOLD_DISPUTED_LIQUIDATION_FEED_CLAIMS',
-  'kriptotreyding-i-quant-issledovaniya': 'HOLD_UNSUPPORTED_QUANT_EXECUTION_CLAIMS_SOURCE_REMOVAL_REQUIRED',
-  'obzor-vsekh-torgovykh-strategiy': 'HOLD_UNSUPPORTED_STRATEGY_CLAIMS_SOURCE_REMOVAL_REQUIRED'
+  'analiz-fidov-likvidatsiy-kriptovalyut': 'HOLD_DISPUTED_LIQUIDATION_FEED_CLAIMS'
 };
 const resolvedReviewDocTargets = {
   'rynochno-neytralnye-kriptostrategii-2026': 'docs/CONTENT_CLAIM_REVIEW_MARKET_NEUTRAL_R1.md',
-  'simulyatsiya-ispolneniya-kripto-strategiy': 'docs/CONTENT_CLAIM_REVIEW_EXECUTION_SIMULATION_R1.md'
+  'simulyatsiya-ispolneniya-kripto-strategiy': 'docs/CONTENT_CLAIM_REVIEW_EXECUTION_SIMULATION_R1.md',
+  'kriptotreyding-i-quant-issledovaniya': 'docs/CONTENT_CLAIM_REVIEW_UNSUPPORTED_STRATEGY_SURFACES_R1.md',
+  'obzor-vsekh-torgovykh-strategiy': 'docs/CONTENT_CLAIM_REVIEW_UNSUPPORTED_STRATEGY_SURFACES_R1.md'
 };
 const counts = {
   REVIEW_DOC_BOUND: 0,
@@ -167,6 +167,9 @@ if (counts.REVIEW_DOC_BOUND !== explicitReviewDocBound) {
 }
 if (counts.POST_R13_CONTENT_TRUTH_HOLD !== Object.keys(expectedHolds).length) {
   throw new Error(`Post-R13 hold count mismatch: ${counts.POST_R13_CONTENT_TRUTH_HOLD}`);
+}
+if (counts.REVIEW_DOC_BOUND !== 19 || counts.POST_R13_CONTENT_TRUTH_HOLD !== 1 || counts.UNBOUND_REVIEW_REQUIRED !== 142 || manifest.records.length !== 162) {
+  throw new Error(`Expected post-repair lifecycle counts 19/1/142 over 162 routes, got ${counts.REVIEW_DOC_BOUND}/${counts.POST_R13_CONTENT_TRUTH_HOLD}/${counts.UNBOUND_REVIEW_REQUIRED} over ${manifest.records.length}`);
 }
 if (counts.REVIEW_DOC_BOUND + counts.POST_R13_CONTENT_TRUTH_HOLD + counts.UNBOUND_REVIEW_REQUIRED !== manifest.records.length) {
   throw new Error('Manifest evidence lifecycle counts do not cover the full corpus');

@@ -25,17 +25,6 @@
       "reverifyAfter": null,
       "note": "Disputed liquidation-feed claims remain source-unbound; the adjudication receipt records the HOLD only and does not satisfy the missing primary-source requirement."
     },
-    "rynochno-neytralnye-kriptostrategii-2026": {
-      "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
-      "evidenceAsOf": "2026-08-28",
-      "evidenceRefs": [
-        "docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md"
-      ],
-      "latestVerdict": "HOLD_LATER_REJECTION_OR_NON_PROMOTION_CONFLICT",
-      "primarySourceRequired": true,
-      "reverifyAfter": null,
-      "note": "Later rejection/non-promotion evidence conflicts with current-looking guidance. The adjudication receipt preserves a fail-closed HOLD pending source reconciliation."
-    },
     "simulyatsiya-ispolneniya-kripto-strategiy": {
       "evidenceState": "POST_R13_CONTENT_TRUTH_HOLD",
       "evidenceAsOf": "2026-08-28",

@@ -7,6 +7,8 @@ const manifestPath = join(root, 'dist/guides-index.json');
 const apiPath = join(root, 'dist/api/public-guides.json');
 const lifecyclePath = join(root, 'src/data/public-evidence-lifecycle.json');
 const overridePath = join(root, 'src/data/public-review-overrides.json');
+const postR13AdjudicationRef = 'docs/POST_R13_CONTENT_TRUTH_ADJUDICATION_R1.md';
+const postR13EvidenceAsOf = '2026-08-28';
 
 const [manifest, api, lifecycleConfig, overrideConfig] = await Promise.all([
   readFile(manifestPath, 'utf8').then(JSON.parse),
@@ -109,6 +111,9 @@ for (const record of manifest.records) {
     if (!(record.slug in expectedHolds) || record.latestVerdict !== expectedHolds[record.slug] || record.primarySourceRequired !== true) {
       throw new Error(`Post-R13 hold binding mismatch: ${record.slug}`);
     }
+    if (record.evidenceAsOf !== postR13EvidenceAsOf || JSON.stringify(record.evidenceRefs) !== JSON.stringify([postR13AdjudicationRef])) {
+      throw new Error(`Post-R13 hold lacks exact adjudication binding: ${record.slug}`);
+    }
   }
 
   for (const ref of record.evidenceRefs) {
@@ -129,8 +134,8 @@ for (const [slug, verdict] of Object.entries(expectedHolds)) {
   if (sourceEntry.evidenceState !== 'POST_R13_CONTENT_TRUTH_HOLD' || sourceEntry.latestVerdict !== verdict) {
     throw new Error(`Source lifecycle hold changed unexpectedly: ${slug}`);
   }
-  if (sourceEntry.evidenceRefs.length !== 0 || sourceEntry.evidenceAsOf !== null || sourceEntry.reverifyAfter !== null) {
-    throw new Error(`Post-R13 hold falsely claims evidence timing or source refs: ${slug}`);
+  if (sourceEntry.evidenceAsOf !== postR13EvidenceAsOf || JSON.stringify(sourceEntry.evidenceRefs) !== JSON.stringify([postR13AdjudicationRef]) || sourceEntry.reverifyAfter !== null) {
+    throw new Error(`Post-R13 source adjudication binding changed unexpectedly: ${slug}`);
   }
 }
 
@@ -154,4 +159,4 @@ if (JSON.stringify(api.evidenceLifecycleCounts) !== JSON.stringify(counts)) {
   throw new Error('Public API evidenceLifecycleCounts mismatch');
 }
 
-console.log(`EVIDENCE_LIFECYCLE_GATE=PASS records=${manifest.records.length} review_doc_bound=${counts.REVIEW_DOC_BOUND} post_r13_holds=${counts.POST_R13_CONTENT_TRUTH_HOLD} unbound=${counts.UNBOUND_REVIEW_REQUIRED} checked_refs=${checkedRefs.size}`);
+console.log(`EVIDENCE_LIFECYCLE_GATE=PASS records=${manifest.records.length} review_doc_bound=${counts.REVIEW_DOC_BOUND} post_r13_holds=${counts.POST_R13_CONTENT_TRUTH_HOLD} unbound=${counts.UNBOUND_REVIEW_REQUIRED} checked_refs=${checkedRefs.size} post_r13_ref=${postR13AdjudicationRef} evidence_as_of=${postR13EvidenceAsOf}`);

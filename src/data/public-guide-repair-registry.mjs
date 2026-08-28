@@ -11,6 +11,7 @@ import { pythonRtInfrastructureRepairs } from './public-guide-repairs-python-rt.
 import { regimeTimingTradingRepairs } from './public-guide-repairs-regime-timing.mjs';
 import { marketNeutralRepairs } from './public-guide-repairs-market-neutral.mjs';
 import { executionSimulationRepairs } from './public-guide-repairs-execution-simulation.mjs';
+import { unsupportedStrategySurfaceRepairs } from './public-guide-repairs-unsupported-strategy-surfaces.mjs';
 
 export const allPublicGuideRepairs = [
   ...publicGuideRepairs,
@@ -25,5 +26,6 @@ export const allPublicGuideRepairs = [
   ...pythonRtInfrastructureRepairs,
   ...regimeTimingTradingRepairs,
   ...marketNeutralRepairs,
-  ...executionSimulationRepairs
+  ...executionSimulationRepairs,
+  ...unsupportedStrategySurfaceRepairs
 ];

@@ -6,6 +6,15 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const guidesDir = join(dist, 'guides');
 const origin = 'https://cryptoguidessite.vercel.app';
+const redirectSourceSlugs = new Set([
+  'blockchain-forensics-methodology',
+  'trading-discipline-journal-psychology',
+  'microstructure-delisting-data-integrity-2026',
+  'security-sandboxing',
+  'd3-tool-io-bridge-contract',
+  'fleet-coordinator-drift-monitoring',
+  'ai-agent-reliability-audit'
+]);
 
 const decode = (value = '') => String(value)
   .replace(/&amp;/g, '&')
@@ -37,7 +46,7 @@ for (const entry of entries) {
   const robotsMeta = (html.match(/<meta\b[^>]*\bname=["']robots["'][^>]*>/i) || [''])[0];
   const robotsContent = ((robotsMeta.match(/\bcontent=["']([^"']*)["']/i) || [,''])[1] || '').toLowerCase();
   const indexable = /(?:^|[,\s])index(?:[,\s]|$)/.test(robotsContent) && !/(?:^|[,\s])noindex(?:[,\s]|$)/.test(robotsContent);
-  if (indexable) indexableRecords.push(record);
+  if (indexable && !redirectSourceSlugs.has(slug)) indexableRecords.push(record);
 }
 records.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 indexableRecords.sort((a, b) => a.title.localeCompare(b.title, 'ru'));

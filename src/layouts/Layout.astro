@@ -6,13 +6,17 @@ interface Props {
   description?: string;
   robots?: string;
   canonical?: string;
+  guideReviewed?: string;
+  guideNextReview?: string;
 }
 
 const {
   title,
   description = "Crypto Guides — восстановленная публичная библиотека исследований с явными review-boundaries.",
   robots = "max-image-preview:large, index, follow",
-  canonical
+  canonical,
+  guideReviewed,
+  guideNextReview
 } = Astro.props;
 ---
 
@@ -48,7 +52,7 @@ const {
     </header>
 
     <main>
-      <GuideTruthBoundary />
+      <GuideTruthBoundary reviewed={guideReviewed} nextReview={guideNextReview} />
       <slot />
     </main>
 

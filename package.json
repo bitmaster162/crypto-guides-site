@@ -21,7 +21,8 @@
     "verify:direct-guide-sanitizer": "node scripts/verify-direct-guide-sanitizer.mjs",
     "verify:evidence-lifecycle": "node scripts/verify-evidence-lifecycle.mjs",
     "verify:root-discovery": "node scripts/verify-root-discovery-canonicalization.mjs",
-    "build": "npm run build:site && npm run verify:public && npm run verify:canonical-plan && npm run verify:public-guide-repairs && npm run verify:direct-guide-sanitizer && npm run verify:evidence-lifecycle && npm run verify:root-discovery && node scripts/verify-p28-7a-disclaimer-r1.mjs",
+    "verify:p31-indexing": "node scripts/verify-p31-1-indexing-r1.mjs",
+    "build": "npm run build:site && npm run verify:public && npm run verify:canonical-plan && npm run verify:public-guide-repairs && npm run verify:direct-guide-sanitizer && npm run verify:evidence-lifecycle && npm run verify:root-discovery && node scripts/verify-p28-7a-disclaimer-r1.mjs && npm run verify:p31-indexing",
     "preview": "astro preview",
     "astro": "astro"
   },

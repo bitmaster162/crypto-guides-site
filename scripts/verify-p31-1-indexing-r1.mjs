@@ -96,6 +96,6 @@ const sample = await readFile(join(dist, 'guides/risk-freymvork-dlya-kripto-boto
 check(sample.includes('RESTORED CONTENT'), 'P31.3 visible-status cleanup remains deferred');
 check(sample.includes('REVIEW_STATUS_LOADING'), 'P31.3 loading-marker cleanup remains deferred');
 
-check(!Array.isArray(vercel.redirects) || vercel.redirects.length === 0, 'P31.2 redirects remain deferred');
+equal(vercel.redirects?.length, 7, 'P31.2 redirects active; exact redirect semantics delegated to P31.2 verifier');
 
-console.log(`P31_1_INDEXING_R1=PASS checks=${checks} guides=162 noindex_follow=${noindexFollow} self_canonical=${selfCanonical} indexable_guides=${indexable} sitemap_total=${sitemapLocs.length} sitemap_guide_urls=0 llms_guide_list=${llmsGuideLines.length} guides_index_records=${index.records.length} public_api_records=${publicApi.records.length} robots_txt_byte_unchanged=1 p31_2_redirects=DEFERRED p31_3_visible_cleanup=DEFERRED`);
+console.log(`P31_1_INDEXING_R1=PASS checks=${checks} guides=162 noindex_follow=${noindexFollow} self_canonical=${selfCanonical} indexable_guides=${indexable} sitemap_total=${sitemapLocs.length} sitemap_guide_urls=0 llms_guide_list=${llmsGuideLines.length} guides_index_records=${index.records.length} public_api_records=${publicApi.records.length} robots_txt_byte_unchanged=1 p31_2_redirects=ACTIVE_SEPARATE_GATE p31_3_visible_cleanup=DEFERRED`);

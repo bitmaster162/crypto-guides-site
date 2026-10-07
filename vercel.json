@@ -1,3 +1,40 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/guides/blockchain-forensics-methodology",
+      "destination": "/guides/blockchain-forensics-onchain-investigations",
+      "permanent": true
+    },
+    {
+      "source": "/guides/trading-discipline-journal-psychology",
+      "destination": "/guides/trading-discipline-journal-mae-mfe",
+      "permanent": true
+    },
+    {
+      "source": "/guides/microstructure-delisting-data-integrity-2026",
+      "destination": "/guides/microstructure-delisting-2026",
+      "permanent": true
+    },
+    {
+      "source": "/guides/security-sandboxing",
+      "destination": "https://bitevo.work/guides/security-sandboxing",
+      "permanent": true
+    },
+    {
+      "source": "/guides/d3-tool-io-bridge-contract",
+      "destination": "https://bitevo.work/guides/d3-tool-io-bridge-contract",
+      "permanent": true
+    },
+    {
+      "source": "/guides/fleet-coordinator-drift-monitoring",
+      "destination": "https://bitevo.work/guides/fleet-coordinator-drift-monitoring",
+      "permanent": true
+    },
+    {
+      "source": "/guides/ai-agent-reliability-audit",
+      "destination": "https://bitevo.work/entry-audit",
+      "permanent": true
+    }
+  ]
 }

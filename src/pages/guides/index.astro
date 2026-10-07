@@ -37,6 +37,15 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
     const taxonomyNode = document.getElementById('public-taxonomy-policy');
     const taxonomyPolicy = taxonomyNode?.textContent ? JSON.parse(taxonomyNode.textContent) : null;
     let records = [];
+    const redirectSourceSlugs = new Set([
+      'blockchain-forensics-methodology',
+      'trading-discipline-journal-psychology',
+      'microstructure-delisting-data-integrity-2026',
+      'security-sandboxing',
+      'd3-tool-io-bridge-contract',
+      'fleet-coordinator-drift-monitoring',
+      'ai-agent-reliability-audit'
+    ]);
 
     const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
     const publicCategory = (record) => {
@@ -121,7 +130,7 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
           throw new Error(`canonical authority mode mismatch: ${apiPayload.canonicalization || 'missing'}`);
         }
         const apiBySlug = new Map(apiRecords.map((record) => [record.slug, record]));
-        records = indexRecords.map((record) => {
+        const mergedRecords = indexRecords.map((record) => {
           const canonical = apiBySlug.get(record.slug);
           if (!canonical) throw new Error(`canonical metadata missing for ${record.slug}`);
           return {
@@ -135,9 +144,9 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
           };
         });
 
-        const mergedBySlug = new Map(records.map((record) => [record.slug, record]));
-        const canonicalRecords = records.filter((record) => record.canonicalRole === 'CANONICAL');
-        const supersededRecords = records.filter((record) => record.canonicalRole === 'SUPERSEDED_HISTORICAL_REVISION');
+        const mergedBySlug = new Map(mergedRecords.map((record) => [record.slug, record]));
+        const canonicalRecords = mergedRecords.filter((record) => record.canonicalRole === 'CANONICAL');
+        const supersededRecords = mergedRecords.filter((record) => record.canonicalRole === 'SUPERSEDED_HISTORICAL_REVISION');
         if (canonicalRecords.length !== 2 || supersededRecords.length !== 2) {
           throw new Error(`canonical role count mismatch winners=${canonicalRecords.length} superseded=${supersededRecords.length}`);
         }
@@ -153,6 +162,7 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
           }
         }
 
+        records = mergedRecords.filter((record) => !redirectSourceSlugs.has(record.slug));
         populateFilters();
         render();
       })

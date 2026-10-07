@@ -10,16 +10,23 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       <div class="eyebrow">PUBLIC INDEX</div>
       <h1>Гайды и исследования</h1>
       <p class="lede">Библиотека сохранена как исследовательский архив. Наличие страницы не означает, что исторические цифры, комиссии, параметры API или правила бирж актуальны сегодня.</p>
-      <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW" data-canonical-mode="EVIDENCE_REVIEWED_CANONICAL_SELECTED">
-        <strong>Архив</strong>
-        <span>Материалы без даты проверки следует считать историческими до отдельной текущей ревизии.</span>
-      </div>
-      <div class="controls">
-        <label class="search-control"><span>Поиск</span><input id="guide-search" type="search" placeholder="Название или раздел…" autocomplete="off" /></label>
-        <label><span>Раздел</span><select id="category-filter"><option value="">Все разделы</option></select></label>
-        <div id="guide-count" aria-live="polite">Загрузка списка…</div>
-      </div>
-      <div id="guide-list" class="cards" data-index-source="/guides-index.json" data-canonical-source="/api/public-guides.json" data-taxonomy-source="src/data/public-taxonomy-policy.json"></div>
+      <section id="verified-guides" class="guide-group" hidden>
+        <h2>Проверенные гайды</h2>
+        <div id="verified-guide-list" class="cards"></div>
+      </section>
+
+      <section id="archive-guides" class="guide-group">
+        <div class="boundary" data-review-status="RESTORED_CORPUS_UNDER_REVIEW" data-canonical-mode="EVIDENCE_REVIEWED_CANONICAL_SELECTED">
+          <strong>Архив</strong>
+          <span>Материалы без даты проверки следует считать историческими до отдельной текущей ревизии.</span>
+        </div>
+        <div class="controls">
+          <label class="search-control"><span>Поиск</span><input id="guide-search" type="search" placeholder="Название или раздел…" autocomplete="off" /></label>
+          <label><span>Раздел</span><select id="category-filter"><option value="">Все разделы</option></select></label>
+          <div id="guide-count" aria-live="polite">Загрузка списка…</div>
+        </div>
+        <div id="guide-list" class="cards" data-index-source="/guides-index.json" data-canonical-source="/api/public-guides.json" data-taxonomy-source="src/data/public-taxonomy-policy.json" data-canonical-role-field="canonicalRole" data-canonical-superseded-role="SUPERSEDED_HISTORICAL_REVISION"></div>
+      </section>
       <noscript><p>Для интерактивного фильтра нужен JavaScript. Маршрутные данные также доступны в <a href="/guides-index.json">guides-index.json</a>, публичные метаданные — в <a href="/api/public-guides.json">public-guides.json</a>, карта сайта — в <a href="/sitemap.xml">sitemap.xml</a>.</p></noscript>
     </div>
   </section>
@@ -41,6 +48,43 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       'd3-tool-io-bridge-contract',
       'fleet-coordinator-drift-monitoring',
       'ai-agent-reliability-audit'
+    ]);
+    const removedInternalSlugs = new Set([
+      'analiz-zapuska-raas-api',
+      'analogi-i-ikh-slabye-storony',
+      'anti-self-attention-trading-psychology',
+      'archiveos-multigpt-bridge-integration',
+      'arkhitektura-suverennoy-ai-nody',
+      'compression-no-mans-land-trap',
+      'ekonomika-premialnykh-treyding-podpisok',
+      'executive-summary',
+      'fractal-intelligence-scouts-scribes-attention',
+      'grid-trading-os',
+      'grid-trading-os-institutional-spec',
+      'ierarkhicheskiy-pooling-i-ugasanie',
+      'latent-space-protocol-ai-research',
+      'latent-space-protocol-architecture',
+      'latent-space-protocol-research',
+      'mas-managed-coevolution-sandbox-isolation',
+      'mirrorcore-compactdigest-memory-compression',
+      'mirrorcore-compression',
+      'mirrorcore-seeding-identity-persistence',
+      'monetization-matrix-4x3',
+      'multi-llm-torgovaya-arena',
+      'multigpt-bridge-federated-ai-arbitration',
+      'omnicore-loop-self-preservation',
+      'plan-zapuska-open-source-proekta',
+      'razrabotka-freymvorka-c2p',
+      'reflex-layer-ooda-monitoring',
+      'sector-divergence-fake-crown',
+      'sovereign-agent-core',
+      'sovereign-core-ai-system-architecture',
+      'sovereign-scalper-drawdown-analysis',
+      'strategiya-sovereign-arena-ai',
+      'tilt-index-antiself',
+      'trading-performance-monitoring-ssot-ai',
+      'trading-system-v2-range-farm',
+      'why-continuityos-may-fail-an-adversarial-analysis'
     ]);
 
     const esc = (value = '') => String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
@@ -136,6 +180,7 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
         }
 
         records = mergedRecords.filter((record) => !redirectSourceSlugs.has(record.slug));
+        records = records.filter((record) => !removedInternalSlugs.has(record.slug));
         populateFilters();
         render();
       })

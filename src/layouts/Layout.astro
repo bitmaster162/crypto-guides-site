@@ -4,9 +4,16 @@ import GuideTruthBoundary from '../components/GuideTruthBoundary.astro';
 interface Props {
   title: string;
   description?: string;
+  robots?: string;
+  canonical?: string;
 }
 
-const { title, description = "Crypto Guides — восстановленная публичная библиотека исследований с явными review-boundaries." } = Astro.props;
+const {
+  title,
+  description = "Crypto Guides — восстановленная публичная библиотека исследований с явными review-boundaries.",
+  robots = "max-image-preview:large, index, follow",
+  canonical
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -17,7 +24,8 @@ const { title, description = "Crypto Guides — восстановленная �
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="robots" content="max-image-preview:large, index, follow" />
+    <meta name="robots" content={robots} />
+    {canonical && <link rel="canonical" href={canonical} />}
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -130,18 +130,35 @@ const version = JSON.parse(await readFile(join(dist, 'version.json'), 'utf8'));
 if (version.schema !== 'crypto-guides.public-build.v1') throw new Error('build receipt schema mismatch');
 if (!/^[0-9a-f]{40}$/i.test(version.sha)) throw new Error('build receipt SHA invalid');
 
+const origin = 'https://cryptoguidessite.vercel.app';
 const sitemap = await readFile(join(dist, 'sitemap.xml'), 'utf8');
-if (!sitemap.includes('https://cryptoguidessite.vercel.app/guides</loc>')) throw new Error('sitemap missing /guides');
+for (const route of ['/', '/guides', '/sovereign-arena-dataset', '/version']) {
+  if (!sitemap.includes(`<loc>${origin}${route}</loc>`)) throw new Error(`sitemap missing static route ${route}`);
+}
+const indexableGuideSlugs = [];
 for (const record of index.records) {
-  if (!sitemap.includes(`https://cryptoguidessite.vercel.app/guides/${record.slug}`)) throw new Error(`sitemap missing ${record.slug}`);
+  const guideHtml = await readFile(join(dist, `guides/${record.slug}/index.html`), 'utf8');
+  const robotsMeta = (guideHtml.match(/<meta\b[^>]*\bname=["']robots["'][^>]*>/i) || [''])[0];
+  const robotsContent = ((robotsMeta.match(/\bcontent=["']([^"']*)["']/i) || [,''])[1] || '').toLowerCase();
+  const indexable = /(?:^|[,\s])index(?:[,\s]|$)/.test(robotsContent) && !/(?:^|[,\s])noindex(?:[,\s]|$)/.test(robotsContent);
+  const guideUrl = `${origin}/guides/${record.slug}`;
+  const inSitemap = sitemap.includes(`<loc>${guideUrl}</loc>`);
+  if (indexable !== inSitemap) throw new Error(`sitemap/indexability mismatch for ${record.slug}: indexable=${indexable} sitemap=${inSitemap}`);
+  if (indexable) indexableGuideSlugs.push(record.slug);
 }
 
 const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
-if (!llms.includes(`Unique guide routes: ${index.uniqueGuides}`)) throw new Error('llms count mismatch');
+if (!llms.includes(`Unique guide routes: ${index.uniqueGuides}`)) throw new Error('llms total guide count mismatch');
+if (!llms.includes(`Indexable guide routes: ${indexableGuideSlugs.length}`)) throw new Error('llms indexable guide count mismatch');
 if (!llms.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('llms review boundary missing');
 if (!llms.includes('https://cryptoguidessite.vercel.app/api/public-guides.json')) throw new Error('llms canonical reviewed API missing');
 if (!llms.includes('legacy /api/guides endpoint')) throw new Error('llms legacy API migration boundary missing');
 if (!llms.includes('not the canonical machine-ingestion authority')) throw new Error('llms canonical API authority statement missing');
+const indexableSet = new Set(indexableGuideSlugs);
+for (const record of index.records) {
+  const listed = llms.includes(` — ${origin}/guides/${record.slug}`);
+  if (listed !== indexableSet.has(record.slug)) throw new Error(`llms/indexability mismatch for ${record.slug}: indexable=${indexableSet.has(record.slug)} listed=${listed}`);
+}
 
 const guidesHtml = await readFile(join(dist, 'guides/index.html'), 'utf8');
 if (!guidesHtml.includes('RESTORED_CORPUS_UNDER_REVIEW')) throw new Error('/guides review boundary missing');

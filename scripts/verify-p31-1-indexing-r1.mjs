@@ -27,7 +27,7 @@ const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
 check(layoutSource.includes('robots?: string;') && layoutSource.includes('canonical?: string;'), 'Layout exposes robots + canonical props');
 check(layoutSource.includes('<meta name="robots" content={robots} />'), 'Layout renders dynamic robots');
 check(layoutSource.includes('{canonical && <link rel="canonical" href={canonical} />}'), 'Layout renders optional canonical');
-check(guideSource.includes('content_ru, reviewed, sources } = Astro.props'), 'guide route reads reviewed + sources');
+check(guideSource.includes('content_ru, reviewed, next_review, sources } = Astro.props'), 'guide route reads reviewed + next_review + sources');
 check(guideSource.includes('const _reviewedValid = typeof reviewed === "string"'), 'guide route validates reviewed date');
 check(guideSource.includes('const _sourcesPresent = Array.isArray(sources) && sources.length > 0;'), 'guide route requires non-empty sources');
 check(guideSource.includes('const _indexableGuide = _reviewedValid && _sourcesPresent;'), 'guide indexability requires reviewed + sources');
@@ -93,9 +93,10 @@ const llmsGuideLines = llms.split(/\r?\n/).filter((line) => line.includes(` — 
 equal(llmsGuideLines.length, 0, 'llms guide list contains indexable guides only');
 
 const sample = await readFile(join(dist, 'guides/risk-freymvork-dlya-kripto-botov/index.html'), 'utf8');
-check(sample.includes('RESTORED CONTENT'), 'P31.3 visible-status cleanup remains deferred');
-check(sample.includes('REVIEW_STATUS_LOADING'), 'P31.3 loading-marker cleanup remains deferred');
+check(sample.includes('Архив. Материал не проверялся на текущую дату: цифры, комиссии и правила бирж могли измениться.'), 'P31.3 archive reader status active');
+check(!sample.includes('REVIEW_STATUS_LOADING'), 'P31.3 loading marker removed');
+check(!sample.includes('RESTORED CONTENT'), 'P31.3 restored-content marker removed');
 
 equal(vercel.redirects?.length, 7, 'P31.2 redirects active; exact redirect semantics delegated to P31.2 verifier');
 
-console.log(`P31_1_INDEXING_R1=PASS checks=${checks} guides=162 noindex_follow=${noindexFollow} self_canonical=${selfCanonical} indexable_guides=${indexable} sitemap_total=${sitemapLocs.length} sitemap_guide_urls=0 llms_guide_list=${llmsGuideLines.length} guides_index_records=${index.records.length} public_api_records=${publicApi.records.length} robots_txt_byte_unchanged=1 p31_2_redirects=ACTIVE_SEPARATE_GATE p31_3_visible_cleanup=DEFERRED`);
+console.log(`P31_1_INDEXING_R1=PASS checks=${checks} guides=162 noindex_follow=${noindexFollow} self_canonical=${selfCanonical} indexable_guides=${indexable} sitemap_total=${sitemapLocs.length} sitemap_guide_urls=0 llms_guide_list=${llmsGuideLines.length} guides_index_records=${index.records.length} public_api_records=${publicApi.records.length} robots_txt_byte_unchanged=1 p31_2_redirects=ACTIVE_SEPARATE_GATE p31_3_visible_cleanup=ACTIVE_SEPARATE_GATE`);

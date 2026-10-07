@@ -166,14 +166,22 @@ if (!guidesHtml.includes('/guides-index.json')) throw new Error('/guides source 
 if (!guidesHtml.includes('/api/public-guides.json')) throw new Error('/guides canonical metadata source binding missing');
 if (!guidesHtml.includes('data-canonical-source')) throw new Error('/guides canonical-source receipt missing');
 if (!guidesHtml.includes('EVIDENCE_REVIEWED_CANONICAL_SELECTED')) throw new Error('/guides canonical-selection mode missing');
-if (!guidesHtml.includes('CANONICAL') || !guidesHtml.includes('SUPERSEDED · HISTORICAL')) throw new Error('/guides canonical role labels missing');
+if (!guidesHtml.includes('canonicalRole') || !guidesHtml.includes('SUPERSEDED_HISTORICAL_REVISION')) throw new Error('/guides canonical role receipts missing');
 if (guidesHtml.includes('<aside class="guide-truth-boundary"')) throw new Error('/guides index must not render direct-article truth boundary');
 
+const visibleGuideText = (html) => String(html)
+  .replace(/<script\b[^>]*>[\s\S]*?<\/script>/giu, ' ')
+  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/giu, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
 const directGuideHtml = await readFile(join(dist, 'guides/risk-freymvork-dlya-kripto-botov/index.html'), 'utf8');
-if (!directGuideHtml.includes('<aside class="guide-truth-boundary"')) throw new Error('direct guide truth boundary missing from built high-risk route');
-if (!directGuideHtml.includes('RESTORED CONTENT · REVIEW REQUIRED')) throw new Error('direct guide review warning missing');
-if (!directGuideHtml.includes('YMYL review boundary')) throw new Error('direct guide YMYL warning copy missing');
-if (!directGuideHtml.includes('/guides-index.json')) throw new Error('direct guide truth boundary metadata source missing');
+const directGuideVisible = visibleGuideText(directGuideHtml);
+if (!directGuideHtml.includes('<aside class="guide-truth-boundary"')) throw new Error('direct guide reader boundary missing from built high-risk route');
+if (!directGuideHtml.includes('Архив. Материал не проверялся на текущую дату: цифры, комиссии и правила бирж могли измениться.')) throw new Error('direct guide archive reader copy missing');
+if (/REVIEW_REQUIRED|_LOADING|RESTORED CONTENT|YMYL REVIEW/u.test(directGuideVisible)) throw new Error('direct guide service vocabulary survived P31.3 reader projection');
+if (!directGuideHtml.includes('data-review-source="/guides-index.json"')) throw new Error('direct guide reader boundary metadata source receipt missing');
 
 const routePresentationPairs = [
   {
@@ -188,14 +196,16 @@ const routePresentationPairs = [
 for (const pair of routePresentationPairs) {
   const canonicalHtml = await readFile(join(dist, `guides/${pair.canonical}/index.html`), 'utf8');
   const supersededHtml = await readFile(join(dist, `guides/${pair.superseded}/index.html`), 'utf8');
-  if (!canonicalHtml.includes('CANONICAL')) throw new Error(`canonical direct-guide label missing: ${pair.canonical}`);
+  if (!canonicalHtml.includes('data-canonical-role="CANONICAL"')) throw new Error(`canonical direct-guide receipt missing: ${pair.canonical}`);
   if (!canonicalHtml.includes('src/data/public-review-overrides.json')) throw new Error(`canonical direct-guide source binding missing: ${pair.canonical}`);
-  if (!supersededHtml.includes('SUPERSEDED · HISTORICAL')) throw new Error(`superseded direct-guide label missing: ${pair.superseded}`);
-  if (!supersededHtml.includes(`/guides/${pair.canonical}`)) throw new Error(`superseded preferred-route link missing: ${pair.superseded}`);
+  if (!supersededHtml.includes('data-canonical-role="SUPERSEDED_HISTORICAL_REVISION"')) throw new Error(`superseded direct-guide receipt missing: ${pair.superseded}`);
+  if (!supersededHtml.includes(`data-canonical-slug="${pair.canonical}"`)) throw new Error(`superseded preferred-route receipt missing: ${pair.superseded}`);
+  if (/CANONICAL|SUPERSEDED · HISTORICAL/u.test(visibleGuideText(canonicalHtml))) throw new Error(`canonical service label became reader-visible: ${pair.canonical}`);
+  if (/CANONICAL|SUPERSEDED · HISTORICAL/u.test(visibleGuideText(supersededHtml))) throw new Error(`superseded service label became reader-visible: ${pair.superseded}`);
 }
 
 console.log(`CANONICAL_DECISION_GATE=PASS groups=${canonicalGroups.size} routes=${redundantOverrides.length} decision=EVIDENCE_REVIEWED_CANONICAL_SELECTED winners=${overrideWinners} superseded=${overrideSuperseded} claim_review_docs=${claimReviewDocs.size} api_revision_routes=${apiRevisionRoutes}`);
 console.log('GUIDES_EVIDENCE_IA_GATE=PASS sources=/guides-index.json,/api/public-guides.json canonical_selection=ACTIVE winners=2 superseded=2 route_policy=PRESERVE_BOTH_NO_REDIRECT');
 console.log(`DIRECT_GUIDE_CANONICAL_GATE=PASS pairs=${routePresentationPairs.length} source=src/data/public-review-overrides.json`);
-console.log('DIRECT_GUIDE_BOUNDARY_GATE=PASS sample=risk-freymvork-dlya-kripto-botov ymyl=true metadata_source=/guides-index.json');
+console.log('DIRECT_GUIDE_BOUNDARY_GATE=PASS sample=risk-freymvork-dlya-kripto-botov reader_status=ARCHIVE metadata_source=/guides-index.json service_vocabulary=HIDDEN');
 console.log(`PUBLIC_CONTRACT_GATE=PASS guides=${index.uniqueGuides} sha=${version.sha} explicit=${routing.explicitOverrides} rule_routed=${routing.ruleRouted} unreviewed=${routing.restoredUnreviewed} public_api=${publicApi.count} exposure=${publicApi.exposure} canonicalization=${publicApi.canonicalization} evidence_binding=${publicApi.evidenceBinding} canonical_winners=${apiWinners} superseded=${apiSuperseded} canonical_machine_api=/api/public-guides.json legacy_api=/api/guides required_artifacts=${required.length}`);

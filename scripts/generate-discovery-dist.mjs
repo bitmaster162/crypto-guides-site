@@ -15,6 +15,43 @@ const redirectSourceSlugs = new Set([
   'fleet-coordinator-drift-monitoring',
   'ai-agent-reliability-audit'
 ]);
+const removedInternalSlugs = new Set([
+  'analiz-zapuska-raas-api',
+  'analogi-i-ikh-slabye-storony',
+  'anti-self-attention-trading-psychology',
+  'archiveos-multigpt-bridge-integration',
+  'arkhitektura-suverennoy-ai-nody',
+  'compression-no-mans-land-trap',
+  'ekonomika-premialnykh-treyding-podpisok',
+  'executive-summary',
+  'fractal-intelligence-scouts-scribes-attention',
+  'grid-trading-os',
+  'grid-trading-os-institutional-spec',
+  'ierarkhicheskiy-pooling-i-ugasanie',
+  'latent-space-protocol-ai-research',
+  'latent-space-protocol-architecture',
+  'latent-space-protocol-research',
+  'mas-managed-coevolution-sandbox-isolation',
+  'mirrorcore-compactdigest-memory-compression',
+  'mirrorcore-compression',
+  'mirrorcore-seeding-identity-persistence',
+  'monetization-matrix-4x3',
+  'multi-llm-torgovaya-arena',
+  'multigpt-bridge-federated-ai-arbitration',
+  'omnicore-loop-self-preservation',
+  'plan-zapuska-open-source-proekta',
+  'razrabotka-freymvorka-c2p',
+  'reflex-layer-ooda-monitoring',
+  'sector-divergence-fake-crown',
+  'sovereign-agent-core',
+  'sovereign-core-ai-system-architecture',
+  'sovereign-scalper-drawdown-analysis',
+  'strategiya-sovereign-arena-ai',
+  'tilt-index-antiself',
+  'trading-performance-monitoring-ssot-ai',
+  'trading-system-v2-range-farm',
+  'why-continuityos-may-fail-an-adversarial-analysis'
+]);
 
 const decode = (value = '') => String(value)
   .replace(/&amp;/g, '&')
@@ -46,6 +83,7 @@ for (const entry of entries) {
   const robotsMeta = (html.match(/<meta\b[^>]*\bname=["']robots["'][^>]*>/i) || [''])[0];
   const robotsContent = ((robotsMeta.match(/\bcontent=["']([^"']*)["']/i) || [,''])[1] || '').toLowerCase();
   const indexable = /(?:^|[,\s])index(?:[,\s]|$)/.test(robotsContent) && !/(?:^|[,\s])noindex(?:[,\s]|$)/.test(robotsContent);
+  if (removedInternalSlugs.has(slug)) continue;
   if (indexable && !redirectSourceSlugs.has(slug)) indexableRecords.push(record);
 }
 records.sort((a, b) => a.title.localeCompare(b.title, 'ru'));

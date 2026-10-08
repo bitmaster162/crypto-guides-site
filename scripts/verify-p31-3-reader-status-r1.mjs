@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,13 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const archiveCopy = 'Архив. Материал не проверялся на текущую дату: цифры, комиссии и правила бирж могли измениться.';
-
-const expectedMachineArtifacts = new Map([
-  ['guides-index.json', ['65FEAE1B042E8876E3DD38CD46C155701360819A041B5295C1AAD1171029BD42', 138170]],
-  ['api/public-guides.json', ['0282B182AB768223E345A3A4AE2CB7926A807E3ED0AA3D13C6CCE5804EBE9F0F', 135504]],
-  ['sitemap.xml', ['EE8260DD41D55FB8AE2387E81FECA37EF3F97B73F420D98473E0DEFFC5056E85', 390]],
-  ['llms.txt', ['4F2552A19451A7569CEBC22826E3D6683782E2DCF07F9AC9F6105ACC9662C0CD', 1175]]
-]);
+const reviewedSlugs = new Set(['evm-approval-safety-flashbots', 'trading-bot-api-keys']);
 
 const decode = (value = '') => String(value)
   .replace(/&nbsp;/giu, ' ')
@@ -43,23 +36,23 @@ const forbiddenVisible = [
   /Source-derived review metadata/iu
 ];
 
-for (const [relative, [expectedSha, expectedBytes]] of expectedMachineArtifacts) {
-  const bytes = await readFile(join(dist, relative));
-  const actualSha = createHash('sha256').update(bytes).digest('hex').toUpperCase();
-  assert.equal(actualSha, expectedSha, `${relative} SHA256 changed during reader-only P31.3`);
-  assert.equal(bytes.length, expectedBytes, `${relative} byte length changed during reader-only P31.3`);
-}
-
 const manifest = JSON.parse(await readFile(join(dist, 'guides-index.json'), 'utf8'));
+const publicApi = JSON.parse(await readFile(join(dist, 'api/public-guides.json'), 'utf8'));
+const sitemap = await readFile(join(dist, 'sitemap.xml'), 'utf8');
+const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
+
 assert.equal(manifest.schema, 'crypto-guides.public-index.v1');
-assert.equal(manifest.records?.length, 162);
-assert.equal(manifest.uniqueGuides, 162);
+assert.equal(manifest.records?.length, 163);
+assert.equal(manifest.uniqueGuides, 163);
+assert.equal(publicApi.records?.length, 163);
+assert.equal([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].length, 6);
+assert.equal(llms.split(/\r?\n/).filter((line) => line.includes(' — https://cryptoguidessite.vercel.app/guides/')).length, 2);
 
 const guideDirs = (await readdir(join(dist, 'guides'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
-assert.equal(guideDirs.length, 162);
+assert.equal(guideDirs.length, 163);
 
 let archiveRoutes = 0;
 let reviewedRoutes = 0;
@@ -74,24 +67,36 @@ for (const slug of guideDirs) {
 
   const archiveCount = html.split(archiveCopy).length - 1;
   const reviewedCount = (html.match(/Проверено \d{4}-\d{2}-\d{2} · следующий пересмотр \d{4}-\d{2}-\d{2}/gu) || []).length;
-  assert.equal(archiveCount + reviewedCount, 1, `${slug} must expose exactly one reader status line`);
+  assert.equal(archiveCount + reviewedCount, 1, `${slug} must expose exactly one boundary status line`);
 
-  const statusPos = archiveCount === 1 ? html.indexOf(archiveCopy) : html.search(/Проверено \d{4}-\d{2}-\d{2} · следующий пересмотр \d{4}-\d{2}-\d{2}/u);
+  const statusPos = archiveCount === 1
+    ? html.indexOf(archiveCopy)
+    : html.search(/Проверено \d{4}-\d{2}-\d{2} · следующий пересмотр \d{4}-\d{2}-\d{2}/u);
   const articlePos = html.indexOf('<article');
-  assert.ok(statusPos >= 0 && articlePos > statusPos, `${slug} reader status must be above the article heading`);
+  assert.ok(statusPos >= 0 && articlePos > statusPos, `${slug} reader status must be above article`);
 
-  if (archiveCount === 1) archiveRoutes += 1;
-  if (reviewedCount === 1) reviewedRoutes += 1;
+  if (archiveCount === 1) {
+    archiveRoutes += 1;
+    assert.ok(!reviewedSlugs.has(slug), `reviewed route rendered archive boundary: ${slug}`);
+  }
+  if (reviewedCount === 1) {
+    reviewedRoutes += 1;
+    assert.ok(reviewedSlugs.has(slug), `unexpected reviewed route: ${slug}`);
+  }
+
   assert.equal((html.match(/class="public-repair-meta"/gu) || []).length, 0, `${slug} public repair service meta survived`);
 }
+
+assert.equal(archiveRoutes, 161);
+assert.equal(reviewedRoutes, 2);
 
 const guideIndexHtml = await readFile(join(dist, 'guides', 'index.html'), 'utf8');
 const guideIndexText = visibleText(guideIndexHtml);
 for (const pattern of forbiddenVisible) {
-  assert.doesNotMatch(guideIndexText, pattern, `/guides exposes P31.3-forbidden reader status vocabulary`);
+  assert.doesNotMatch(guideIndexText, pattern, '/guides exposes P31.3-forbidden reader status vocabulary');
 }
+assert.match(guideIndexText, /Проверенные гайды/u);
 assert.match(guideIndexText, /Архив/u);
-assert.match(guideIndexText, /Материалы без даты проверки следует считать историческими/iu);
 
 const guideIndexSource = await readFile(join(root, 'src/pages/guides/index.astro'), 'utf8');
 for (const marker of ['reviewFilter', 'ymylFilter', 'canonicalBadge(record)', 'YMYL REVIEW']) {
@@ -113,4 +118,4 @@ assert.equal(packageJson.scripts?.['verify:p31-reader-status'], 'node scripts/ve
 assert.ok(packageJson.scripts?.['build:site']?.includes('npm run apply:p31-reader-status'));
 assert.ok(packageJson.scripts?.build?.includes('npm run verify:p31-reader-status'));
 
-console.log(`P31_3_READER_STATUS_R1=PASS guides=162 archive_routes=${archiveRoutes} reviewed_routes=${reviewedRoutes} forbidden_visible_hits=0 public_repair_meta=0 machine_artifacts_byte_identical=4`);
+console.log(`P31_3_READER_STATUS_R1=PASS guides=163 archive_routes=${archiveRoutes} reviewed_routes=${reviewedRoutes} forbidden_visible_hits=0 public_repair_meta=0 machine_artifacts_evolved_by_p31_5=4`);

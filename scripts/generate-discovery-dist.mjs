@@ -61,6 +61,7 @@ const decode = (value = '') => String(value)
   .replace(/&#39;/g, "'")
   .trim();
 const stripTags = (value = '') => decode(String(value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' '));
+const attr = (tag = '', name = '') => decode(((String(tag).match(new RegExp(`\\b${name}=["']([^"']*)["']`, 'i')) || [,''])[1] || ''));
 const xmlEscape = (value) => String(value).replace(/[<>&'\"]/g, (ch) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' }[ch]));
 
 const entries = await readdir(guidesDir, { withFileTypes: true });
@@ -77,8 +78,19 @@ for (const entry of entries) {
   const pageTitle = stripTags(titleMatch[1]);
   const title = pageTitle.replace(/\s*·\s*Crypto Guides\s*$/i, '').trim();
   const category = stripTags((html.match(/<span class="cat"[^>]*>([\s\S]*?)<\/span>/i) || [,'Unclassified'])[1]);
-  const date = stripTags((html.match(/Published:\s*([^<]+)/i) || [,''])[1]) || null;
+  const reviewedArticle = (html.match(/<article\b[^>]*\bdata-reviewed-guide=["']true["'][^>]*>/i) || [''])[0];
+  const reviewed = attr(reviewedArticle, 'data-guide-reviewed') || null;
+  const nextReview = attr(reviewedArticle, 'data-guide-next-review') || null;
+  const sourcesCount = Number(attr(reviewedArticle, 'data-guide-sources-count') || 0);
+  const date = reviewed || stripTags((html.match(/Published:\s*([^<]+)/i) || [,''])[1]) || null;
   const record = { slug, title, category: category || 'Unclassified', date };
+  if (reviewedArticle) {
+    record.reviewed = reviewed;
+    record.nextReview = nextReview;
+    record.sourcesPresent = sourcesCount > 0;
+    record.sourcesCount = sourcesCount;
+    record.sourceType = 'reviewed-markdown';
+  }
   records.push(record);
   const robotsMeta = (html.match(/<meta\b[^>]*\bname=["']robots["'][^>]*>/i) || [''])[0];
   const robotsContent = ((robotsMeta.match(/\bcontent=["']([^"']*)["']/i) || [,''])[1] || '').toLowerCase();

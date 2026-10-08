@@ -4,14 +4,17 @@ import reviewOverrides from '../data/public-review-overrides.json';
 interface Props {
   reviewed?: string;
   nextReview?: string;
+  lang?: 'ru' | 'en';
 }
 
-const { reviewed, nextReview } = Astro.props;
+const { reviewed, nextReview, lang = 'ru' } = Astro.props;
 const path = Astro.url.pathname;
-const isGuideDetail = path.startsWith('/guides/') && path !== '/guides/' && path !== '/guides';
-const slug = isGuideDetail ? decodeURIComponent(path.slice('/guides/'.length).replace(/\/$/, '')) : '';
+const isEn = lang === 'en';
+const routePrefix = isEn ? '/en/guides/' : '/guides/';
+const isGuideDetail = path.startsWith(routePrefix) && path !== routePrefix;
+const slug = isGuideDetail ? decodeURIComponent(path.slice(routePrefix.length).replace(/\/$/, '')) : '';
 const overrideRecords = reviewOverrides.records as Record<string, any>;
-const canonicalMeta = isGuideDetail ? overrideRecords[slug] || null : null;
+const canonicalMeta = isGuideDetail && !isEn ? overrideRecords[slug] || null : null;
 const canonicalRole = canonicalMeta?.canonicalRole || '';
 const canonicalSlug = canonicalMeta?.canonicalSlug || '';
 
@@ -24,9 +27,16 @@ const validDate = (value: unknown) => {
 
 const reviewedValid = validDate(reviewed);
 const nextReviewValid = validDate(nextReview);
-const readerStatus = reviewedValid && nextReviewValid
+const formatEnDate = (value: string) => new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+}).format(new Date(`${value}T00:00:00Z`));
+const ruReaderStatus = reviewedValid && nextReviewValid
   ? `Проверено ${reviewed} · следующий пересмотр ${nextReview}`
   : 'Архив. Материал не проверялся на текущую дату: цифры, комиссии и правила бирж могли измениться.';
+const enReaderStatus = reviewedValid && nextReviewValid
+  ? `Checked ${formatEnDate(reviewed!)} · Next review ${formatEnDate(nextReview!)}`
+  : 'Archive. This material has not been reviewed against current figures, fees or exchange rules.';
+const readerStatus = isEn ? enReaderStatus : ruReaderStatus;
 ---
 
 {isGuideDetail && (
@@ -38,7 +48,7 @@ const readerStatus = reviewedValid && nextReviewValid
     data-canonical-source="src/data/public-review-overrides.json"
     data-canonical-role={canonicalRole || undefined}
     data-canonical-slug={canonicalSlug || undefined}
-    aria-label="Статус материала"
+    aria-label={isEn ? 'Guide review status' : 'Статус материала'}
   >
     <p class="gtb-reader-status">{readerStatus}</p>
   </aside>

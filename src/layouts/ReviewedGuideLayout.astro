@@ -13,7 +13,9 @@ const {
   next_review = null,
   sources = [],
   related = [],
-  toc = []
+  toc = [],
+  lang: requestedLang = 'ru',
+  alternate = null
 } = raw;
 
 const sourceList = Array.isArray(sources) ? sources : [];
@@ -28,14 +30,41 @@ const robots = indexable
   ? 'max-image-preview:large, index, follow'
   : 'max-image-preview:large, noindex, follow';
 const origin = 'https://cryptoguidessite.vercel.app';
-const canonical = path ? `${origin}${path}` : `${origin}/guides/${slug}`;
+const lang = requestedLang === 'en' ? 'en' : 'ru';
+const isEn = lang === 'en';
+const routePath = path || (isEn ? `/en/guides/${slug}` : `/guides/${slug}`);
+const canonical = `${origin}${routePath}`;
+
+// An hreflang pair is advertised only when both reviewed, source-backed
+// language pages exist. No EN article is published in T1.1.
+const ruModules = Object.values(import.meta.glob('../pages/guides/*.md', { eager: true })) as any[];
+const enModules = Object.values(import.meta.glob('../pages/en/guides/*.md', { eager: true })) as any[];
+const approvedGuide = (module: any) => {
+  const entry = module?.frontmatter || {};
+  return entry.slug === slug
+    && typeof entry.reviewed === 'string'
+    && Array.isArray(entry.sources)
+    && entry.sources.length > 0;
+};
+const hasPublishedPair = isEn
+  ? ruModules.some(approvedGuide)
+  : enModules.some(approvedGuide);
+const ruHref = `/guides/${slug}`;
+const enHref = `/en/guides/${slug}`;
+const alternates = hasPublishedPair ? { ru: ruHref, en: enHref } : {};
+const languageSwitchHref = isEn
+  ? (hasPublishedPair ? ruHref : '/guides')
+  : (hasPublishedPair ? enHref : '/en/guides');
+const formatEnDate = (value: string) => new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+}).format(new Date(`${value}T00:00:00Z`));
 
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: title,
   description,
-  inLanguage: 'ru',
+  inLanguage: lang,
   mainEntityOfPage: canonical,
   dateModified: reviewedText || undefined,
   isPartOf: {
@@ -61,8 +90,8 @@ const breadcrumbJsonLd = {
     {
       '@type': 'ListItem',
       position: 2,
-      name: 'Гайды',
-      item: `${origin}/guides`
+      name: isEn ? 'Guides' : 'Гайды',
+      item: `${origin}${isEn ? '/en/guides' : '/guides'}`
     },
     {
       '@type': 'ListItem',
@@ -90,6 +119,9 @@ const relatedLabel = (value) => {
   canonical={canonical}
   guideReviewed={reviewedText}
   guideNextReview={nextReviewText}
+  lang={lang}
+  alternates={alternates}
+  languageSwitchHref={languageSwitchHref}
 >
   <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)}></script>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)}></script>
@@ -103,17 +135,18 @@ const relatedLabel = (value) => {
     data-guide-next-review={nextReviewText}
     data-guide-sources-count={sourceList.length}
     data-guide-indexable={indexable ? 'true' : 'false'}
+    data-guide-lang={lang}
   >
     <div class="container reviewed-guide-container">
       <div class="reviewed-guide-meta">
         <span class="cat">{category}</span>
-        {reviewedText && <span>Проверено {reviewedText}</span>}
-        {nextReviewText && <span>Следующий пересмотр {nextReviewText}</span>}
+        {reviewedText && <span>{isEn ? `Checked ${formatEnDate(reviewedText)}` : `Проверено ${reviewedText}`}</span>}
+        {nextReviewText && <span>{isEn ? `Next review ${formatEnDate(nextReviewText)}` : `Следующий пересмотр ${nextReviewText}`}</span>}
       </div>
 
       {tocList.length > 0 && (
-        <nav class="reviewed-guide-toc" aria-label="Оглавление">
-          <strong>Оглавление</strong>
+        <nav class="reviewed-guide-toc" aria-label={isEn ? 'Table of contents' : 'Оглавление'}>
+          <strong>{isEn ? 'Table of contents' : 'Оглавление'}</strong>
           <ol>
             {tocList.map((item) => (
               <li><a href={`#${item.id}`}>{item.title}</a></li>
@@ -127,8 +160,8 @@ const relatedLabel = (value) => {
       </div>
 
       {relatedList.length > 0 && (
-        <aside class="reviewed-guide-related" aria-label="Связанные материалы">
-          <strong>Связанное</strong>
+        <aside class="reviewed-guide-related" aria-label={isEn ? 'Related guides' : 'Связанные материалы'}>
+          <strong>{isEn ? 'Related' : 'Связанное'}</strong>
           <ul>
             {relatedList.map((href) => {
               const external = /^https?:\/\//i.test(String(href));

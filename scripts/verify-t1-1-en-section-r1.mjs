@@ -52,8 +52,9 @@ for (const [lang, expected] of [
   assert.deepEqual(alternate(en, lang), [expected], 'EN index alternate: ' + lang); checks++;
   assert.deepEqual(alternate(ru, lang), [expected], 'RU index alternate: ' + lang); checks++;
 }
-check(en.includes('data-en-guide-count="0"'), 'T1.1 has zero EN guides before owner OK');
-check(en.includes('No reviewed English guides have been published yet.'), 'EN honest empty state');
+check(en.includes('data-en-guide-count="1"'), 'T1.3 has one reviewed EN guide after owner-reviewed candidate');
+check(en.includes('href="/en/guides/trading-bot-api-keys"'), 'EN index links to reviewed article');
+check(!en.includes('No reviewed English guides have been published yet.'), 'EN empty state hidden when first guide exists');
 check(en.includes('id="en-archive-boundary"'), 'EN archive boundary');
 check(en.includes('>Archive<'), 'EN archive label');
 check(en.includes('sources'), 'EN sources context');
@@ -72,24 +73,37 @@ const visibleEn = en
   .replace(/\s+/g, ' ');
 check(!/[\u0400-\u052F]/u.test(visibleEn), 'EN index no visible Cyrillic');
 const enEntries = await readdir(join(dist, 'en/guides'), { withFileTypes: true });
-equal(enEntries.filter((entry) => entry.isDirectory()).length, 0, 'zero EN guide routes');
+const reviewedEnDirs = enEntries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+assert.deepEqual(reviewedEnDirs, ['trading-bot-api-keys'], 'one published reviewed EN guide route'); checks++;
 for (const slug of ['evm-approval-safety-flashbots', 'trading-bot-api-keys']) {
   const h = await readFile(join(dist, 'guides', slug, 'index.html'), 'utf8');
-  check(h.includes('href="/en/guides"'), slug + ' fallback language switch');
-  equal(alternate(h, 'en').length, 0, slug + ' no false EN hreflang');
-  equal(alternate(h, 'x-default').length, 0, slug + ' no false paired x-default');
+  if (slug === 'trading-bot-api-keys') {
+    check(h.includes('href="/en/guides/trading-bot-api-keys"'), 'paired RU language switch to EN article');
+    for (const [lang, expected] of [
+      ['ru', origin + '/guides/trading-bot-api-keys'],
+      ['en', origin + '/en/guides/trading-bot-api-keys'],
+      ['x-default', origin + '/guides/trading-bot-api-keys']
+    ]) {
+      assert.deepEqual(alternate(h, lang), [expected], 'paired RU hreflang: ' + lang); checks++;
+    }
+  } else {
+    check(h.includes('href="/en/guides"'), slug + ' unpaired index fallback');
+    equal(alternate(h, 'en').length, 0, slug + ' no false EN hreflang');
+    equal(alternate(h, 'x-default').length, 0, slug + ' no false paired x-default');
+  }
 }
 
 equal(index.records.length, 163, 'RU guide corpus 163');
 equal(api.records.length, 163, 'metadata API corpus 163');
 equal(index.records.filter((r) => r.reviewed && r.sourcesPresent).length, 2, 'RU reviewed guides 2');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((m) => m[1]);
-equal(locs.length, 7, 'five static + two reviewed sitemap URLs');
+equal(locs.length, 8, 'five static + two reviewed RU + one reviewed EN sitemap URLs');
 check(locs.includes(origin + '/en/guides'), 'EN index in sitemap');
-equal(locs.filter((x) => x.startsWith(origin + '/en/guides/')).length, 0, 'no EN guide sitemap URLs');
+assert.deepEqual(locs.filter((x) => x.startsWith(origin + '/en/guides/')), [origin + '/en/guides/trading-bot-api-keys'], 'one reviewed EN guide sitemap URL'); checks++;
 equal(locs.filter((x) => x.startsWith(origin + '/guides/')).length, 2, 'two reviewed RU URLs');
 check(llms.includes('Reviewed English guide index: ' + origin + '/en/guides'), 'EN index in llms');
-check(llms.includes('## Indexable English guide routes (0)'), 'no EN routes in llms');
+check(llms.includes('## Indexable English guide routes (1)'), 'one indexable EN guide in llms');
+check(llms.includes(' — ' + origin + '/en/guides/trading-bot-api-keys'), 'reviewed EN route listed in llms');
 equal(llms.split(/\r?\n/).filter((s) => s.includes(' — ' + origin + '/guides/')).length, 2, 'RU llms guides');
 
 const ruSource = await readFile(join(root, 'src/pages/guides/index.astro'), 'utf8');
@@ -112,4 +126,4 @@ check(boundary.includes('Next review '), 'EN next review copy');
 const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 equal(pkg.scripts['verify:t1-en-section'], 'node scripts/verify-t1-1-en-section-r1.mjs', 'verifier registered');
 check(pkg.scripts.build.includes('npm run verify:t1-en-section'), 'verifier included in full build');
-console.log('T1_1_EN_SECTION_R1=PASS checks=' + checks + ' en_index=1 en_guide_routes=0 ru_guide_routes=163 reviewed_ru=2 archive_noindex=161 sitemap_urls=7 sitemap_ru_guides=2 sitemap_en_guides=0 llms_en_index=1 reciprocal_index_hreflang=PASS self_canonical=PASS en_cyrillic=0 approved_en_disclaimer=PASS dynamic_ru_count=PASS');
+console.log('T1_1_EN_SECTION_R1=PASS checks=' + checks + ' en_index=1 en_guide_routes=1 ru_guide_routes=163 reviewed_ru=2 archive_noindex=161 sitemap_urls=8 sitemap_ru_guides=2 sitemap_en_guides=1 llms_en_index=1 reciprocal_index_hreflang=PASS self_canonical=PASS en_cyrillic=0 approved_en_disclaimer=PASS dynamic_ru_count=PASS');

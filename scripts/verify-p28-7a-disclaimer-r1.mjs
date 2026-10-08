@@ -39,6 +39,6 @@ for (const file of htmlFiles) {
   else ruPages += 1;
   checks += 2;
 }
-assert.equal(enPages, 1, 'T1.1 adds one EN index, no EN guide bodies');
+assert.equal(enPages, 2, 'T1.3 adds exactly one reviewed EN guide, plus the EN index');
 assert.equal(ruPages, 168, 'P31.5 RU/static HTML page census preserved');
 console.log(`P28_7A_CRYPTO_GUIDES_DISCLAIMER_GATE=PASS checks=${checks} html=${htmlFiles.length} en_html=${enPages} ru_html=${ruPages} static_html=PASS js_required=0`);

@@ -23,6 +23,7 @@ const forbiddenMarkers = [
 
 const slugs = new Set();
 let repairedRoutes = 0;
+let reviewedMarkdownRoutes = 0;
 let preserved = 0;
 
 const markerCount = (html, marker) => html.split(marker).length - 1;
@@ -60,6 +61,10 @@ for (const record of records) {
     if (html.includes(marker)) throw new Error(`forbidden renderer metadata surface survived sanitizer: ${slug} marker=${marker}`);
   }
 
+  if (record.sourceType === 'reviewed-markdown') {
+    reviewedMarkdownRoutes += 1;
+  }
+
   const repair = repairBySlug.get(slug);
   if (repair) {
     const repairMarker = `data-public-guide-repair="${repair.repairId}"`;
@@ -77,4 +82,8 @@ if (repairedRoutes !== repairs.length) {
   throw new Error(`repaired-route accounting mismatch: observed=${repairedRoutes} registry=${repairs.length}`);
 }
 
-console.log(`DIRECT_GUIDE_SANITIZER_GATE=PASS routes=${records.length} preserved=${preserved} repaired_routes=${repairedRoutes} forbidden_surface_hits=0 structural_holds=0`);
+if (reviewedMarkdownRoutes !== 2) {
+  throw new Error(`reviewed-markdown accounting mismatch: observed=${reviewedMarkdownRoutes} expected=2`);
+}
+
+console.log(`DIRECT_GUIDE_SANITIZER_GATE=PASS routes=${records.length} preserved=${preserved} repaired_routes=${repairedRoutes} reviewed_markdown_routes=${reviewedMarkdownRoutes} forbidden_surface_hits=0 structural_holds=0`);

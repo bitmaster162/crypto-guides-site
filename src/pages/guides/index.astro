@@ -1,7 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import taxonomyPolicy from '../../data/public-taxonomy-policy.json';
+
 const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c');
+const reviewedModules = Object.values(import.meta.glob('./*.md', { eager: true }));
+const reviewedGuides = reviewedModules
+  .map((module) => module?.frontmatter || {})
+  .filter((frontmatter) => typeof frontmatter.reviewed === 'string' && Array.isArray(frontmatter.sources) && frontmatter.sources.length > 0)
+  .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ru'));
 ---
 
 <Layout title="Гайды · Crypto Guides" description="Публичный список восстановленной библиотеки Crypto Guides. Архивные материалы могут содержать устаревшие цифры, комиссии и правила бирж.">
@@ -10,9 +16,18 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
       <div class="eyebrow">PUBLIC INDEX</div>
       <h1>Гайды и исследования</h1>
       <p class="lede">Библиотека сохранена как исследовательский архив. Наличие страницы не означает, что исторические цифры, комиссии, параметры API или правила бирж актуальны сегодня.</p>
-      <section id="verified-guides" class="guide-group" hidden>
+      <section id="verified-guides" class="guide-group" hidden={reviewedGuides.length === 0} data-reviewed-count={reviewedGuides.length}>
         <h2>Проверенные гайды</h2>
-        <div id="verified-guide-list" class="cards"></div>
+        <div id="verified-guide-list" class="cards">
+          {reviewedGuides.map((guide) => (
+            <a class="guide-card reviewed" href={guide.path || `/guides/${guide.slug}`}>
+              <div class="meta"><span>{guide.category || 'Guide'}</span><span>{guide.reviewed}</span></div>
+              <h2>{guide.title}</h2>
+              <p>{guide.description}</p>
+              <small>Открыть проверенный гайд →</small>
+            </a>
+          ))}
+        </div>
       </section>
 
       <section id="archive-guides" class="guide-group">
@@ -179,8 +194,14 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
           }
         }
 
-        records = mergedRecords.filter((record) => !redirectSourceSlugs.has(record.slug));
-        records = records.filter((record) => !removedInternalSlugs.has(record.slug));
+        const eligibleRecords = mergedRecords
+          .filter((record) => !redirectSourceSlugs.has(record.slug))
+          .filter((record) => !removedInternalSlugs.has(record.slug));
+        const verifiedRecords = eligibleRecords.filter((record) => typeof record.reviewed === 'string' && record.sourcesPresent === true);
+        if (verifiedRecords.length !== 2) {
+          throw new Error(`reviewed guide count mismatch: ${verifiedRecords.length}`);
+        }
+        records = eligibleRecords.filter((record) => !(typeof record.reviewed === 'string' && record.sourcesPresent === true));
         populateFilters();
         render();
       })

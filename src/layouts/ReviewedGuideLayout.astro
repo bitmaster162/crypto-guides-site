@@ -1,0 +1,256 @@
+---
+import Layout from './Layout.astro';
+
+const raw = Astro.props.frontmatter || Astro.props || {};
+const {
+  slug = '',
+  path = slug ? `/guides/${slug}` : '',
+  title = '',
+  seo_title = title,
+  description = '',
+  category = 'Unclassified',
+  reviewed = null,
+  next_review = null,
+  sources = [],
+  related = [],
+  toc = []
+} = raw;
+
+const sourceList = Array.isArray(sources) ? sources : [];
+const relatedList = Array.isArray(related) ? related : related ? [related] : [];
+const tocList = Array.isArray(toc) ? toc : [];
+const reviewedText = typeof reviewed === 'string' ? reviewed : '';
+const nextReviewText = typeof next_review === 'string' ? next_review : '';
+const reviewedValid = /^\d{4}-\d{2}-\d{2}$/.test(reviewedText);
+const sourcesPresent = sourceList.length > 0;
+const indexable = reviewedValid && sourcesPresent;
+const robots = indexable
+  ? 'max-image-preview:large, index, follow'
+  : 'max-image-preview:large, noindex, follow';
+const origin = 'https://cryptoguidessite.vercel.app';
+const canonical = path ? `${origin}${path}` : `${origin}/guides/${slug}`;
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'ru',
+  mainEntityOfPage: canonical,
+  dateModified: reviewedText || undefined,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Crypto Guides',
+    url: origin
+  },
+  citation: sourceList
+    .map((source) => source?.url)
+    .filter((url) => typeof url === 'string' && url)
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Crypto Guides',
+      item: origin
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Гайды',
+      item: `${origin}/guides`
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+      item: canonical
+    }
+  ]
+};
+
+const relatedLabel = (value) => {
+  try {
+    const url = new URL(value, origin);
+    return url.pathname.replace(/^\//, '') || url.hostname;
+  } catch {
+    return String(value);
+  }
+};
+---
+
+<Layout
+  title={seo_title}
+  description={description}
+  robots={robots}
+  canonical={canonical}
+  guideReviewed={reviewedText}
+  guideNextReview={nextReviewText}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)}></script>
+
+  <article
+    class="article-page reviewed-guide-page"
+    data-reviewed-guide="true"
+    data-guide-slug={slug}
+    data-guide-category={category}
+    data-guide-reviewed={reviewedText}
+    data-guide-next-review={nextReviewText}
+    data-guide-sources-count={sourceList.length}
+    data-guide-indexable={indexable ? 'true' : 'false'}
+  >
+    <div class="container reviewed-guide-container">
+      <div class="reviewed-guide-meta">
+        <span class="cat">{category}</span>
+        {reviewedText && <span>Проверено {reviewedText}</span>}
+        {nextReviewText && <span>Следующий пересмотр {nextReviewText}</span>}
+      </div>
+
+      {tocList.length > 0 && (
+        <nav class="reviewed-guide-toc" aria-label="Оглавление">
+          <strong>Оглавление</strong>
+          <ol>
+            {tocList.map((item) => (
+              <li><a href={`#${item.id}`}>{item.title}</a></li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
+      <div class="reviewed-guide-body">
+        <slot />
+      </div>
+
+      {relatedList.length > 0 && (
+        <aside class="reviewed-guide-related" aria-label="Связанные материалы">
+          <strong>Связанное</strong>
+          <ul>
+            {relatedList.map((href) => {
+              const external = /^https?:\/\//i.test(String(href));
+              return (
+                <li>
+                  <a href={href} rel={external ? 'noopener' : undefined}>{relatedLabel(href)}</a>
+                </li>
+              );
+            })}
+          </ul>
+        </aside>
+      )}
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .reviewed-guide-container {
+    max-width: 880px;
+    padding-top: 26px;
+  }
+
+  .reviewed-guide-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font: 700 .68rem var(--font-mono);
+    margin-bottom: 18px;
+  }
+
+  .reviewed-guide-meta .cat {
+    color: var(--green);
+  }
+
+  .reviewed-guide-toc {
+    margin: 0 0 28px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-soft);
+  }
+
+  .reviewed-guide-toc strong {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .reviewed-guide-toc ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+
+  .reviewed-guide-toc a {
+    color: var(--blue);
+  }
+
+  :global(.reviewed-guide-body h1) {
+    font-size: clamp(2rem, 6vw, 3.8rem);
+    line-height: 1.05;
+    margin: 0 0 20px;
+  }
+
+  :global(.reviewed-guide-body h2) {
+    margin-top: 42px;
+    scroll-margin-top: 92px;
+  }
+
+  :global(.reviewed-guide-body p),
+  :global(.reviewed-guide-body li) {
+    color: var(--ink);
+  }
+
+  :global(.reviewed-guide-body a) {
+    color: var(--blue);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  :global(.reviewed-guide-body table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0 24px;
+  }
+
+  :global(.reviewed-guide-body th),
+  :global(.reviewed-guide-body td) {
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  :global(.reviewed-guide-body th) {
+    background: var(--paper-soft);
+  }
+
+  :global(.reviewed-guide-body code) {
+    font-family: var(--font-mono);
+  }
+
+  .reviewed-guide-related {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .reviewed-guide-related ul {
+    margin-bottom: 0;
+  }
+
+  .reviewed-guide-related a {
+    color: var(--blue);
+  }
+
+  @media (max-width: 390px) {
+    :global(.reviewed-guide-body table) {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: normal;
+    }
+  }
+</style>

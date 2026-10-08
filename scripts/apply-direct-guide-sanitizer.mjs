@@ -16,6 +16,7 @@ const slugs = new Set();
 let memirRemoved = 0;
 let paramsRemoved = 0;
 let repairedZeroTarget = 0;
+let reviewedMarkdownPreserved = 0;
 
 function markerCount(html, marker) {
   return html.split(marker).length - 1;
@@ -64,6 +65,15 @@ for (const record of records) {
   const memirCount = markerCount(html, 'class="memir-summary"');
   const paramsCount = markerCount(html, 'class="params-block"');
   const repair = repairBySlug.get(slug);
+  const reviewedMarkdown = record.sourceType === 'reviewed-markdown';
+
+  if (reviewedMarkdown) {
+    if (memirCount !== 0 || paramsCount !== 0) {
+      throw new Error(`reviewed markdown route unexpectedly exposes sanitizer targets: ${slug} memir=${memirCount} params=${paramsCount}`);
+    }
+    reviewedMarkdownPreserved += 1;
+    continue;
+  }
 
   if (repair) {
     const repairMarker = `data-public-guide-repair="${repair.repairId}"`;
@@ -107,7 +117,7 @@ for (const record of records) {
 }
 
 if (slugs.size !== records.length) throw new Error(`route preservation census mismatch: unique=${slugs.size} records=${records.length}`);
-if (memirRemoved + repairedZeroTarget !== records.length) throw new Error(`memir sanitizer accounting mismatch: removed=${memirRemoved} repaired=${repairedZeroTarget} routes=${records.length}`);
-if (paramsRemoved + repairedZeroTarget !== records.length) throw new Error(`params sanitizer accounting mismatch: removed=${paramsRemoved} repaired=${repairedZeroTarget} routes=${records.length}`);
+if (memirRemoved + repairedZeroTarget + reviewedMarkdownPreserved !== records.length) throw new Error(`memir sanitizer accounting mismatch: removed=${memirRemoved} repaired=${repairedZeroTarget} reviewed_markdown=${reviewedMarkdownPreserved} routes=${records.length}`);
+if (paramsRemoved + repairedZeroTarget + reviewedMarkdownPreserved !== records.length) throw new Error(`params sanitizer accounting mismatch: removed=${paramsRemoved} repaired=${repairedZeroTarget} reviewed_markdown=${reviewedMarkdownPreserved} routes=${records.length}`);
 
-console.log(`DIRECT_GUIDE_SANITIZER_APPLY=PASS routes=${records.length} memir_removed=${memirRemoved} params_removed=${paramsRemoved} repaired_zero_target=${repairedZeroTarget}`);
+console.log(`DIRECT_GUIDE_SANITIZER_APPLY=PASS routes=${records.length} memir_removed=${memirRemoved} params_removed=${paramsRemoved} repaired_zero_target=${repairedZeroTarget} reviewed_markdown_preserved=${reviewedMarkdownPreserved}`);

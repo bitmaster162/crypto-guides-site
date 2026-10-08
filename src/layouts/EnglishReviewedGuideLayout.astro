@@ -1,0 +1,9 @@
+---
+import ReviewedGuideLayout from './ReviewedGuideLayout.astro';
+
+const raw = Astro.props.frontmatter || Astro.props || {};
+---
+
+<ReviewedGuideLayout {...raw} lang="en">
+  <slot />
+</ReviewedGuideLayout>

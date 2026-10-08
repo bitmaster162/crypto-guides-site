@@ -11,8 +11,8 @@ const origin = 'https://cryptoguidessite.vercel.app';
 const expectedArtifacts = new Map([
   ['guides-index.json', ['A883357AC062322E0B1536AC8A46C8897DF0C375D795AEBFC2D429A416F0DA25', 139411]],
   ['api/public-guides.json', ['EE7E870B15B9A7201E3380ADBE5ACC12E65D8CBE366362AB46221DB85AF4446A', 136291]],
-  ['sitemap.xml', ['E2C27FE5974438503C69C37B34D674CB0238B3545149A38A5308C7F4D84BDA25', 575]],
-  ['llms.txt', ['BFDDA435C8702F78702F9352078E39CDDA48242ECAE228C438BE485F4657231A', 1530]]
+  ['sitemap.xml', ['1FF6BF5F0FCFDEC8B1389F80AF789570506CE4237C32C4EF1CBA3A22346E2673', 645]],
+  ['llms.txt', ['377B049EC8DAF844053913C8106450A97021CD31FAE71C98D21EB68C541A92F9', 1652]]
 ]);
 for (const [relative, [expectedSha, expectedBytes]] of expectedArtifacts) {
   const bytes = await readFile(join(dist, relative));
@@ -37,7 +37,9 @@ function bodyFromMarkdown(bytes, label) {
   const text = bytes.toString('utf8');
   const match = text.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n([\s\S]*)$/u);
   if (!match) throw new Error(`frontmatter parse failed: ${label}`);
-  return Buffer.from(match[1], 'utf8');
+  // Git may check out committed LF Markdown as CRLF on Windows.
+  // Compare canonical body bytes, without changing either source Markdown file.
+  return Buffer.from(match[1].replace(/\r\n/g, '\n'), 'utf8');
 }
 
 function head(html) {
@@ -146,12 +148,14 @@ assert.deepEqual(publicApi.evidenceLifecycleCounts, index.evidenceLifecycleCount
 
 const sitemap = await readFile(join(dist, 'sitemap.xml'), 'utf8');
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-assert.equal(sitemapLocs.length, 6);
+assert.equal(sitemapLocs.length, 7);
+assert.ok(sitemapLocs.includes(`${origin}/en/guides`), 'T1.1 English index present in sitemap');
 for (const slug of reviewed.keys()) assert.ok(sitemapLocs.includes(`${origin}/guides/${slug}`));
 
 const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
 assert.ok(llms.includes('Unique guide routes: 163.'));
 assert.ok(llms.includes('Indexable guide routes: 2.'));
+assert.ok(llms.includes(`Reviewed English guide index: ${origin}/en/guides`), 'T1.1 English index listed in llms');
 const llmsGuideLines = llms.split(/\r?\n/).filter((line) => line.includes(` — ${origin}/guides/`));
 assert.equal(llmsGuideLines.length, 2);
 for (const slug of reviewed.keys()) assert.ok(llmsGuideLines.some((line) => line.endsWith(`${origin}/guides/${slug}`)));
@@ -175,4 +179,4 @@ const packageJson = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'
 assert.equal(packageJson.scripts?.['verify:p31-reviewed-ru'], 'node scripts/verify-p31-5-reviewed-ru-r1.mjs');
 assert.ok(packageJson.scripts?.build?.includes('npm run verify:p31-reviewed-ru'));
 
-console.log('P31_5_REVIEWED_RU_R1=PASS total_guides=163 reviewed_indexable=2 noindex_follow=161 verified_guides=2 archive_guides=119 sitemap_total=6 sitemap_guide_urls=2 llms_guide_routes=2 body_sha_preserved=2 toc_guides=2 tables=PASS jsonld_article=2 jsonld_breadcrumb=2 external_noopener=PASS related_links=PASS evidence_lifecycle=19_1_143 direct_sanitizer=142_19_2');
+console.log('P31_5_REVIEWED_RU_R1=PASS total_guides=163 reviewed_indexable=2 noindex_follow=161 verified_guides=2 archive_guides=119 sitemap_total=7 sitemap_guide_urls=2 llms_guide_routes=2 body_sha_preserved=2 toc_guides=2 tables=PASS jsonld_article=2 jsonld_breadcrumb=2 external_noopener=PASS related_links=PASS evidence_lifecycle=19_1_143 direct_sanitizer=142_19_2');

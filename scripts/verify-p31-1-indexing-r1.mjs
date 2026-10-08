@@ -99,10 +99,11 @@ equal(noindexFollow, 161, 'remaining 161 guides are noindex,follow');
 equal(selfCanonical, 163, 'all 163 guides have self canonical');
 
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-equal(sitemapLocs.length, 6, 'sitemap contains four static + two reviewed guide routes');
+equal(sitemapLocs.length, 7, 'sitemap contains five static + two reviewed RU guide routes');
 const staticRoutes = new Set([
   `${origin}/`,
   `${origin}/guides`,
+  `${origin}/en/guides`,
   `${origin}/sovereign-arena-dataset`,
   `${origin}/version`
 ]);
@@ -111,7 +112,8 @@ const sitemapGuideUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/g
 assert.deepEqual(sitemapGuideUrls, reviewedSlugs.map((slug) => `${origin}/guides/${slug}`).sort(), 'sitemap guide URLs are exactly reviewed guides');
 
 check(llms.includes('Unique guide routes: 163.'), 'llms reports 163 total guide routes');
-check(llms.includes('Indexable guide routes: 2.'), 'llms reports two indexable guides');
+check(llms.includes('Indexable guide routes: 2.'), 'llms reports two indexable RU guides');
+check(llms.includes(`Reviewed English guide index: ${origin}/en/guides`), 'llms discovers the EN index');
 const llmsGuideLines = llms.split(/\r?\n/).filter((line) => line.includes(` — ${origin}/guides/`));
 equal(llmsGuideLines.length, 2, 'llms lists exactly two reviewed guides');
 for (const slug of reviewedSlugs) check(llmsGuideLines.some((line) => line.endsWith(`${origin}/guides/${slug}`)), `llms reviewed route present: ${slug}`);

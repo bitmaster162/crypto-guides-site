@@ -111,8 +111,41 @@ const manifest = {
 };
 await writeFile(join(dist, 'guides-index.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 
-const staticRoutes = ['/', '/guides', '/sovereign-arena-dataset', '/version'];
-const routes = [...staticRoutes, ...indexableRecords.map((record) => `/guides/${record.slug}`)];
+// English discovery remains separate from the 163-route RU evidence manifest.
+// A published EN guide must be reviewed and source-backed on both sides.
+const enGuidesDir = join(dist, 'en', 'guides');
+const enIndexHtml = await readFile(join(enGuidesDir, 'index.html'), 'utf8');
+if (!/<html\b[^>]*\blang="en"/i.test(enIndexHtml)) {
+  throw new Error('T1.1 English guide index missing or not localized');
+}
+const ruBySlug = new Map(records.map((record) => [record.slug, record]));
+const indexableEnRecords = [];
+for (const entry of await readdir(enGuidesDir, { withFileTypes: true })) {
+  if (!entry.isDirectory()) continue;
+  const slug = entry.name;
+  const html = await readFile(join(enGuidesDir, slug, 'index.html'), 'utf8');
+  const ru = ruBySlug.get(slug);
+  const article = (html.match(/<article\b[^>]*\bdata-reviewed-guide=["']true["'][^>]*>/i) || [''])[0];
+  const head = html.split('</head>')[0] || '';
+  const robotsTag = (head.match(/<meta\b[^>]*\bname=["']robots["'][^>]*>/i) || [''])[0];
+  const robotsText = attr(robotsTag, 'content').toLowerCase();
+  const indexable = /(?:^|[,\s])index(?:[,\s]|$)/.test(robotsText)
+    && !/(?:^|[,\s])noindex(?:[,\s]|$)/.test(robotsText);
+  if (!indexable) continue;
+  if (!ru?.reviewed || !ru.sourcesPresent ||
+      attr(article, 'data-guide-lang') !== 'en' ||
+      attr(article, 'data-guide-reviewed') !== ru.reviewed ||
+      Number(attr(article, 'data-guide-sources-count')) === 0) {
+    throw new Error(`EN guide ${slug} has no approved, matching RU review and sources`);
+  }
+  const title = stripTags((html.match(/<title>([\s\S]*?)<\/title>/i) || [,''])[1]);
+  indexableEnRecords.push({ slug, title });
+}
+indexableEnRecords.sort((a, b) => a.slug.localeCompare(b.slug, 'en'));
+const staticRoutes = ['/', '/guides', '/en/guides', '/sovereign-arena-dataset', '/version'];
+const routes = [...staticRoutes,
+  ...indexableRecords.map((record) => `/guides/${record.slug}`),
+  ...indexableEnRecords.map((record) => `/en/guides/${record.slug}`)];
 await writeFile(join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map((route) => `  <url><loc>${xmlEscape(`${origin}${route}`)}</loc></url>`).join('\n')}\n</urlset>\n`, 'utf8');
 await writeFile(join(dist, 'sitemap-index.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <sitemap><loc>${origin}/sitemap.xml</loc></sitemap>\n</sitemapindex>\n`, 'utf8');
 
@@ -129,11 +162,14 @@ const llms = [
   `- Sitemap: ${origin}/sitemap.xml`, '',
   'The legacy /api/guides endpoint is preserved for compatibility during migration, but it is not the canonical machine-ingestion authority because historical records can contain executable-looking params, RPC endpoints, contracts, constants or operational-era fields.', '',
   '## Human discovery',
-  `- Guide index: ${origin}/guides`,
+  `- Guide index (RU): ${origin}/guides`,
+  `- Reviewed English guide index: ${origin}/en/guides`,
   `- Failure-inclusive research dataset: ${origin}/sovereign-arena-dataset`, '',
   '## Indexable guide routes',
-  ...indexableRecords.map((record) => `- ${record.title} — ${origin}/guides/${record.slug}`), ''
+  ...indexableRecords.map((record) => `- ${record.title} — ${origin}/guides/${record.slug}`), '',
+  `## Indexable English guide routes (${indexableEnRecords.length})`,
+  ...indexableEnRecords.map((record) => `- ${record.title} — ${origin}/en/guides/${record.slug}`), ''
 ].join('\n');
 await writeFile(join(dist, 'llms.txt'), llms, 'utf8');
 
-console.log(`DISCOVERY_GENERATION=PASS built_guides=${records.length} indexable_guides=${indexableRecords.length} sitemap_urls=${routes.length} source=dist canonical_api=/api/public-guides.json legacy_api=/api/guides`);
+console.log(`DISCOVERY_GENERATION=PASS built_guides=${records.length} indexable_guides=${indexableRecords.length} indexable_en_guides=${indexableEnRecords.length} sitemap_urls=${routes.length} source=dist canonical_api=/api/public-guides.json legacy_api=/api/guides`);

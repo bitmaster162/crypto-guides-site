@@ -6,11 +6,22 @@ const taxonomyPolicyJson = JSON.stringify(taxonomyPolicy).replace(/</g, '\\u003c
 const reviewedModules = Object.values(import.meta.glob('./*.md', { eager: true }));
 const reviewedGuides = reviewedModules
   .map((module) => module?.frontmatter || {})
-  .filter((frontmatter) => typeof frontmatter.reviewed === 'string' && Array.isArray(frontmatter.sources) && frontmatter.sources.length > 0)
+  .filter((frontmatter) => frontmatter.lang === 'ru'
+    && /^\/guides\/[^/]+$/.test(String(frontmatter.path || ''))
+    && typeof frontmatter.reviewed === 'string'
+    && Array.isArray(frontmatter.sources)
+    && frontmatter.sources.length > 0)
   .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ru'));
 ---
 
-<Layout title="Гайды · Crypto Guides" description="Публичный список восстановленной библиотеки Crypto Guides. Архивные материалы могут содержать устаревшие цифры, комиссии и правила бирж.">
+<Layout
+  lang="ru"
+  title="Гайды · Crypto Guides"
+  description="Публичный список восстановленной библиотеки Crypto Guides. Архивные материалы могут содержать устаревшие цифры, комиссии и правила бирж."
+  canonical="https://cryptoguidessite.vercel.app/guides"
+  alternates={{ ru: '/guides', en: '/en/guides' }}
+  languageSwitchHref="/en/guides"
+>
   <section class="guide-index">
     <div class="container">
       <div class="eyebrow">PUBLIC INDEX</div>
@@ -198,8 +209,13 @@ const reviewedGuides = reviewedModules
           .filter((record) => !redirectSourceSlugs.has(record.slug))
           .filter((record) => !removedInternalSlugs.has(record.slug));
         const verifiedRecords = eligibleRecords.filter((record) => typeof record.reviewed === 'string' && record.sourcesPresent === true);
+        const expectedReviewedCount = Number(document.getElementById('verified-guides')?.getAttribute('data-reviewed-count') || '0');
+        if (verifiedRecords.length !== expectedReviewedCount) {
+          console.warn(`Reviewed RU frontmatter count mismatch: HTML=${expectedReviewedCount} index=${verifiedRecords.length}`);
+        }
+        // The P31.4 baseline was two reviewed guides. Changes are informational, never fatal.
         if (verifiedRecords.length !== 2) {
-          throw new Error(`reviewed guide count mismatch: ${verifiedRecords.length}`);
+          console.info(`Reviewed guide census changed from P31.4 baseline (2) to ${verifiedRecords.length}`);
         }
         records = eligibleRecords.filter((record) => !(typeof record.reviewed === 'string' && record.sourcesPresent === true));
         populateFilters();

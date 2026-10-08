@@ -8,28 +8,48 @@ interface Props {
   canonical?: string;
   guideReviewed?: string;
   guideNextReview?: string;
+  lang?: 'ru' | 'en';
+  alternates?: { ru?: string; en?: string };
+  languageSwitchHref?: string;
 }
 
 const {
   title,
-  description = "Crypto Guides — восстановленная публичная библиотека исследований с явными review-boundaries.",
+  description,
   robots = "max-image-preview:large, index, follow",
   canonical,
   guideReviewed,
-  guideNextReview
+  guideNextReview,
+  lang = 'ru',
+  alternates = {},
+  languageSwitchHref
 } = Astro.props;
+const origin = 'https://cryptoguidessite.vercel.app';
+const isEn = lang === 'en';
+const pageDescription = description ?? (isEn
+  ? 'Crypto Guides — reviewed research guides, with explicit source and review boundaries.'
+  : 'Crypto Guides — восстановленная публичная библиотека исследований с явными review-boundaries.');
+const altRu = alternates.ru ? new URL(alternates.ru, origin).toString() : null;
+const altEn = alternates.en ? new URL(alternates.en, origin).toString() : null;
+const hasPair = Boolean(altRu && altEn);
+const switchHref = languageSwitchHref || (isEn ? '/guides' : '/en/guides');
+const enDisclaimer = "This is the author's own practice and research. It is not investment advice or an offer to manage anyone's funds. Trading crypto-assets can lose all the money you put in; past results do not predict future ones.";
+const ruDisclaimer = 'Здесь — личная практика и исследования автора. Это не инвестиционный совет и не предложение управлять чужими средствами. Торговля криптоактивами может привести к потере всех вложенных денег; прошлые результаты не гарантируют будущих.';
 ---
 
 <!doctype html>
-<html lang="ru">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
+    <meta name="description" content={pageDescription} />
     <meta name="robots" content={robots} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {hasPair && <link rel="alternate" hreflang="ru" href={altRu} />}
+    {hasPair && <link rel="alternate" hreflang="en" href={altEn} />}
+    {hasPair && <link rel="alternate" hreflang="x-default" href={altRu} />}
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,21 +58,22 @@ const {
   <body>
     <header class="site-header">
       <div class="container header-inner">
-        <a href="/guides" class="brand" aria-label="Crypto Guides — индекс">
+        <a href={isEn ? '/en/guides' : '/guides'} class="brand" aria-label={isEn ? 'Crypto Guides — index' : 'Crypto Guides — индекс'}>
           <div class="brand-logo">◢◤</div>
           <strong>CRYPTO LIBRARY</strong>
         </a>
-        <nav class="main-nav" aria-label="Основная навигация">
-          <a href="/guides">Guides</a>
+        <nav class="main-nav" aria-label={isEn ? 'Main navigation' : 'Основная навигация'}>
+          <a href={isEn ? '/en/guides' : '/guides'}>Guides</a>
           <a href="https://bitevoagentsite.vercel.app/guides" class="nav-eco">AI Portal</a>
           <a href="/api/public-guides.json">Reviewed API</a>
           <a href="/llms.txt" class="btn-llm">LLMs.txt</a>
+          <a href={switchHref} class="language-switch" lang={isEn ? 'ru' : 'en'} aria-label={isEn ? 'Read in Russian' : 'Read in English'}>{isEn ? 'RU' : 'English'}</a>
         </nav>
       </div>
     </header>
 
     <main>
-      <GuideTruthBoundary reviewed={guideReviewed} nextReview={guideNextReview} />
+      <GuideTruthBoundary reviewed={guideReviewed} nextReview={guideNextReview} lang={lang} />
       <slot />
     </main>
 
@@ -63,15 +84,17 @@ const {
             <span class="logo-text">◢◤</span>
             <strong>CRYPTO GUIDES</strong>
           </div>
-          <p>Восстановленная библиотека исследований. Публикация материала не означает, что исторические факты, параметры или рекомендации актуальны без текущей ревизии.</p>
+          <p>{isEn
+            ? 'An archive of research. Publication does not mean that historical facts, parameters or recommendations are current without a new review.'
+            : 'Восстановленная библиотека исследований. Публикация материала не означает, что исторические факты, параметры или рекомендации актуальны без текущей ревизии.'}</p>
         </div>
         <div class="footer-eco">
-          <strong>Экосистема:</strong>
+          <strong>{isEn ? 'Ecosystem:' : 'Экосистема:'}</strong>
           <a href="https://sovereign-arena-site.vercel.app/">Sovereign Arena</a>
           <a href="https://bitevoagentsite.vercel.app/">AI Agent Portal</a>
-          <a href="/guides">Crypto Guides</a>
+          <a href={isEn ? '/en/guides' : '/guides'}>Crypto Guides</a>
         </div>
-        <p class="crypto-risk-disclaimer">Здесь — личная практика и исследования автора. Это не инвестиционный совет и не предложение управлять чужими средствами. Торговля криптоактивами может привести к потере всех вложенных денег; прошлые результаты не гарантируют будущих.</p>
+        <p class="crypto-risk-disclaimer" set:html={isEn ? enDisclaimer : ruDisclaimer}></p>
         <div class="footer-bottom">
           <div>© 2026 CRYPTO LIBRARY</div>
           <div>Review-first public research surface</div>

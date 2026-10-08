@@ -81,7 +81,7 @@ for (const slug of sourceSlugs) {
 }
 
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-equal(sitemapLocs.length, 6, 'sitemap has four static + two reviewed routes');
+equal(sitemapLocs.length, 7, 'sitemap has five static + two reviewed RU routes');
 const sitemapGuideUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/guides/`));
 equal(sitemapGuideUrls.length, 2, 'sitemap has two reviewed guide URLs');
 for (const slug of sourceSlugs) {

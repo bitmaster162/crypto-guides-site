@@ -99,7 +99,7 @@ equal(noindexFollow, 161, 'remaining 161 guides are noindex,follow');
 equal(selfCanonical, 163, 'all 163 guides have self canonical');
 
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-equal(sitemapLocs.length, 7, 'sitemap contains five static + two reviewed RU guide routes');
+equal(sitemapLocs.length, 8, 'sitemap contains five static, two reviewed RU, one reviewed EN routes');
 const staticRoutes = new Set([
   `${origin}/`,
   `${origin}/guides`,
@@ -108,6 +108,8 @@ const staticRoutes = new Set([
   `${origin}/version`
 ]);
 for (const route of staticRoutes) check(sitemapLocs.includes(route), `sitemap static route present: ${route}`);
+const enSitemapUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/en/guides/`));
+assert.deepEqual(enSitemapUrls, [`${origin}/en/guides/trading-bot-api-keys`], 'only reviewed EN trading bot guide in sitemap');
 const sitemapGuideUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/guides/`)).sort();
 assert.deepEqual(sitemapGuideUrls, reviewedSlugs.map((slug) => `${origin}/guides/${slug}`).sort(), 'sitemap guide URLs are exactly reviewed guides');
 

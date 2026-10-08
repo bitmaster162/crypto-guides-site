@@ -11,8 +11,8 @@ const origin = 'https://cryptoguidessite.vercel.app';
 const expectedArtifacts = new Map([
   ['guides-index.json', ['A883357AC062322E0B1536AC8A46C8897DF0C375D795AEBFC2D429A416F0DA25', 139411]],
   ['api/public-guides.json', ['EE7E870B15B9A7201E3380ADBE5ACC12E65D8CBE366362AB46221DB85AF4446A', 136291]],
-  ['sitemap.xml', ['1FF6BF5F0FCFDEC8B1389F80AF789570506CE4237C32C4EF1CBA3A22346E2673', 645]],
-  ['llms.txt', ['377B049EC8DAF844053913C8106450A97021CD31FAE71C98D21EB68C541A92F9', 1652]]
+  ['sitemap.xml', ['938FAAC1A483CE48BE50AB8C3E92D0823EEBA40988188BFD78038C6092DF848A', 736]],
+  ['llms.txt', ['0A156171513B2CE1C8556747FD6AAEAB78EC893EC10F4949B3C02BEB9D7B8B3F', 1784]]
 ]);
 for (const [relative, [expectedSha, expectedBytes]] of expectedArtifacts) {
   const bytes = await readFile(join(dist, relative));
@@ -148,8 +148,9 @@ assert.deepEqual(publicApi.evidenceLifecycleCounts, index.evidenceLifecycleCount
 
 const sitemap = await readFile(join(dist, 'sitemap.xml'), 'utf8');
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-assert.equal(sitemapLocs.length, 7);
+assert.equal(sitemapLocs.length, 8);
 assert.ok(sitemapLocs.includes(`${origin}/en/guides`), 'T1.1 English index present in sitemap');
+assert.ok(sitemapLocs.includes(`${origin}/en/guides/trading-bot-api-keys`), 'T1.3 approved English article present in sitemap');
 for (const slug of reviewed.keys()) assert.ok(sitemapLocs.includes(`${origin}/guides/${slug}`));
 
 const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
@@ -179,4 +180,4 @@ const packageJson = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'
 assert.equal(packageJson.scripts?.['verify:p31-reviewed-ru'], 'node scripts/verify-p31-5-reviewed-ru-r1.mjs');
 assert.ok(packageJson.scripts?.build?.includes('npm run verify:p31-reviewed-ru'));
 
-console.log('P31_5_REVIEWED_RU_R1=PASS total_guides=163 reviewed_indexable=2 noindex_follow=161 verified_guides=2 archive_guides=119 sitemap_total=7 sitemap_guide_urls=2 llms_guide_routes=2 body_sha_preserved=2 toc_guides=2 tables=PASS jsonld_article=2 jsonld_breadcrumb=2 external_noopener=PASS related_links=PASS evidence_lifecycle=19_1_143 direct_sanitizer=142_19_2');
+console.log('P31_5_REVIEWED_RU_R1=PASS total_guides=163 reviewed_indexable=2 noindex_follow=161 verified_guides=2 archive_guides=119 sitemap_total=8 sitemap_guide_urls=2 llms_guide_routes=2 body_sha_preserved=2 toc_guides=2 tables=PASS jsonld_article=2 jsonld_breadcrumb=2 external_noopener=PASS related_links=PASS evidence_lifecycle=19_1_143 direct_sanitizer=142_19_2');

@@ -9,7 +9,7 @@ const equal = (actual, expected, message) => { assert.equal(actual, expected, me
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
-const origin = 'https://cryptoguidessite.vercel.app';
+const origin = 'https://crypto.bitevo.work';
 
 const expectedRedirects = [
   { source: '/guides/blockchain-forensics-methodology', destination: '/guides/blockchain-forensics-onchain-investigations', permanent: true },

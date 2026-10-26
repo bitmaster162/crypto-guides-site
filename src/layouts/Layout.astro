@@ -24,7 +24,7 @@ const {
   alternates = {},
   languageSwitchHref
 } = Astro.props;
-const origin = 'https://cryptoguidessite.vercel.app';
+const origin = 'https://crypto.bitevo.work';
 const isEn = lang === 'en';
 const pageDescription = description ?? (isEn
   ? 'Crypto Guides — reviewed research guides, with explicit source and review boundaries.'
@@ -64,7 +64,7 @@ const ruDisclaimer = 'Здесь — личная практика и иссле
         </a>
         <nav class="main-nav" aria-label={isEn ? 'Main navigation' : 'Основная навигация'}>
           <a href={isEn ? '/en/guides' : '/guides'}>Guides</a>
-          <a href="https://bitevoagentsite.vercel.app/guides" class="nav-eco">AI Portal</a>
+          <a href="https://bitevo.work/guides" class="nav-eco">AI Portal</a>
           <a href="/api/public-guides.json">Reviewed API</a>
           <a href="/llms.txt" class="btn-llm">LLMs.txt</a>
           <a href={switchHref} class="language-switch" lang={isEn ? 'ru' : 'en'} aria-label={isEn ? 'Read in Russian' : 'Read in English'}>{isEn ? 'RU' : 'English'}</a>
@@ -91,7 +91,7 @@ const ruDisclaimer = 'Здесь — личная практика и иссле
         <div class="footer-eco">
           <strong>{isEn ? 'Ecosystem:' : 'Экосистема:'}</strong>
           <a href="https://sovereign-arena-site.vercel.app/">Sovereign Arena</a>
-          <a href="https://bitevoagentsite.vercel.app/">AI Agent Portal</a>
+          <a href="https://bitevo.work/">AI Agent Portal</a>
           <a href={isEn ? '/en/guides' : '/guides'}>Crypto Guides</a>
         </div>
         <p class="crypto-risk-disclaimer" set:html={isEn ? enDisclaimer : ruDisclaimer}></p>

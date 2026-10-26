@@ -29,7 +29,7 @@ const indexable = reviewedValid && sourcesPresent;
 const robots = indexable
   ? 'max-image-preview:large, index, follow'
   : 'max-image-preview:large, noindex, follow';
-const origin = 'https://cryptoguidessite.vercel.app';
+const origin = 'https://crypto.bitevo.work';
 const lang = requestedLang === 'en' ? 'en' : 'ru';
 const isEn = lang === 'en';
 const routePath = path || (isEn ? `/en/guides/${slug}` : `/guides/${slug}`);

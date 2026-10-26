@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const ruDir = join(root, 'src/pages/guides');
 const enDir = join(root, 'src/pages/en/guides');
-const origin = 'https://cryptoguidessite.vercel.app';
+const origin = 'https://crypto.bitevo.work';
 const approvedExternalLinks = new Map([
   ['https://bitevo.work/guides/before-write-access',
     'https://bitevo.work/ru/guides/before-write-access']

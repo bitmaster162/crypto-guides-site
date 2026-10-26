@@ -6,13 +6,13 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
-const origin = 'https://cryptoguidessite.vercel.app';
+const origin = 'https://crypto.bitevo.work';
 
 const expectedArtifacts = new Map([
   ['guides-index.json', ['A883357AC062322E0B1536AC8A46C8897DF0C375D795AEBFC2D429A416F0DA25', 139411]],
   ['api/public-guides.json', ['EE7E870B15B9A7201E3380ADBE5ACC12E65D8CBE366362AB46221DB85AF4446A', 136291]],
-  ['sitemap.xml', ['938FAAC1A483CE48BE50AB8C3E92D0823EEBA40988188BFD78038C6092DF848A', 736]],
-  ['llms.txt', ['0A156171513B2CE1C8556747FD6AAEAB78EC893EC10F4949B3C02BEB9D7B8B3F', 1784]]
+  ['sitemap.xml', ['4DD95A03EB2104343EE87F5D8F014D610A534B30A0CA13D4334436947D42BF52', 664]],
+  ['llms.txt', ['401C72685F48CC984FF745D0754FF8AA192C25F95A7A86F395C6B654B1E62925', 1694]]
 ]);
 for (const [relative, [expectedSha, expectedBytes]] of expectedArtifacts) {
   const bytes = await readFile(join(dist, relative));

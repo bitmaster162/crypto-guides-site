@@ -46,7 +46,7 @@ assert.equal(manifest.records?.length, 163);
 assert.equal(manifest.uniqueGuides, 163);
 assert.equal(publicApi.records?.length, 163);
 assert.equal([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].length, 8);
-assert.equal(llms.split(/\r?\n/).filter((line) => line.includes(' — https://cryptoguidessite.vercel.app/guides/')).length, 2);
+assert.equal(llms.split(/\r?\n/).filter((line) => line.includes(' — https://crypto.bitevo.work/guides/')).length, 2);
 
 const guideDirs = (await readdir(join(dist, 'guides'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())

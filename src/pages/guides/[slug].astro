@@ -663,7 +663,7 @@ const _faqM = (content_ru || "").match(/##\s*([^\n]+)\n+([\s\S]+?)(?:\n\n|<)/);
 const faqQ = _faqM ? _faqM[1].trim() : title;
 let faqA = (_faqM ? _faqM[2] : (desc || "")).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 600);
 if (faqA.split(/\s+/).filter(Boolean).length < 25 && desc) faqA = (desc || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 600);
-const _slugUrl = `https://cryptoguidessite.vercel.app/guides/${Astro.params.slug}`;
+const _slugUrl = `https://crypto.bitevo.work/guides/${Astro.params.slug}`;
 const _reviewedValid = typeof reviewed === "string" && /^\d{4}-\d{2}-\d{2}$/.test(reviewed) && (() => {
 	const [year, month, day] = reviewed.split("-").map(Number);
 	const parsed = new Date(Date.UTC(year, month - 1, day));
@@ -683,8 +683,8 @@ const ldArticle = JSON.stringify({
 			"datePublished": date,
 			"dateModified": date,
 			"inLanguage": "ru",
-			"author": { "@id": "https://cryptoguidessite.vercel.app/#org" },
-			"publisher": { "@id": "https://cryptoguidessite.vercel.app/#org" },
+			"author": { "@id": "https://crypto.bitevo.work/#org" },
+			"publisher": { "@id": "https://crypto.bitevo.work/#org" },
 			"mainEntityOfPage": _slugUrl
 		},
 		{
@@ -698,9 +698,9 @@ const ldArticle = JSON.stringify({
 		},
 		{
 			"@type": "Organization",
-			"@id": "https://cryptoguidessite.vercel.app/#org",
+			"@id": "https://crypto.bitevo.work/#org",
 			"name": "Crypto Guides",
-			"url": "https://cryptoguidessite.vercel.app/",
+			"url": "https://crypto.bitevo.work/",
 			"sameAs": [
 				"https://sovereign-arena-site.vercel.app/",
 				"https://bitevoagentsite.vercel.app/",

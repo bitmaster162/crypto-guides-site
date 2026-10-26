@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const guidesDir = join(dist, 'guides');
-const origin = 'https://cryptoguidessite.vercel.app';
+const origin = 'https://crypto.bitevo.work';
 const redirectSourceSlugs = new Set([
   'blockchain-forensics-methodology',
   'trading-discipline-journal-psychology',

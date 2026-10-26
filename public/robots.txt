@@ -25,4 +25,4 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-Sitemap: https://cryptoguidessite.vercel.app/sitemap-index.xml
+Sitemap: https://crypto.bitevo.work/sitemap-index.xml

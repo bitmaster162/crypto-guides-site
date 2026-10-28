@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -10,7 +15,7 @@ const equal = (actual, expected, message) => { assert.equal(actual, expected, me
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const origin = 'https://crypto.bitevo.work';
-const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys'].sort();
+const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : [])].sort();
 
 const layoutSource = await readFile(join(root, 'src/layouts/Layout.astro'), 'utf8');
 const guideSource = await readFile(join(root, 'src/pages/guides/[slug].astro'), 'utf8');
@@ -39,24 +44,24 @@ check(packageJson.scripts?.build?.includes('verify:p31-indexing'), 'P31.1 verifi
 equal(Buffer.compare(sourceRobots, builtRobots), 0, 'robots.txt byte-identical');
 
 equal(index.schema, 'crypto-guides.public-index.v1', 'guide index schema');
-equal(index.uniqueGuides, 163, 'guide index has 163 routes after P31.5');
-equal(index.records.length, 163, 'guide index records have 163 routes after P31.5');
-equal(publicApi.count, 163, 'public API count has 163 routes after P31.5');
-equal(publicApi.records.length, 163, 'public API records have 163 routes after P31.5');
+equal(index.uniqueGuides, guideCount, 'guide index has 163 routes after P31.5');
+equal(index.records.length, guideCount, 'guide index records have 163 routes after P31.5');
+equal(publicApi.count, guideCount, 'public API count has 163 routes after P31.5');
+equal(publicApi.records.length, guideCount, 'public API records have 163 routes after P31.5');
 
 const guideDirs = (await readdir(join(dist, 'guides'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
-equal(guideDirs.length, 163, 'built guide route directories have 163 routes');
+equal(guideDirs.length, guideCount, 'built guide route directories have 163 routes');
 assert.deepEqual(guideDirs, [...index.records.map((record) => record.slug)].sort(), 'built guide routes match guide-index slugs exactly');
 
 const indexBySlug = new Map(index.records.map((record) => [record.slug, record]));
 for (const slug of reviewedSlugs) {
   const record = indexBySlug.get(slug);
   check(record, `reviewed guide present in index: ${slug}`);
-  equal(record.reviewed, '2026-10-02', `reviewed date exact: ${slug}`);
-  equal(record.nextReview, '2027-01-02', `next review exact: ${slug}`);
+  equal(record.reviewed, slug === 'counter-trading-and-signing-chain-safety' ? '2026-10-27' : '2026-10-02', `reviewed date exact: ${slug}`);
+  equal(record.nextReview, slug === 'counter-trading-and-signing-chain-safety' ? '2027-01-27' : '2027-01-02', `next review exact: ${slug}`);
   equal(record.sourcesPresent, true, `sources present: ${slug}`);
   equal(record.sourceType, 'reviewed-markdown', `source type reviewed Markdown: ${slug}`);
 }
@@ -73,7 +78,7 @@ for (const record of index.records) {
   equal(robotsTags.length, 1, `exactly one robots meta: ${record.slug}`);
   const robotsContent = ((robotsTags[0].match(/\bcontent=["']([^"']*)["']/i) || [,''])[1] || '').toLowerCase();
   const tokens = robotsContent.split(',').map((token) => token.trim()).filter(Boolean);
-  const expectedIndexable = record.reviewed === '2026-10-02' && record.sourcesPresent === true;
+  const expectedIndexable = (record.reviewed === '2026-10-02' || (guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety' && record.reviewed === '2026-10-27')) && record.sourcesPresent === true;
 
   if (expectedIndexable) {
     check(tokens.includes('index'), `index present: ${record.slug}`);
@@ -94,12 +99,12 @@ for (const record of index.records) {
   selfCanonical += 1;
 }
 
-equal(indexable, 2, 'exactly two reviewed/indexable guides');
+equal(indexable, reviewedGuideCount, 'exactly two reviewed/indexable guides');
 equal(noindexFollow, 161, 'remaining 161 guides are noindex,follow');
-equal(selfCanonical, 163, 'all 163 guides have self canonical');
+equal(selfCanonical, guideCount, 'all 163 guides have self canonical');
 
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-equal(sitemapLocs.length, 8, 'sitemap contains five static, two reviewed RU, one reviewed EN routes');
+equal(sitemapLocs.length, sitemapGuideCount, 'sitemap contains five static, two reviewed RU, one reviewed EN routes');
 const staticRoutes = new Set([
   `${origin}/`,
   `${origin}/guides`,
@@ -109,15 +114,15 @@ const staticRoutes = new Set([
 ]);
 for (const route of staticRoutes) check(sitemapLocs.includes(route), `sitemap static route present: ${route}`);
 const enSitemapUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/en/guides/`));
-assert.deepEqual(enSitemapUrls, [`${origin}/en/guides/trading-bot-api-keys`], 'only reviewed EN trading bot guide in sitemap');
+assert.deepEqual(enSitemapUrls.sort(), [`${origin}/en/guides/trading-bot-api-keys`, ...(guide5Successor ? [`${origin}/en/guides/counter-trading-and-signing-chain-safety`] : [])].sort(), 'only reviewed EN trading bot guide in sitemap');
 const sitemapGuideUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/guides/`)).sort();
 assert.deepEqual(sitemapGuideUrls, reviewedSlugs.map((slug) => `${origin}/guides/${slug}`).sort(), 'sitemap guide URLs are exactly reviewed guides');
 
-check(llms.includes('Unique guide routes: 163.'), 'llms reports 163 total guide routes');
-check(llms.includes('Indexable guide routes: 2.'), 'llms reports two indexable RU guides');
+check(llms.includes('Unique guide routes: ' + guideCount + '.'), 'llms reports 163 total guide routes');
+check(llms.includes('Indexable guide routes: ' + reviewedGuideCount + '.'), 'llms reports two indexable RU guides');
 check(llms.includes(`Reviewed English guide index: ${origin}/en/guides`), 'llms discovers the EN index');
 const llmsGuideLines = llms.split(/\r?\n/).filter((line) => line.includes(` — ${origin}/guides/`));
-equal(llmsGuideLines.length, 2, 'llms lists exactly two reviewed guides');
+equal(llmsGuideLines.length, reviewedGuideCount, 'llms lists exactly two reviewed guides');
 for (const slug of reviewedSlugs) check(llmsGuideLines.some((line) => line.endsWith(`${origin}/guides/${slug}`)), `llms reviewed route present: ${slug}`);
 
 const archiveSample = await readFile(join(dist, 'guides/risk-freymvork-dlya-kripto-botov/index.html'), 'utf8');

@@ -6,7 +6,7 @@ alternate: /guides/counter-trading-and-signing-chain-safety
 lang: en
 category: Security
 title: "Counter-trading and signing-chain safety for trading bots"
-seo_title: "Counter-trading and signing-chain safety for trading bots | Crypto Guides"
+seo_title: "Signing-chain and bot trade safety | Crypto Guides"
 description: "Technical review of L2 book integrity, pre-trade controls, independent kill switches and transaction-intent validation before signing."
 reviewed: "2026-10-27"
 next_review: "2027-01-27"

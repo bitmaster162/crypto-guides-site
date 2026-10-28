@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,7 +47,7 @@ function sanitizeVisibleText(html) {
 
 const manifest = JSON.parse(await readFile(join(dist, 'guides-index.json'), 'utf8'));
 const records = Array.isArray(manifest.records) ? manifest.records : [];
-if (manifest.schema !== 'crypto-guides.public-index.v1' || records.length !== 163) {
+if (manifest.schema !== 'crypto-guides.public-index.v1' || records.length !== guideCount) {
   throw new Error(`P31.3 guide census mismatch: schema=${manifest.schema || '<missing>'} records=${records.length}`);
 }
 const repairBySlug = new Map(repairs.map((repair) => [repair.slug, repair]));

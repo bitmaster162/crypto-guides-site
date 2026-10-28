@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
@@ -10,7 +15,7 @@ const origin = 'https://crypto.bitevo.work';
 
 const removedInternalSlugs = ["analiz-zapuska-raas-api","analogi-i-ikh-slabye-storony","anti-self-attention-trading-psychology","archiveos-multigpt-bridge-integration","arkhitektura-suverennoy-ai-nody","compression-no-mans-land-trap","ekonomika-premialnykh-treyding-podpisok","executive-summary","fractal-intelligence-scouts-scribes-attention","grid-trading-os","grid-trading-os-institutional-spec","ierarkhicheskiy-pooling-i-ugasanie","latent-space-protocol-ai-research","latent-space-protocol-architecture","latent-space-protocol-research","mas-managed-coevolution-sandbox-isolation","mirrorcore-compactdigest-memory-compression","mirrorcore-compression","mirrorcore-seeding-identity-persistence","monetization-matrix-4x3","multi-llm-torgovaya-arena","multigpt-bridge-federated-ai-arbitration","omnicore-loop-self-preservation","plan-zapuska-open-source-proekta","razrabotka-freymvorka-c2p","reflex-layer-ooda-monitoring","sector-divergence-fake-crown","sovereign-agent-core","sovereign-core-ai-system-architecture","sovereign-scalper-drawdown-analysis","strategiya-sovereign-arena-ai","tilt-index-antiself","trading-performance-monitoring-ssot-ai","trading-system-v2-range-farm","why-continuityos-may-fail-an-adversarial-analysis"].sort();
 const redirectSourceSlugs = ["ai-agent-reliability-audit","blockchain-forensics-methodology","d3-tool-io-bridge-contract","fleet-coordinator-drift-monitoring","microstructure-delisting-data-integrity-2026","security-sandboxing","trading-discipline-journal-psychology"].sort();
-const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys'].sort();
+const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : [])].sort();
 
 assert.equal(removedInternalSlugs.length, 35);
 assert.equal(redirectSourceSlugs.length, 7);
@@ -27,8 +32,8 @@ const guideIndexHtml = await readFile(join(dist, 'guides/index.html'), 'utf8');
 const packageJson = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 
 assert.equal(index.schema, 'crypto-guides.public-index.v1');
-assert.equal(index.records?.length, 163);
-assert.equal(publicApi.records?.length, 163);
+assert.equal(index.records?.length, guideCount);
+assert.equal(publicApi.records?.length, guideCount);
 assert.equal(vercel.redirects?.length, 7);
 
 const indexSlugs = new Set(index.records.map((record) => record.slug));
@@ -38,7 +43,7 @@ for (const slug of [...removedInternalSlugs, ...redirectSourceSlugs, ...reviewed
   assert.ok(apiSlugs.has(slug), `public API lost route: ${slug}`);
 }
 
-const reviewedRecords = index.records.filter((record) => record.reviewed === '2026-10-02' && record.sourcesPresent === true);
+const reviewedRecords = index.records.filter((record) => (record.reviewed === '2026-10-02' || (guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety' && record.reviewed === '2026-10-27')) && record.sourcesPresent === true);
 assert.deepEqual(reviewedRecords.map((record) => record.slug).sort(), reviewedSlugs, 'P31.5 reviewed set must be exact');
 
 const humanArchive = index.records.filter((record) =>
@@ -58,7 +63,7 @@ assert.match(guideIndexSource, /verifiedRecords\.length !== 2/u);
 const verifiedSection = (guideIndexHtml.match(/<section\b[^>]*\bid="verified-guides"[^>]*>/iu) || [''])[0];
 assert.ok(verifiedSection, 'built /guides verified section missing');
 assert.ok(!/\bhidden(?:\s|=|>)/iu.test(verifiedSection), 'verified section must be visible with two reviewed guides');
-assert.match(verifiedSection, /data-reviewed-count="2"/u);
+assert.match(verifiedSection, new RegExp('data-reviewed-count="' + reviewedGuideCount + '"', 'u'));
 assert.match(guideIndexHtml, /href="\/guides\/trading-bot-api-keys"/u);
 assert.match(guideIndexHtml, /href="\/guides\/evm-approval-safety-flashbots"/u);
 assert.match(guideIndexHtml, /<section\b[^>]*\bid="archive-guides"[^>]*>/u);
@@ -86,7 +91,7 @@ const guideDirs = (await readdir(join(dist, 'guides'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
-assert.equal(guideDirs.length, 163, 'P31.5 must preserve 163 built guide pages');
+assert.equal(guideDirs.length, guideCount, 'P31.5 must preserve 163 built guide pages');
 
 let noindexFollow = 0;
 let indexFollow = 0;
@@ -105,7 +110,7 @@ for (const slug of guideDirs) {
     noindexFollow += 1;
   }
 }
-assert.equal(indexFollow, 2);
+assert.equal(indexFollow, reviewedGuideCount);
 assert.equal(noindexFollow, 161);
 
 assert.equal(packageJson.scripts?.['verify:p31-guides-list'], 'node scripts/verify-p31-4-guides-list-r1.mjs');

@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -52,10 +57,10 @@ for (const slug of sourceSlugs) {
 }
 
 equal(index.schema, 'crypto-guides.public-index.v1', 'guide index schema preserved');
-equal(index.uniqueGuides, 163, 'guide index includes P31.5 route addition');
-equal(index.records.length, 163, 'guide index records include P31.5 route addition');
-equal(publicApi.count, 163, 'public API count includes P31.5 route addition');
-equal(publicApi.records.length, 163, 'public API records include P31.5 route addition');
+equal(index.uniqueGuides, guideCount, 'guide index includes P31.5 route addition');
+equal(index.records.length, guideCount, 'guide index records include P31.5 route addition');
+equal(publicApi.count, guideCount, 'public API count includes P31.5 route addition');
+equal(publicApi.records.length, guideCount, 'public API records include P31.5 route addition');
 
 const indexSlugs = new Set(index.records.map((record) => record.slug));
 const apiSlugs = new Set(publicApi.records.map((record) => record.slug));
@@ -72,7 +77,7 @@ const guideDirs = (await readdir(join(dist, 'guides'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
-equal(guideDirs.length, 163, 'built guide directories include 163 routes');
+equal(guideDirs.length, guideCount, 'built guide directories include 163 routes');
 
 for (const slug of sourceSlugs) {
   check(guideDirs.includes(slug), `redirect source guide file remains built: ${slug}`);
@@ -81,15 +86,15 @@ for (const slug of sourceSlugs) {
 }
 
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-equal(sitemapLocs.length, 8, 'sitemap has five static, two reviewed RU, one reviewed EN routes');
+equal(sitemapLocs.length, sitemapGuideCount, 'sitemap has five static, two reviewed RU, one reviewed EN routes');
 const sitemapGuideUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/guides/`));
-equal(sitemapGuideUrls.length, 2, 'sitemap has two reviewed guide URLs');
+equal(sitemapGuideUrls.length, reviewedGuideCount, 'sitemap has two reviewed guide URLs');
 for (const slug of sourceSlugs) {
   check(!sitemap.includes(`${origin}/guides/${slug}`), `redirect source excluded from sitemap: ${slug}`);
   check(!llms.includes(`${origin}/guides/${slug}`), `redirect source excluded from llms guide list: ${slug}`);
 }
 const llmsGuideLines = llms.split(/\r?\n/).filter((line) => line.includes(` — ${origin}/guides/`));
-equal(llmsGuideLines.length, 2, 'llms contains only two P31.5 reviewed guide routes');
+equal(llmsGuideLines.length, reviewedGuideCount, 'llms contains only two P31.5 reviewed guide routes');
 
 equal(packageJson.scripts?.['verify:p31-redirects'], 'node scripts/verify-p31-2-redirects-r1.mjs', 'P31.2 verifier script wired exactly');
 check(packageJson.scripts?.build?.includes('npm run verify:p31-redirects'), 'P31.2 verifier wired into build');

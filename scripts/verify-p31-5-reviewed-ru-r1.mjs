@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
@@ -14,7 +19,9 @@ const expectedArtifacts = new Map([
   ['sitemap.xml', ['4DD95A03EB2104343EE87F5D8F014D610A534B30A0CA13D4334436947D42BF52', 664]],
   ['llms.txt', ['401C72685F48CC984FF745D0754FF8AA192C25F95A7A86F395C6B654B1E62925', 1694]]
 ]);
-for (const [relative, [expectedSha, expectedBytes]] of expectedArtifacts) {
+const guide5ExpectedArtifacts = {"guides-index.json":["BB3B8C6321B5F112937361BEB3CBD78131E337B56131153900DD3AC5D908C585",140406],"api/public-guides.json":["D2DDF0636B822662EB4686AB13AC40EFD1AF91792B37AD3E42EAEBB7D58C538B",137090],"sitemap.xml":["2D134E150FFE59A2D1B83ACFCFAC1F1E9317B8EC5903BF60FE24A88D543B5FD9",865],"llms.txt":["F7D74734CD942FA26BC74893763F7500BFD0593A251071A38383158F3D9AAFA3",1991]};
+for (const [relative, [historicalSha, historicalBytes]] of expectedArtifacts) {
+  const [expectedSha,expectedBytes] = guide5Successor ? guide5ExpectedArtifacts[relative] : [historicalSha,historicalBytes];
   const bytes = await readFile(join(dist, relative));
   assert.equal(createHash('sha256').update(bytes).digest('hex').toUpperCase(), expectedSha, `${relative} SHA256 drifted`);
   assert.equal(bytes.length, expectedBytes, `${relative} byte length drifted`);
@@ -128,8 +135,8 @@ assert.match(astroConfig, /node\.properties\.rel = \[\.\.\.new Set\(\[\.\.\.exis
 
 const index = JSON.parse(await readFile(join(dist, 'guides-index.json'), 'utf8'));
 const publicApi = JSON.parse(await readFile(join(dist, 'api/public-guides.json'), 'utf8'));
-assert.equal(index.records.length, 163);
-assert.equal(publicApi.records.length, 163);
+assert.equal(index.records.length, guideCount);
+assert.equal(publicApi.records.length, guideCount);
 const indexBySlug = new Map(index.records.map((record) => [record.slug, record]));
 for (const slug of reviewed.keys()) {
   const record = indexBySlug.get(slug);
@@ -142,39 +149,49 @@ for (const slug of reviewed.keys()) {
 assert.deepEqual(index.evidenceLifecycleCounts, {
   REVIEW_DOC_BOUND: 19,
   POST_R13_CONTENT_TRUTH_HOLD: 1,
-  UNBOUND_REVIEW_REQUIRED: 143
+  UNBOUND_REVIEW_REQUIRED: guide5Successor ? 144 : 143
 });
 assert.deepEqual(publicApi.evidenceLifecycleCounts, index.evidenceLifecycleCounts);
 
 const sitemap = await readFile(join(dist, 'sitemap.xml'), 'utf8');
 const sitemapLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-assert.equal(sitemapLocs.length, 8);
+assert.equal(sitemapLocs.length, sitemapGuideCount);
 assert.ok(sitemapLocs.includes(`${origin}/en/guides`), 'T1.1 English index present in sitemap');
 assert.ok(sitemapLocs.includes(`${origin}/en/guides/trading-bot-api-keys`), 'T1.3 approved English article present in sitemap');
 for (const slug of reviewed.keys()) assert.ok(sitemapLocs.includes(`${origin}/guides/${slug}`));
 
 const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
-assert.ok(llms.includes('Unique guide routes: 163.'));
-assert.ok(llms.includes('Indexable guide routes: 2.'));
+assert.ok(llms.includes('Unique guide routes: ' + guideCount + '.'));
+assert.ok(llms.includes('Indexable guide routes: ' + reviewedGuideCount + '.'));
 assert.ok(llms.includes(`Reviewed English guide index: ${origin}/en/guides`), 'T1.1 English index listed in llms');
 const llmsGuideLines = llms.split(/\r?\n/).filter((line) => line.includes(` — ${origin}/guides/`));
-assert.equal(llmsGuideLines.length, 2);
+assert.equal(llmsGuideLines.length, reviewedGuideCount);
 for (const slug of reviewed.keys()) assert.ok(llmsGuideLines.some((line) => line.endsWith(`${origin}/guides/${slug}`)));
 
 const guideIndex = await readFile(join(dist, 'guides', 'index.html'), 'utf8');
 const verifiedSection = (guideIndex.match(/<section\b[^>]*\bid=["']verified-guides["'][^>]*>/iu) || [''])[0];
 assert.ok(verifiedSection);
 assert.ok(!/\bhidden(?:\s|=|>)/iu.test(verifiedSection));
-assert.equal(tagAttr(verifiedSection, 'data-reviewed-count'), '2');
+assert.equal(tagAttr(verifiedSection, 'data-reviewed-count'), String(reviewedGuideCount));
 for (const slug of reviewed.keys()) assert.ok(guideIndex.includes(`href="/guides/${slug}"`));
 
 const removedInternal = new Set(["analiz-zapuska-raas-api","analogi-i-ikh-slabye-storony","anti-self-attention-trading-psychology","archiveos-multigpt-bridge-integration","arkhitektura-suverennoy-ai-nody","compression-no-mans-land-trap","ekonomika-premialnykh-treyding-podpisok","executive-summary","fractal-intelligence-scouts-scribes-attention","grid-trading-os","grid-trading-os-institutional-spec","ierarkhicheskiy-pooling-i-ugasanie","latent-space-protocol-ai-research","latent-space-protocol-architecture","latent-space-protocol-research","mas-managed-coevolution-sandbox-isolation","mirrorcore-compactdigest-memory-compression","mirrorcore-compression","mirrorcore-seeding-identity-persistence","monetization-matrix-4x3","multi-llm-torgovaya-arena","multigpt-bridge-federated-ai-arbitration","omnicore-loop-self-preservation","plan-zapuska-open-source-proekta","razrabotka-freymvorka-c2p","reflex-layer-ooda-monitoring","sector-divergence-fake-crown","sovereign-agent-core","sovereign-core-ai-system-architecture","sovereign-scalper-drawdown-analysis","strategiya-sovereign-arena-ai","tilt-index-antiself","trading-performance-monitoring-ssot-ai","trading-system-v2-range-farm","why-continuityos-may-fail-an-adversarial-analysis"]);
 const redirectSources = new Set(["ai-agent-reliability-audit","blockchain-forensics-methodology","d3-tool-io-bridge-contract","fleet-coordinator-drift-monitoring","microstructure-delisting-data-integrity-2026","security-sandboxing","trading-discipline-journal-psychology"]);
-const archive = index.records.filter((record) => !removedInternal.has(record.slug) && !redirectSources.has(record.slug) && !reviewed.has(record.slug));
+const archive = index.records.filter((record) => !removedInternal.has(record.slug) && !redirectSources.has(record.slug) && !reviewed.has(record.slug) && !(guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety'));
 assert.equal(archive.length, 119);
+if(guide5Successor){
+ const newRecord=index.records.find(x=>x.slug==='counter-trading-and-signing-chain-safety');
+ assert.equal(newRecord?.reviewed,'2026-10-27');
+ assert.equal(newRecord?.nextReview,'2027-01-27');
+ assert.equal(newRecord?.sourcesPresent,true);
+ assert.equal(newRecord?.sourceType,'reviewed-markdown');
+ assert.ok(sitemapLocs.includes(origin+'/guides/counter-trading-and-signing-chain-safety'));
+ assert.ok(sitemapLocs.includes(origin+'/en/guides/counter-trading-and-signing-chain-safety'));
+ assert.ok(guideIndex.includes('href="/guides/counter-trading-and-signing-chain-safety"'));
+}
 
 const guideDirs = (await readdir(join(dist, 'guides'), { withFileTypes: true })).filter((entry) => entry.isDirectory());
-assert.equal(guideDirs.length, 163);
+assert.equal(guideDirs.length, guideCount);
 
 const packageJson = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 assert.equal(packageJson.scripts?.['verify:p31-reviewed-ru'], 'node scripts/verify-p31-5-reviewed-ru-r1.mjs');

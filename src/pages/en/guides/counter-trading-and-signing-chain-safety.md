@@ -25,7 +25,7 @@ sources:
   - title: "ProjectOpenSea Seaport documentation"
     url: https://github.com/ProjectOpenSea/seaport/blob/main/docs/SeaportDocumentation.md
   - title: "Trading Bot API Keys — Crypto Guides"
-    url: https://crypto.bitevo.work/guides/trading-bot-api-keys
+    url: https://crypto.bitevo.work/en/guides/trading-bot-api-keys
 layout: ../../../layouts/EnglishReviewedGuideLayout.astro
 toc: [{"title":"Two boundaries that a key alone does not protect","id":"1-two-boundaries-that-a-key-alone-does-not-protect"},{"title":"Public incident evidence and its limits","id":"2-public-incident-evidence-and-its-limits"},{"title":"Reconstructing a trustworthy L2 order book","id":"3-reconstructing-a-trustworthy-l2-order-book"},{"title":"Five control domains: 18 review questions","id":"4-five-control-domains-18-review-questions"},{"title":"Isolated test procedure","id":"5-isolated-test-procedure"}]
 ---

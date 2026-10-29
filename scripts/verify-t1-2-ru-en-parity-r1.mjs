@@ -154,7 +154,11 @@ function comparePair(ruText, enText, slug, pairedSlugs) {
   match(scalar(en, 'alternate'), '/guides/' + slug, 'EN alternate');
   match(scalar(en, 'layout'), '../../../layouts/EnglishReviewedGuideLayout.astro', 'EN layout');
   for (const key of ['category', 'reviewed', 'next_review', 'schema', 'sources']) {
-    match(rawField(en, key), rawField(ru, key), 'frontmatter ' + key);
+    // Guide 5: the EN source points to the matching EN guide; compare the paired locale URLs.
+    const enValue = key === 'sources' && guide5Successor && slug === 'counter-trading-and-signing-chain-safety'
+      ? rawField(en, key).replace('url: https://crypto.bitevo.work/en/guides/trading-bot-api-keys',
+        'url: https://crypto.bitevo.work/guides/trading-bot-api-keys') : rawField(en, key);
+    match(enValue, rawField(ru, key), 'frontmatter ' + key);
     if (!rawField(ru, key)) issues.push('RU required frontmatter missing: ' + key);
   }
   if (!/^\d{4}-\d{2}-\d{2}$/u.test(scalar(ru, 'reviewed') || '')) {

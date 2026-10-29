@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -6,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const archiveCopy = 'Архив. Материал не проверялся на текущую дату: цифры, комиссии и правила бирж могли измениться.';
-const reviewedSlugs = new Set(['evm-approval-safety-flashbots', 'trading-bot-api-keys']);
+const reviewedSlugs = new Set(['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : [])]);
 
 const decode = (value = '') => String(value)
   .replace(/&nbsp;/giu, ' ')
@@ -42,17 +47,17 @@ const sitemap = await readFile(join(dist, 'sitemap.xml'), 'utf8');
 const llms = await readFile(join(dist, 'llms.txt'), 'utf8');
 
 assert.equal(manifest.schema, 'crypto-guides.public-index.v1');
-assert.equal(manifest.records?.length, 163);
-assert.equal(manifest.uniqueGuides, 163);
-assert.equal(publicApi.records?.length, 163);
-assert.equal([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].length, 8);
-assert.equal(llms.split(/\r?\n/).filter((line) => line.includes(' — https://crypto.bitevo.work/guides/')).length, 2);
+assert.equal(manifest.records?.length, guideCount);
+assert.equal(manifest.uniqueGuides, guideCount);
+assert.equal(publicApi.records?.length, guideCount);
+assert.equal([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].length, sitemapGuideCount);
+assert.equal(llms.split(/\r?\n/).filter((line) => line.includes(' — https://crypto.bitevo.work/guides/')).length, reviewedGuideCount);
 
 const guideDirs = (await readdir(join(dist, 'guides'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
-assert.equal(guideDirs.length, 163);
+assert.equal(guideDirs.length, guideCount);
 
 let archiveRoutes = 0;
 let reviewedRoutes = 0;
@@ -88,7 +93,7 @@ for (const slug of guideDirs) {
 }
 
 assert.equal(archiveRoutes, 161);
-assert.equal(reviewedRoutes, 2);
+assert.equal(reviewedRoutes, reviewedGuideCount);
 
 const guideIndexHtml = await readFile(join(dist, 'guides', 'index.html'), 'utf8');
 const guideIndexText = visibleText(guideIndexHtml);

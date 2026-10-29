@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
@@ -52,7 +57,7 @@ for (const [lang, expected] of [
   assert.deepEqual(alternate(en, lang), [expected], 'EN index alternate: ' + lang); checks++;
   assert.deepEqual(alternate(ru, lang), [expected], 'RU index alternate: ' + lang); checks++;
 }
-check(en.includes('data-en-guide-count="1"'), 'T1.3 has one reviewed EN guide after owner-reviewed candidate');
+check(en.includes('data-en-guide-count="' + (guide5Successor ? 2 : 1) + '"'), 'T1.3 has one reviewed EN guide after owner-reviewed candidate');
 check(en.includes('href="/en/guides/trading-bot-api-keys"'), 'EN index links to reviewed article');
 check(!en.includes('No reviewed English guides have been published yet.'), 'EN empty state hidden when first guide exists');
 check(en.includes('id="en-archive-boundary"'), 'EN archive boundary');
@@ -74,7 +79,7 @@ const visibleEn = en
 check(!/[\u0400-\u052F]/u.test(visibleEn), 'EN index no visible Cyrillic');
 const enEntries = await readdir(join(dist, 'en/guides'), { withFileTypes: true });
 const reviewedEnDirs = enEntries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-assert.deepEqual(reviewedEnDirs, ['trading-bot-api-keys'], 'one published reviewed EN guide route'); checks++;
+assert.deepEqual(reviewedEnDirs, [...(guide5Successor?['counter-trading-and-signing-chain-safety']:[]),'trading-bot-api-keys'], 'one published reviewed EN guide route'); checks++;
 for (const slug of ['evm-approval-safety-flashbots', 'trading-bot-api-keys']) {
   const h = await readFile(join(dist, 'guides', slug, 'index.html'), 'utf8');
   if (slug === 'trading-bot-api-keys') {
@@ -93,18 +98,18 @@ for (const slug of ['evm-approval-safety-flashbots', 'trading-bot-api-keys']) {
   }
 }
 
-equal(index.records.length, 163, 'RU guide corpus 163');
-equal(api.records.length, 163, 'metadata API corpus 163');
-equal(index.records.filter((r) => r.reviewed && r.sourcesPresent).length, 2, 'RU reviewed guides 2');
+equal(index.records.length, guideCount, 'RU guide corpus 163');
+equal(api.records.length, guideCount, 'metadata API corpus 163');
+equal(index.records.filter((r) => r.reviewed && r.sourcesPresent).length, reviewedGuideCount, 'RU reviewed guides 2');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((m) => m[1]);
-equal(locs.length, 8, 'five static + two reviewed RU + one reviewed EN sitemap URLs');
+equal(locs.length, sitemapGuideCount, 'five static + two reviewed RU + one reviewed EN sitemap URLs');
 check(locs.includes(origin + '/en/guides'), 'EN index in sitemap');
-assert.deepEqual(locs.filter((x) => x.startsWith(origin + '/en/guides/')), [origin + '/en/guides/trading-bot-api-keys'], 'one reviewed EN guide sitemap URL'); checks++;
-equal(locs.filter((x) => x.startsWith(origin + '/guides/')).length, 2, 'two reviewed RU URLs');
+assert.deepEqual(locs.filter((x) => x.startsWith(origin + '/en/guides/')), [...(guide5Successor ? [origin + '/en/guides/counter-trading-and-signing-chain-safety'] : []), origin + '/en/guides/trading-bot-api-keys'], 'one reviewed EN guide sitemap URL'); checks++;
+equal(locs.filter((x) => x.startsWith(origin + '/guides/')).length, reviewedGuideCount, 'two reviewed RU URLs');
 check(llms.includes('Reviewed English guide index: ' + origin + '/en/guides'), 'EN index in llms');
-check(llms.includes('## Indexable English guide routes (1)'), 'one indexable EN guide in llms');
+check(llms.includes('## Indexable English guide routes ('+(guide5Successor?2:1)+')'), 'one indexable EN guide in llms');
 check(llms.includes(' — ' + origin + '/en/guides/trading-bot-api-keys'), 'reviewed EN route listed in llms');
-equal(llms.split(/\r?\n/).filter((s) => s.includes(' — ' + origin + '/guides/')).length, 2, 'RU llms guides');
+equal(llms.split(/\r?\n/).filter((s) => s.includes(' — ' + origin + '/guides/')).length, reviewedGuideCount, 'RU llms guides');
 
 const ruSource = await readFile(join(root, 'src/pages/guides/index.astro'), 'utf8');
 check(ruSource.includes("frontmatter.lang === 'ru'"), 'RU markdown frontmatter only');

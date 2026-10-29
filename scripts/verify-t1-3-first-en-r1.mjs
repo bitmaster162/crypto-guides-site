@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -114,7 +119,7 @@ const parityOutput = execFileSync(process.execPath, [
   join(root, 'scripts/verify-t1-2-ru-en-parity-r1.mjs')
 ], { cwd: root, encoding: 'utf8', timeout: 30000 });
 check(parityOutput.includes('T1_2_PAIR=PASS slug=' + slug), 'real translation pair passed');
-check(parityOutput.includes('T1_2_RU_EN_PARITY_R1=PASS pairs=1'), 'exactly one paired EN article');
+check(parityOutput.includes('T1_2_RU_EN_PARITY_R1=PASS pairs='+(guide5Successor ? 2 : 1)), 'exactly one paired EN article');
 check(parityOutput.includes('mismatches=0'), 'translation structural URL and numeric parity exact');
 check(parityOutput.includes('fixture_checks=30'), '30 T1.2 in-memory assertions preserved');
 
@@ -193,32 +198,33 @@ assert.deepEqual(structuredArticle.citation, enSources, 'EN JSON-LD sources orde
 equal(structuredBreadcrumb.itemListElement[1].item, origin + '/en/guides', 'EN breadcrumb index');
 equal(structuredBreadcrumb.itemListElement[2].item, origin + enRoute, 'EN breadcrumb canonical');
 
-check(enIndex.includes('data-en-guide-count="1"'), 'EN index reports one approved article');
+check(enIndex.includes('data-en-guide-count="'+(guide5Successor?2:1)+'"'), 'EN index reports one approved article');
 check(enIndex.includes('href="' + enRoute + '"'), 'EN index links first article');
 check(!enIndex.includes('No reviewed English guides have been published yet.'),
   'EN index not displaying empty state');
 const enEntries = (await readdir(join(dist, 'en/guides'), { withFileTypes: true }))
   .filter((ent) => ent.isDirectory()).map((ent) => ent.name).sort();
-assert.deepEqual(enEntries, [slug], 'exactly one EN article route generated'); checks++;
+assert.deepEqual(enEntries, [...(guide5Successor?['counter-trading-and-signing-chain-safety']:[]),slug], 'exactly one EN article route generated'); checks++;
 
 const sitemap = await readText(join(dist, 'sitemap.xml'));
 const llms = await readText(join(dist, 'llms.txt'));
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((m) => m[1]);
-equal(locs.length, 8, 'sitemap has eight URLs after EN publication');
+equal(locs.length, sitemapGuideCount, 'sitemap has eight URLs after EN publication');
 equal(locs.filter((x) => x === origin + enRoute).length, 1, 'EN URL once in sitemap');
-equal(locs.filter((x) => x.startsWith(origin + '/en/guides/')).length, 1, 'one EN guide in sitemap');
-equal(locs.filter((x) => x.startsWith(origin + '/guides/')).length, 2, 'two reviewed RU URLs preserved');
-check(llms.includes('## Indexable English guide routes (1)'), 'llms EN route count one');
+equal(locs.filter((x) => x.startsWith(origin + '/en/guides/')).length, guide5Successor?2:1, 'one EN guide in sitemap');
+equal(locs.filter((x) => x.startsWith(origin + '/guides/')).length, reviewedGuideCount, 'two reviewed RU URLs preserved');
+check(llms.includes('## Indexable English guide routes ('+(guide5Successor?2:1)+')'), 'llms EN route count one');
 check(llms.includes(' — ' + origin + enRoute), 'llms enumerates reviewed EN article');
 equal(llms.split(/\r?\n/u).filter((line) => line.includes(' — ' + origin + '/guides/')).length,
-  2, 'llms RU guide list preserved');
+  reviewedGuideCount, 'llms RU guide list preserved');
 
-for (const [path, expectedSha, expectedBytes] of [
+for (const [path, historicSha, historicBytes] of [
   ['guides-index.json', 'A883357AC062322E0B1536AC8A46C8897DF0C375D795AEBFC2D429A416F0DA25', 139411],
   ['api/public-guides.json', 'EE7E870B15B9A7201E3380ADBE5ACC12E65D8CBE366362AB46221DB85AF4446A', 136291],
   ['sitemap.xml', '4DD95A03EB2104343EE87F5D8F014D610A534B30A0CA13D4334436947D42BF52', 664],
   ['llms.txt', '401C72685F48CC984FF745D0754FF8AA192C25F95A7A86F395C6B654B1E62925', 1694]
 ]) {
+  const [expectedSha,expectedBytes] = guide5Successor ? {"guides-index.json":["BB3B8C6321B5F112937361BEB3CBD78131E337B56131153900DD3AC5D908C585",140406],"api/public-guides.json":["D2DDF0636B822662EB4686AB13AC40EFD1AF91792B37AD3E42EAEBB7D58C538B",137090],"sitemap.xml":["2D134E150FFE59A2D1B83ACFCFAC1F1E9317B8EC5903BF60FE24A88D543B5FD9",865],"llms.txt":["F7D74734CD942FA26BC74893763F7500BFD0593A251071A38383158F3D9AAFA3",1991]}[path] : [historicSha,historicBytes];
   const bytes = await readFile(join(dist, path));
   equal(digest('sha256', bytes), expectedSha, path + ' exact SHA256');
   equal(bytes.length, expectedBytes, path + ' exact bytes');

@@ -1,3 +1,8 @@
+import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+const guide5Successor = isExactGuide5Successor();
+const guideCount = guide5Successor ? 164 : 163;
+const reviewedGuideCount = guide5Successor ? 3 : 2;
+const sitemapGuideCount = guide5Successor ? 10 : 8;
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -8,6 +13,7 @@ const ruDir = join(root, 'src/pages/guides');
 const enDir = join(root, 'src/pages/en/guides');
 const origin = 'https://crypto.bitevo.work';
 const approvedExternalLinks = new Map([
+  ['https://bitevo.work/guides/bitget-authority-after-orchestration-compromise', 'https://bitevo.work/ru/guides/bitget-authority-after-orchestration-compromise'],
   ['https://bitevo.work/guides/before-write-access',
     'https://bitevo.work/ru/guides/before-write-access']
 ]);
@@ -137,7 +143,7 @@ function comparePair(ruText, enText, slug, pairedSlugs) {
     if (actual !== expected) issues.push(label + ': RU=' +
       JSON.stringify(expected) + ' EN=' + JSON.stringify(actual));
   };
-  match(scalar(ru, 'site'), 'cryptoguidessite.vercel.app', 'RU site');
+  match(scalar(ru, 'site'), (guide5Successor && slug === 'counter-trading-and-signing-chain-safety') ? 'crypto.bitevo.work' : 'cryptoguidessite.vercel.app', 'RU site');
   match(scalar(en, 'site'), scalar(ru, 'site'), 'EN site');
   match(scalar(ru, 'slug'), slug, 'RU slug');
   match(scalar(en, 'slug'), slug, 'EN slug');

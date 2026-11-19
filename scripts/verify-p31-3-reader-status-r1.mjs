@@ -1,8 +1,10 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
-const guideCount = guide5Successor ? 164 : 163;
-const reviewedGuideCount = guide5Successor ? 3 : 2;
-const sitemapGuideCount = guide5Successor ? 10 : 8;
+const guide6Successor = isExactGuide6Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -11,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const archiveCopy = 'Архив. Материал не проверялся на текущую дату: цифры, комиссии и правила бирж могли измениться.';
-const reviewedSlugs = new Set(['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : [])]);
+const reviewedSlugs = new Set(['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : []), ...(guide6Successor ? ['low-cap-grid-bots-costs-and-risks'] : [])]);
 
 const decode = (value = '') => String(value)
   .replace(/&nbsp;/giu, ' ')
@@ -123,4 +125,4 @@ assert.equal(packageJson.scripts?.['verify:p31-reader-status'], 'node scripts/ve
 assert.ok(packageJson.scripts?.['build:site']?.includes('npm run apply:p31-reader-status'));
 assert.ok(packageJson.scripts?.build?.includes('npm run verify:p31-reader-status'));
 
-console.log(`P31_3_READER_STATUS_R1=PASS guides=163 archive_routes=${archiveRoutes} reviewed_routes=${reviewedRoutes} forbidden_visible_hits=0 public_repair_meta=0 machine_artifacts_evolved_by_p31_5=4`);
+console.log(`P31_3_READER_STATUS_R1=PASS guides=${guideCount} archive_routes=${archiveRoutes} reviewed_routes=${reviewedRoutes} forbidden_visible_hits=0 public_repair_meta=0 machine_artifacts_evolved_by_p31_5=4`);

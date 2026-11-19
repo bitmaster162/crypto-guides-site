@@ -1,10 +1,12 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
 import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
+import { isExactGuide7Successor } from './guide7-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
 const guide6Successor = isExactGuide6Successor();
-const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
-const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
-const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
+const guide7Successor = isExactGuide7Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0) + (guide7Successor ? 2 : 0);
 import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -175,7 +177,7 @@ if (counts.REVIEW_DOC_BOUND !== explicitReviewDocBound) {
 if (counts.POST_R13_CONTENT_TRUTH_HOLD !== Object.keys(expectedHolds).length) {
   throw new Error(`Post-R13 hold count mismatch: ${counts.POST_R13_CONTENT_TRUTH_HOLD}`);
 }
-if (counts.REVIEW_DOC_BOUND !== 19 || counts.POST_R13_CONTENT_TRUTH_HOLD !== 1 || counts.UNBOUND_REVIEW_REQUIRED !== ((guide5Successor ? 144 : 143) + (guide6Successor ? 1 : 0)) || manifest.records.length !== guideCount) {
+if (counts.REVIEW_DOC_BOUND !== 19 || counts.POST_R13_CONTENT_TRUTH_HOLD !== 1 || counts.UNBOUND_REVIEW_REQUIRED !== ((guide5Successor ? 144 : 143) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0)) || manifest.records.length !== guideCount) {
   throw new Error(`Expected post-P31.5 lifecycle counts 19/1/143 over 163 routes, got ${counts.REVIEW_DOC_BOUND}/${counts.POST_R13_CONTENT_TRUTH_HOLD}/${counts.UNBOUND_REVIEW_REQUIRED} over ${manifest.records.length}`);
 }
 if (counts.REVIEW_DOC_BOUND + counts.POST_R13_CONTENT_TRUTH_HOLD + counts.UNBOUND_REVIEW_REQUIRED !== manifest.records.length) {

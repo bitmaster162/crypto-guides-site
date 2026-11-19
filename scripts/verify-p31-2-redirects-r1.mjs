@@ -1,8 +1,10 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
-const guideCount = guide5Successor ? 164 : 163;
-const reviewedGuideCount = guide5Successor ? 3 : 2;
-const sitemapGuideCount = guide5Successor ? 10 : 8;
+const guide6Successor = isExactGuide6Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -99,4 +101,4 @@ equal(llmsGuideLines.length, reviewedGuideCount, 'llms contains only two P31.5 r
 equal(packageJson.scripts?.['verify:p31-redirects'], 'node scripts/verify-p31-2-redirects-r1.mjs', 'P31.2 verifier script wired exactly');
 check(packageJson.scripts?.build?.includes('npm run verify:p31-redirects'), 'P31.2 verifier wired into build');
 
-console.log(`P31_2_REDIRECTS_R1=PASS checks=${checks} redirects=7 permanent=7 guide_files=163 guides_index_records=${index.records.length} public_api_records=${publicApi.records.length} sitemap_total=${sitemapLocs.length} sitemap_guide_urls=${sitemapGuideUrls.length} llms_guide_urls=${llmsGuideLines.length} human_list_excluded=7 meta_refresh=0 content_rewrite=0`);
+console.log(`P31_2_REDIRECTS_R1=PASS checks=${checks} redirects=7 permanent=7 guide_files=${guideCount} guides_index_records=${index.records.length} public_api_records=${publicApi.records.length} sitemap_total=${sitemapLocs.length} sitemap_guide_urls=${sitemapGuideUrls.length} llms_guide_urls=${llmsGuideLines.length} human_list_excluded=7 meta_refresh=0 content_rewrite=0`);

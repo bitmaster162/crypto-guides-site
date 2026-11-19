@@ -1,8 +1,10 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
+import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
-const guideCount = guide5Successor ? 164 : 163;
-const reviewedGuideCount = guide5Successor ? 3 : 2;
-const sitemapGuideCount = guide5Successor ? 10 : 8;
+const guide6Successor = isExactGuide6Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -127,9 +129,16 @@ function normalizedDates(body) {
 function numbers(body) {
   const scrubbed = body.replace(urlPattern, ' ');
   const dated = normalizedDates(scrubbed);
-  const tokens = [...dated.matchAll(
+  // Normalize RU spaces/commas and EN thousands separators before comparing facts.
+  // Only a three-digit group may be removed; normal decimal precision is retained.
+  const grouped = dated
+    .replace(/(?<!\d)\d{1,3}(?:[ \u00a0]\d{3})+(?:[.,]\d+)?(?!\d)/gu,
+      (m) => m.replace(/[ \u00a0]/gu, ''))
+    .replace(/(?<!\d)\d{1,3}(?:,\d{3})+(?:\.\d+)?(?!\d)/gu,
+      (m) => m.replace(/,/gu, ''));
+  const tokens = [...grouped.matchAll(
     /(?<![\p{L}\p{N}])(?:\d{4}-\d{2}-\d{2}|\d+(?:[.,]\d+)*)(?![\p{L}\p{N}])/gu
-  )].map((m) => m[0]);
+  )].map((m) => m[0].replace(',', '.'));
   return [...new Set(tokens)].sort();
 }
 function equalSets(a, b) {
@@ -143,7 +152,7 @@ function comparePair(ruText, enText, slug, pairedSlugs) {
     if (actual !== expected) issues.push(label + ': RU=' +
       JSON.stringify(expected) + ' EN=' + JSON.stringify(actual));
   };
-  match(scalar(ru, 'site'), (guide5Successor && slug === 'counter-trading-and-signing-chain-safety') ? 'crypto.bitevo.work' : 'cryptoguidessite.vercel.app', 'RU site');
+  match(scalar(ru, 'site'), ((guide5Successor && slug === 'counter-trading-and-signing-chain-safety') || (guide6Successor && slug === 'low-cap-grid-bots-costs-and-risks')) ? 'crypto.bitevo.work' : 'cryptoguidessite.vercel.app', 'RU site');
   match(scalar(en, 'site'), scalar(ru, 'site'), 'EN site');
   match(scalar(ru, 'slug'), slug, 'RU slug');
   match(scalar(en, 'slug'), slug, 'EN slug');

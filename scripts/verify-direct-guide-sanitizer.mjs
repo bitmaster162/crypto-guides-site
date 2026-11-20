@@ -1,5 +1,6 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
 import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
+import { isExactGuide7Successor } from './guide7-route-successor-r1.mjs';
 import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -84,7 +85,7 @@ if (repairedRoutes !== repairs.length) {
   throw new Error(`repaired-route accounting mismatch: observed=${repairedRoutes} registry=${repairs.length}`);
 }
 
-if (reviewedMarkdownRoutes !== ((isExactGuide5Successor() ? 3 : 2) + (isExactGuide6Successor() ? 1 : 0))) {
+if (reviewedMarkdownRoutes !== ((isExactGuide5Successor() ? 3 : 2) + (isExactGuide6Successor() ? 1 : 0) + (isExactGuide7Successor() ? 1 : 0))) {
   throw new Error(`reviewed-markdown accounting mismatch: observed=${reviewedMarkdownRoutes} expected=2`);
 }
 

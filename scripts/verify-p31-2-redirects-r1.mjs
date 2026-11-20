@@ -1,10 +1,12 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
 import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
+import { isExactGuide7Successor } from './guide7-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
 const guide6Successor = isExactGuide6Successor();
-const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
-const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
-const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
+const guide7Successor = isExactGuide7Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0) + (guide7Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';

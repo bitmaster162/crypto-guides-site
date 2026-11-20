@@ -1,10 +1,12 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
 import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
+import { isExactGuide7Successor } from './guide7-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
 const guide6Successor = isExactGuide6Successor();
-const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
-const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
-const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
+const guide7Successor = isExactGuide7Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0) + (guide7Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
@@ -59,7 +61,7 @@ for (const [lang, expected] of [
   assert.deepEqual(alternate(en, lang), [expected], 'EN index alternate: ' + lang); checks++;
   assert.deepEqual(alternate(ru, lang), [expected], 'RU index alternate: ' + lang); checks++;
 }
-check(en.includes('data-en-guide-count="' + ((guide5Successor ? 2 : 1) + (guide6Successor ? 1 : 0)) + '"'), 'T1.3 has one reviewed EN guide after owner-reviewed candidate');
+check(en.includes('data-en-guide-count="' + ((guide5Successor ? 2 : 1) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0)) + '"'), 'T1.3 has one reviewed EN guide after owner-reviewed candidate');
 check(en.includes('href="/en/guides/trading-bot-api-keys"'), 'EN index links to reviewed article');
 check(!en.includes('No reviewed English guides have been published yet.'), 'EN empty state hidden when first guide exists');
 check(en.includes('id="en-archive-boundary"'), 'EN archive boundary');
@@ -81,7 +83,7 @@ const visibleEn = en
 check(!/[\u0400-\u052F]/u.test(visibleEn), 'EN index no visible Cyrillic');
 const enEntries = await readdir(join(dist, 'en/guides'), { withFileTypes: true });
 const reviewedEnDirs = enEntries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-assert.deepEqual(reviewedEnDirs, [...(guide5Successor?['counter-trading-and-signing-chain-safety']:[]),...(guide6Successor?['low-cap-grid-bots-costs-and-risks']:[]),'trading-bot-api-keys'], 'one published reviewed EN guide route'); checks++;
+assert.deepEqual(reviewedEnDirs, [...(guide5Successor?['counter-trading-and-signing-chain-safety']:[]),...(guide6Successor?['low-cap-grid-bots-costs-and-risks']:[]),...(guide7Successor?['perpetual-funding-and-liquidation-risk']:[]),'trading-bot-api-keys'], 'one published reviewed EN guide route'); checks++;
 for (const slug of ['evm-approval-safety-flashbots', 'trading-bot-api-keys']) {
   const h = await readFile(join(dist, 'guides', slug, 'index.html'), 'utf8');
   if (slug === 'trading-bot-api-keys') {
@@ -106,10 +108,10 @@ equal(index.records.filter((r) => r.reviewed && r.sourcesPresent).length, review
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((m) => m[1]);
 equal(locs.length, sitemapGuideCount, 'five static + two reviewed RU + one reviewed EN sitemap URLs');
 check(locs.includes(origin + '/en/guides'), 'EN index in sitemap');
-assert.deepEqual(locs.filter((x) => x.startsWith(origin + '/en/guides/')), [...(guide5Successor ? [origin + '/en/guides/counter-trading-and-signing-chain-safety'] : []), ...(guide6Successor ? [origin + '/en/guides/low-cap-grid-bots-costs-and-risks'] : []), origin + '/en/guides/trading-bot-api-keys'], 'one reviewed EN guide sitemap URL'); checks++;
+assert.deepEqual(locs.filter((x) => x.startsWith(origin + '/en/guides/')), [...(guide5Successor ? [origin + '/en/guides/counter-trading-and-signing-chain-safety'] : []), ...(guide6Successor ? [origin + '/en/guides/low-cap-grid-bots-costs-and-risks'] : []), ...(guide7Successor ? [origin + '/en/guides/perpetual-funding-and-liquidation-risk'] : []), origin + '/en/guides/trading-bot-api-keys'], 'one reviewed EN guide sitemap URL'); checks++;
 equal(locs.filter((x) => x.startsWith(origin + '/guides/')).length, reviewedGuideCount, 'two reviewed RU URLs');
 check(llms.includes('Reviewed English guide index: ' + origin + '/en/guides'), 'EN index in llms');
-check(llms.includes('## Indexable English guide routes ('+((guide5Successor?2:1)+(guide6Successor?1:0))+')'), 'one indexable EN guide in llms');
+check(llms.includes('## Indexable English guide routes ('+((guide5Successor?2:1)+(guide6Successor?1:0)+(guide7Successor?1:0))+')'), 'one indexable EN guide in llms');
 check(llms.includes(' — ' + origin + '/en/guides/trading-bot-api-keys'), 'reviewed EN route listed in llms');
 equal(llms.split(/\r?\n/).filter((s) => s.includes(' — ' + origin + '/guides/')).length, reviewedGuideCount, 'RU llms guides');
 
@@ -133,4 +135,4 @@ check(boundary.includes('Next review '), 'EN next review copy');
 const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 equal(pkg.scripts['verify:t1-en-section'], 'node scripts/verify-t1-1-en-section-r1.mjs', 'verifier registered');
 check(pkg.scripts.build.includes('npm run verify:t1-en-section'), 'verifier included in full build');
-console.log(`T1_1_EN_SECTION_R1=PASS checks=${checks} en_index=1 en_guide_routes=${(guide5Successor?2:1)+(guide6Successor?1:0)} ru_guide_routes=${guideCount} reviewed_ru=${reviewedGuideCount} archive_noindex=${guideCount-reviewedGuideCount} sitemap_urls=${sitemapGuideCount} sitemap_ru_guides=${reviewedGuideCount} sitemap_en_guides=${(guide5Successor?2:1)+(guide6Successor?1:0)} llms_en_index=1 reciprocal_index_hreflang=PASS self_canonical=PASS en_cyrillic=0 approved_en_disclaimer=PASS dynamic_ru_count=PASS`);
+console.log(`T1_1_EN_SECTION_R1=PASS checks=${checks} en_index=1 en_guide_routes=${(guide5Successor?2:1)+(guide6Successor?1:0)+(guide7Successor?1:0)} ru_guide_routes=${guideCount} reviewed_ru=${reviewedGuideCount} archive_noindex=${guideCount-reviewedGuideCount} sitemap_urls=${sitemapGuideCount} sitemap_ru_guides=${reviewedGuideCount} sitemap_en_guides=${(guide5Successor?2:1)+(guide6Successor?1:0)+(guide7Successor?1:0)} llms_en_index=1 reciprocal_index_hreflang=PASS self_canonical=PASS en_cyrillic=0 approved_en_disclaimer=PASS dynamic_ru_count=PASS`);

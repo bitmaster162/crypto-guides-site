@@ -1,10 +1,12 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
 import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
+import { isExactGuide7Successor } from './guide7-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
 const guide6Successor = isExactGuide6Successor();
-const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
-const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
-const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
+const guide7Successor = isExactGuide7Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0) + (guide7Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
@@ -22,9 +24,10 @@ const expectedArtifacts = new Map([
   ['llms.txt', ['401C72685F48CC984FF745D0754FF8AA192C25F95A7A86F395C6B654B1E62925', 1694]]
 ]);
 const guide5ExpectedArtifacts = {"guides-index.json":["BB3B8C6321B5F112937361BEB3CBD78131E337B56131153900DD3AC5D908C585",140406],"api/public-guides.json":["D2DDF0636B822662EB4686AB13AC40EFD1AF91792B37AD3E42EAEBB7D58C538B",137090],"sitemap.xml":["2D134E150FFE59A2D1B83ACFCFAC1F1E9317B8EC5903BF60FE24A88D543B5FD9",865],"llms.txt":["F7D74734CD942FA26BC74893763F7500BFD0593A251071A38383158F3D9AAFA3",1991]};
+const guide7ExpectedArtifacts = {"guides-index.json":["EA71C99B49CB128B74213305FE095A6F7CF303F5764D4BA1FE07D35B975E756A",142312],"api/public-guides.json":["59645A6155877E0E039C2E4527D1D7789795C641E93A23687C0672B02E008863",138658],"sitemap.xml":["476B9A2774A8367DE992D2BEA74A8CED6301A613B584CFDC349A7AC1870D38A7",1249],"llms.txt":["E849B5B44077F4A817F5805C848BAE2479BABCCE1DA846976F338DBDB4C30048",2547]};
 const guide6ExpectedArtifacts = {"guides-index.json":["A3ABD3FE2ECCA32B4721752FA44FF0BB06567750015EAB080B76CDE1552ED077",141368],"api/public-guides.json":["B69DD9AA1733F5DF5A01BF6AB8EF516CFAA0CAC658982D135F6A821C2AD41162",137883],"sitemap.xml":["CA0F0BFCF778C5106F041E1FC5FFC6FBD302DC5166090E41C3ABF52D012C87FE",1052],"llms.txt":["22C4A68DC27B3E7B0CA64E7DD6C10E7E63796C6EA9CA4B4B379BF407B04C3792",2273]};
 for (const [relative, [historicalSha, historicalBytes]] of expectedArtifacts) {
-  const [expectedSha,expectedBytes] = guide6Successor ? guide6ExpectedArtifacts[relative] : (guide5Successor ? guide5ExpectedArtifacts[relative] : [historicalSha,historicalBytes]);
+  const [expectedSha,expectedBytes] = guide7Successor ? guide7ExpectedArtifacts[relative] : (guide6Successor ? guide6ExpectedArtifacts[relative] : (guide5Successor ? guide5ExpectedArtifacts[relative] : [historicalSha,historicalBytes]));
   const bytes = await readFile(join(dist, relative));
   assert.equal(createHash('sha256').update(bytes).digest('hex').toUpperCase(), expectedSha, `${relative} SHA256 drifted`);
   assert.equal(bytes.length, expectedBytes, `${relative} byte length drifted`);
@@ -152,7 +155,7 @@ for (const slug of reviewed.keys()) {
 assert.deepEqual(index.evidenceLifecycleCounts, {
   REVIEW_DOC_BOUND: 19,
   POST_R13_CONTENT_TRUTH_HOLD: 1,
-  UNBOUND_REVIEW_REQUIRED: (guide5Successor ? 144 : 143) + (guide6Successor ? 1 : 0)
+  UNBOUND_REVIEW_REQUIRED: (guide5Successor ? 144 : 143) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0)
 });
 assert.deepEqual(publicApi.evidenceLifecycleCounts, index.evidenceLifecycleCounts);
 
@@ -180,7 +183,7 @@ for (const slug of reviewed.keys()) assert.ok(guideIndex.includes(`href="/guides
 
 const removedInternal = new Set(["analiz-zapuska-raas-api","analogi-i-ikh-slabye-storony","anti-self-attention-trading-psychology","archiveos-multigpt-bridge-integration","arkhitektura-suverennoy-ai-nody","compression-no-mans-land-trap","ekonomika-premialnykh-treyding-podpisok","executive-summary","fractal-intelligence-scouts-scribes-attention","grid-trading-os","grid-trading-os-institutional-spec","ierarkhicheskiy-pooling-i-ugasanie","latent-space-protocol-ai-research","latent-space-protocol-architecture","latent-space-protocol-research","mas-managed-coevolution-sandbox-isolation","mirrorcore-compactdigest-memory-compression","mirrorcore-compression","mirrorcore-seeding-identity-persistence","monetization-matrix-4x3","multi-llm-torgovaya-arena","multigpt-bridge-federated-ai-arbitration","omnicore-loop-self-preservation","plan-zapuska-open-source-proekta","razrabotka-freymvorka-c2p","reflex-layer-ooda-monitoring","sector-divergence-fake-crown","sovereign-agent-core","sovereign-core-ai-system-architecture","sovereign-scalper-drawdown-analysis","strategiya-sovereign-arena-ai","tilt-index-antiself","trading-performance-monitoring-ssot-ai","trading-system-v2-range-farm","why-continuityos-may-fail-an-adversarial-analysis"]);
 const redirectSources = new Set(["ai-agent-reliability-audit","blockchain-forensics-methodology","d3-tool-io-bridge-contract","fleet-coordinator-drift-monitoring","microstructure-delisting-data-integrity-2026","security-sandboxing","trading-discipline-journal-psychology"]);
-const archive = index.records.filter((record) => !removedInternal.has(record.slug) && !redirectSources.has(record.slug) && !reviewed.has(record.slug) && !(guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety') && !(guide6Successor && record.slug === 'low-cap-grid-bots-costs-and-risks'));
+const archive = index.records.filter((record) => !removedInternal.has(record.slug) && !redirectSources.has(record.slug) && !reviewed.has(record.slug) && !(guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety') && !(guide6Successor && record.slug === 'low-cap-grid-bots-costs-and-risks') && !(guide7Successor && record.slug === 'perpetual-funding-and-liquidation-risk'));
 assert.equal(archive.length, 119);
 if(guide5Successor){
  const newRecord=index.records.find(x=>x.slug==='counter-trading-and-signing-chain-safety');
@@ -200,4 +203,4 @@ const packageJson = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'
 assert.equal(packageJson.scripts?.['verify:p31-reviewed-ru'], 'node scripts/verify-p31-5-reviewed-ru-r1.mjs');
 assert.ok(packageJson.scripts?.build?.includes('npm run verify:p31-reviewed-ru'));
 
-console.log(`P31_5_REVIEWED_RU_R1=PASS total_guides=${guideCount} reviewed_indexable=${reviewedGuideCount} noindex_follow=${guideCount-reviewedGuideCount} verified_guides=${reviewedGuideCount} archive_guides=119 sitemap_total=${sitemapGuideCount} sitemap_guide_urls=${reviewedGuideCount} llms_guide_routes=${reviewedGuideCount} legacy_body_sha_preserved=2 legacy_toc_guides=2 tables=PASS jsonld_article=PASS jsonld_breadcrumb=PASS external_noopener=PASS related_links=PASS evidence_lifecycle=19_1_${(guide5Successor?144:143)+(guide6Successor?1:0)} direct_sanitizer=142_19_${reviewedGuideCount}`);
+console.log(`P31_5_REVIEWED_RU_R1=PASS total_guides=${guideCount} reviewed_indexable=${reviewedGuideCount} noindex_follow=${guideCount-reviewedGuideCount} verified_guides=${reviewedGuideCount} archive_guides=119 sitemap_total=${sitemapGuideCount} sitemap_guide_urls=${reviewedGuideCount} llms_guide_routes=${reviewedGuideCount} legacy_body_sha_preserved=2 legacy_toc_guides=2 tables=PASS jsonld_article=PASS jsonld_breadcrumb=PASS external_noopener=PASS related_links=PASS evidence_lifecycle=19_1_${(guide5Successor?144:143)+(guide6Successor?1:0)+(guide7Successor?1:0)} direct_sanitizer=142_19_${reviewedGuideCount}`);

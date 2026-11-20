@@ -12,7 +12,7 @@ reviewed: "2026-11-19"
 next_review: "2027-02-19"
 related: [https://crypto.bitevo.work/en/guides/low-cap-grid-bots-costs-and-risks]
 schema: [Article, BreadcrumbList]
-research_source: "Internal funding-convergence repair review (2026-08-14); current product documentation rechecked 2026-11-19; no live fills or account evidence"
+research_source: "Internal funding-convergence repair review (2026-08-14); current Coinbase BIP/CFTC and product documentation rechecked 2026-11-20; no live fills or account evidence"
 sources:
   - title: "Bybit V5 Get Funding Rate History"
     url: https://bybit-exchange.github.io/docs/v5/market/history-fund-rate
@@ -22,6 +22,10 @@ sources:
     url: https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview
   - title: "Coinbase perpetual-style futures settlement mechanics"
     url: https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics
+  - title: "Coinbase Derivatives submission 2026-42 Rule 1129 BIP"
+    url: https://www.cftc.gov/filings/orgrules/rules0617266784.pdf#page=8
+  - title: "Coinbase nano Bitcoin BIP contract specifications"
+    url: https://help.coinbase.com/en/derivatives/perpetual-style-futures/contract-specifications
   - title: "Bybit V5 Get Position Info"
     url: https://bybit-exchange.github.io/docs/v5/position
   - title: "Bybit margin calculation update"
@@ -38,7 +42,7 @@ Research guide · derivatives mechanics, not a trading signal
 
 ## 1. What funding is
 
-A conventional perpetual futures contract lacks a scheduled expiry, but the term *perpetual-style* does not certify identical expiry rules across products. [Coinbase's US perpetual-style overview](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview) describes five-year contracts that do expire, while [another Coinbase settlement help page](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics) describes a contract without a fixed expiry. These descriptions must not be treated as one verified contract specification; identify the exact product. On some products, venues use **funding** — periodic cash credits or debits between long and short holders associated with a mechanism intended to keep derivatives and underlying markets aligned. Funding is **not** an insured deposit yield and cannot be projected to an annual return without accounting for all other cash flows.
+A conventional perpetual futures contract has no scheduled expiry. [Coinbase's older US perpetual-style overview](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview) still describes a five-year expiration. **For nano Bitcoin BIP, that is an earlier specification, not evidence of a different contract:** [Coinbase Derivatives submission #2026-42, dated 17 June 2026, Appendix B, Rule 1129](https://www.cftc.gov/filings/orgrules/rules0617266784.pdf#page=8) strikes out the BIP five-year expiration and replaces it with no scheduled expiration or final settlement date. [Coinbase's current contract specifications](https://help.coinbase.com/en/derivatives/perpetual-style-futures/contract-specifications) name the same nano BTC Perp Futures (**BIP**) with no expiration date; [its settlement help](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics) describes the mechanics. Absence of a scheduled expiry does not rule out termination or settlement upon delisting. This is a **change in the BIP specification**, not proof that every other contract has identical terms. On some products, venues use **funding** — periodic cash credits or debits between long and short holders associated with a mechanism intended to keep derivatives and underlying markets aligned. Funding is **not** an insured deposit yield and cannot be projected to an annual return without accounting for all other cash flows.
 
 For [Coinbase US perpetual-style futures](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview), a positive funding rate means longs pay shorts; a negative rate reverses the direction. That convention is grounded in the named product; verify the terms separately for every other venue and contract type.
 
@@ -92,4 +96,4 @@ The Bybit and Coinbase documents support these mechanics **within the specified 
 
 ## 7. Primary sources and evidence boundary
 
-Primary sources: [Bybit funding history](https://bybit-exchange.github.io/docs/v5/market/history-fund-rate), [Bybit instruments info](https://bybit-exchange.github.io/docs/v5/market/instrument), [Coinbase perpetual-style futures overview](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview), [Coinbase settlement mechanics](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics), [Bybit position info](https://bybit-exchange.github.io/docs/v5/position), and [Bybit's margin-calculation update](https://www.bybit.com/en/help-center/article/Understanding-the-Adjustment-and-Impact-of-the-New-Margin-Calculation). These documents do not establish expected profitability, immunity from liquidation or any trading system's correctness. Product rules can change; next review is 19 February 2027.
+Primary sources: [Bybit funding history](https://bybit-exchange.github.io/docs/v5/market/history-fund-rate), [Bybit instruments info](https://bybit-exchange.github.io/docs/v5/market/instrument), [Coinbase perpetual-style futures overview](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview), [Coinbase settlement mechanics](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics), [Coinbase Derivatives submission #2026-42, Rule 1129 (BIP)](https://www.cftc.gov/filings/orgrules/rules0617266784.pdf#page=8), [current nano Bitcoin BIP contract specifications](https://help.coinbase.com/en/derivatives/perpetual-style-futures/contract-specifications), [Bybit position info](https://bybit-exchange.github.io/docs/v5/position), and [Bybit's margin-calculation update](https://www.bybit.com/en/help-center/article/Understanding-the-Adjustment-and-Impact-of-the-New-Margin-Calculation). These documents do not establish expected profitability, immunity from liquidation or any trading system's correctness. Product rules can change; next review is 19 February 2027.

@@ -12,7 +12,7 @@ reviewed: "2026-11-19"
 next_review: "2027-02-19"
 related: [https://crypto.bitevo.work/guides/low-cap-grid-bots-costs-and-risks]
 schema: [Article, BreadcrumbList]
-research_source: "Internal funding-convergence repair review (2026-08-14); current product documentation rechecked 2026-11-19; no live fills or account evidence"
+research_source: "Internal funding-convergence repair review (2026-08-14); current Coinbase BIP/CFTC and product documentation rechecked 2026-11-20; no live fills or account evidence"
 sources:
   - title: "Bybit V5 Get Funding Rate History"
     url: https://bybit-exchange.github.io/docs/v5/market/history-fund-rate
@@ -22,6 +22,10 @@ sources:
     url: https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview
   - title: "Coinbase perpetual-style futures settlement mechanics"
     url: https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics
+  - title: "Coinbase Derivatives submission 2026-42 Rule 1129 BIP"
+    url: https://www.cftc.gov/filings/orgrules/rules0617266784.pdf#page=8
+  - title: "Coinbase nano Bitcoin BIP contract specifications"
+    url: https://help.coinbase.com/en/derivatives/perpetual-style-futures/contract-specifications
   - title: "Bybit V5 Get Position Info"
     url: https://bybit-exchange.github.io/docs/v5/position
   - title: "Bybit margin calculation update"
@@ -38,7 +42,7 @@ layout: ../../layouts/ReviewedGuideLayout.astro
 
 ## 1. Что такое funding
 
-У классического бессрочного фьючерса нет фиксированной даты экспирации, однако название *perpetual-style* само по себе не подтверждает это свойство для каждого продукта. [Coinbase US perpetual-style overview](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview) описывает контракты с пятилетним сроком до экспирации, а [другая справка Coinbase о settlement](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics) описывает контракт без даты экспирации. По двум страницам нельзя считать эти условия одной и той же спецификацией: сверяйте точный продукт. На отдельных продуктах биржи используют **funding** — периодические денежные начисления или списания между держателями длинных и коротких позиций, связанные с механизмом сближения цены дериватива и базового рынка. Это **не** гарантированный процент по депозиту и **не** выручка, которую можно экстраполировать на год без проверки остальных денежных потоков.
+У классического бессрочного фьючерса нет фиксированной даты экспирации. В [прежней справке Coinbase о US perpetual-style futures](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview) сохранилось описание пятилетнего срока. **Для nano Bitcoin BIP это прежняя редакция спецификации, а не доказательство существования другого контракта:** [подача Coinbase Derivatives №2026-42 от 17 июня 2026 года в CFTC, Appendix B, Rule 1129](https://www.cftc.gov/filings/orgrules/rules0617266784.pdf#page=8) зачёркивает пятилетнюю экспирацию BIP и устанавливает отсутствие запланированной даты истечения и окончательного расчёта. [Актуальная спецификация Coinbase](https://help.coinbase.com/en/derivatives/perpetual-style-futures/contract-specifications) перечисляет тот же nano BTC Perp Futures (**BIP**) без даты экспирации; [справка о расчётах](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics) объясняет соответствующую механику. Отсутствие плановой экспирации не исключает принудительное завершение при делистинге. Это **история изменения BIP**, но она не доказывает идентичные условия всех других контрактов. На отдельных продуктах биржи используют **funding** — периодические денежные начисления или списания между держателями длинных и коротких позиций, связанные с механизмом сближения цены дериватива и базового рынка. Это **не** гарантированный процент по депозиту и **не** выручка, которую можно экстраполировать на год без проверки остальных денежных потоков.
 
 В [справке Coinbase для американских perpetual-style futures](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview) положительная ставка означает платёж от long к short, а отрицательная — в обратную сторону. Это определение относится к указанному продукту; для каждой другой биржи и типа контракта нужно читать собственные правила.
 
@@ -92,4 +96,4 @@ layout: ../../layouts/ReviewedGuideLayout.astro
 
 ## 7. Источники и граница вывода
 
-Первичные источники: [Bybit funding history](https://bybit-exchange.github.io/docs/v5/market/history-fund-rate), [Bybit instruments info](https://bybit-exchange.github.io/docs/v5/market/instrument), [Coinbase perpetual-style futures overview](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview), [Coinbase settlement mechanics](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics), [Bybit position info](https://bybit-exchange.github.io/docs/v5/position) и [обновление расчёта маржи Bybit](https://www.bybit.com/en/help-center/article/Understanding-the-Adjustment-and-Impact-of-the-New-Margin-Calculation). Из этих документов не следует ожидаемая доходность, отсутствие риска ликвидации или корректность какой-либо торговой системы. Варианты и условия продуктов способны меняться; следующая проверка — 19 февраля 2027 года.
+Первичные источники: [Bybit funding history](https://bybit-exchange.github.io/docs/v5/market/history-fund-rate), [Bybit instruments info](https://bybit-exchange.github.io/docs/v5/market/instrument), [Coinbase perpetual-style futures overview](https://help.coinbase.com/en/coinbase/derivatives/us-perpetual-futures-overview), [Coinbase settlement mechanics](https://help.coinbase.com/en/derivatives/perpetual-style-futures/settlement-and-other-mechanics), [подача Coinbase Derivatives №2026-42, Rule 1129 (BIP)](https://www.cftc.gov/filings/orgrules/rules0617266784.pdf#page=8), [актуальная спецификация nano Bitcoin BIP](https://help.coinbase.com/en/derivatives/perpetual-style-futures/contract-specifications), [Bybit position info](https://bybit-exchange.github.io/docs/v5/position) и [обновление расчёта маржи Bybit](https://www.bybit.com/en/help-center/article/Understanding-the-Adjustment-and-Impact-of-the-New-Margin-Calculation). Из этих документов не следует ожидаемая доходность, отсутствие риска ликвидации или корректность какой-либо торговой системы. Варианты и условия продуктов способны меняться; следующая проверка — 19 февраля 2027 года.

@@ -1,10 +1,12 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
 import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
+import { isExactGuide7Successor } from './guide7-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
 const guide6Successor = isExactGuide6Successor();
-const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
-const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
-const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
+const guide7Successor = isExactGuide7Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0) + (guide7Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -17,7 +19,7 @@ const equal = (actual, expected, message) => { assert.equal(actual, expected, me
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = join(root, 'dist');
 const origin = 'https://crypto.bitevo.work';
-const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : []), ...(guide6Successor ? ['low-cap-grid-bots-costs-and-risks'] : [])].sort();
+const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : []), ...(guide6Successor ? ['low-cap-grid-bots-costs-and-risks'] : []), ...(guide7Successor ? ['perpetual-funding-and-liquidation-risk'] : [])].sort();
 
 const layoutSource = await readFile(join(root, 'src/layouts/Layout.astro'), 'utf8');
 const guideSource = await readFile(join(root, 'src/pages/guides/[slug].astro'), 'utf8');
@@ -62,8 +64,8 @@ const indexBySlug = new Map(index.records.map((record) => [record.slug, record])
 for (const slug of reviewedSlugs) {
   const record = indexBySlug.get(slug);
   check(record, `reviewed guide present in index: ${slug}`);
-  equal(record.reviewed, slug === 'low-cap-grid-bots-costs-and-risks' ? '2026-11-19' : (slug === 'counter-trading-and-signing-chain-safety' ? '2026-10-27' : '2026-10-02'), `reviewed date exact: ${slug}`);
-  equal(record.nextReview, slug === 'low-cap-grid-bots-costs-and-risks' ? '2027-02-19' : (slug === 'counter-trading-and-signing-chain-safety' ? '2027-01-27' : '2027-01-02'), `next review exact: ${slug}`);
+  equal(record.reviewed, (slug === 'low-cap-grid-bots-costs-and-risks' || slug === 'perpetual-funding-and-liquidation-risk') ? '2026-11-19' : (slug === 'counter-trading-and-signing-chain-safety' ? '2026-10-27' : '2026-10-02'), `reviewed date exact: ${slug}`);
+  equal(record.nextReview, (slug === 'low-cap-grid-bots-costs-and-risks' || slug === 'perpetual-funding-and-liquidation-risk') ? '2027-02-19' : (slug === 'counter-trading-and-signing-chain-safety' ? '2027-01-27' : '2027-01-02'), `next review exact: ${slug}`);
   equal(record.sourcesPresent, true, `sources present: ${slug}`);
   equal(record.sourceType, 'reviewed-markdown', `source type reviewed Markdown: ${slug}`);
 }
@@ -80,7 +82,7 @@ for (const record of index.records) {
   equal(robotsTags.length, 1, `exactly one robots meta: ${record.slug}`);
   const robotsContent = ((robotsTags[0].match(/\bcontent=["']([^"']*)["']/i) || [,''])[1] || '').toLowerCase();
   const tokens = robotsContent.split(',').map((token) => token.trim()).filter(Boolean);
-  const expectedIndexable = (record.reviewed === '2026-10-02' || (guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety' && record.reviewed === '2026-10-27') || (guide6Successor && record.slug === 'low-cap-grid-bots-costs-and-risks' && record.reviewed === '2026-11-19')) && record.sourcesPresent === true;
+  const expectedIndexable = (record.reviewed === '2026-10-02' || (guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety' && record.reviewed === '2026-10-27') || (guide6Successor && record.slug === 'low-cap-grid-bots-costs-and-risks' && record.reviewed === '2026-11-19') || (guide7Successor && record.slug === 'perpetual-funding-and-liquidation-risk' && record.reviewed === '2026-11-19')) && record.sourcesPresent === true;
 
   if (expectedIndexable) {
     check(tokens.includes('index'), `index present: ${record.slug}`);
@@ -116,7 +118,7 @@ const staticRoutes = new Set([
 ]);
 for (const route of staticRoutes) check(sitemapLocs.includes(route), `sitemap static route present: ${route}`);
 const enSitemapUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/en/guides/`));
-assert.deepEqual(enSitemapUrls.sort(), [`${origin}/en/guides/trading-bot-api-keys`, ...(guide5Successor ? [`${origin}/en/guides/counter-trading-and-signing-chain-safety`] : []), ...(guide6Successor ? [`${origin}/en/guides/low-cap-grid-bots-costs-and-risks`] : [])].sort(), 'only reviewed EN trading bot guide in sitemap');
+assert.deepEqual(enSitemapUrls.sort(), [`${origin}/en/guides/trading-bot-api-keys`, ...(guide5Successor ? [`${origin}/en/guides/counter-trading-and-signing-chain-safety`] : []), ...(guide6Successor ? [`${origin}/en/guides/low-cap-grid-bots-costs-and-risks`] : []), ...(guide7Successor ? [`${origin}/en/guides/perpetual-funding-and-liquidation-risk`] : [])].sort(), 'only reviewed EN trading bot guide in sitemap');
 const sitemapGuideUrls = sitemapLocs.filter((url) => url.startsWith(`${origin}/guides/`)).sort();
 assert.deepEqual(sitemapGuideUrls, reviewedSlugs.map((slug) => `${origin}/guides/${slug}`).sort(), 'sitemap guide URLs are exactly reviewed guides');
 

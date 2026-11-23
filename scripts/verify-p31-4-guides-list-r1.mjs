@@ -1,10 +1,12 @@
 import { isExactGuide5Successor } from './guide5-route-successor-r1.mjs';
 import { isExactGuide6Successor } from './guide6-route-successor-r1.mjs';
+import { isExactGuide7Successor } from './guide7-route-successor-r1.mjs';
 const guide5Successor = isExactGuide5Successor();
 const guide6Successor = isExactGuide6Successor();
-const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0);
-const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0);
-const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0);
+const guide7Successor = isExactGuide7Successor();
+const guideCount = (guide5Successor ? 164 : 163) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const reviewedGuideCount = (guide5Successor ? 3 : 2) + (guide6Successor ? 1 : 0) + (guide7Successor ? 1 : 0);
+const sitemapGuideCount = (guide5Successor ? 10 : 8) + (guide6Successor ? 2 : 0) + (guide7Successor ? 2 : 0);
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
@@ -17,7 +19,7 @@ const origin = 'https://crypto.bitevo.work';
 
 const removedInternalSlugs = ["analiz-zapuska-raas-api","analogi-i-ikh-slabye-storony","anti-self-attention-trading-psychology","archiveos-multigpt-bridge-integration","arkhitektura-suverennoy-ai-nody","compression-no-mans-land-trap","ekonomika-premialnykh-treyding-podpisok","executive-summary","fractal-intelligence-scouts-scribes-attention","grid-trading-os","grid-trading-os-institutional-spec","ierarkhicheskiy-pooling-i-ugasanie","latent-space-protocol-ai-research","latent-space-protocol-architecture","latent-space-protocol-research","mas-managed-coevolution-sandbox-isolation","mirrorcore-compactdigest-memory-compression","mirrorcore-compression","mirrorcore-seeding-identity-persistence","monetization-matrix-4x3","multi-llm-torgovaya-arena","multigpt-bridge-federated-ai-arbitration","omnicore-loop-self-preservation","plan-zapuska-open-source-proekta","razrabotka-freymvorka-c2p","reflex-layer-ooda-monitoring","sector-divergence-fake-crown","sovereign-agent-core","sovereign-core-ai-system-architecture","sovereign-scalper-drawdown-analysis","strategiya-sovereign-arena-ai","tilt-index-antiself","trading-performance-monitoring-ssot-ai","trading-system-v2-range-farm","why-continuityos-may-fail-an-adversarial-analysis"].sort();
 const redirectSourceSlugs = ["ai-agent-reliability-audit","blockchain-forensics-methodology","d3-tool-io-bridge-contract","fleet-coordinator-drift-monitoring","microstructure-delisting-data-integrity-2026","security-sandboxing","trading-discipline-journal-psychology"].sort();
-const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : []), ...(guide6Successor ? ['low-cap-grid-bots-costs-and-risks'] : [])].sort();
+const reviewedSlugs = ['evm-approval-safety-flashbots', 'trading-bot-api-keys', ...(guide5Successor ? ['counter-trading-and-signing-chain-safety'] : []), ...(guide6Successor ? ['low-cap-grid-bots-costs-and-risks'] : []), ...(guide7Successor ? ['perpetual-funding-and-liquidation-risk'] : [])].sort();
 
 assert.equal(removedInternalSlugs.length, 35);
 assert.equal(redirectSourceSlugs.length, 7);
@@ -45,7 +47,7 @@ for (const slug of [...removedInternalSlugs, ...redirectSourceSlugs, ...reviewed
   assert.ok(apiSlugs.has(slug), `public API lost route: ${slug}`);
 }
 
-const reviewedRecords = index.records.filter((record) => (record.reviewed === '2026-10-02' || (guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety' && record.reviewed === '2026-10-27') || (guide6Successor && record.slug === 'low-cap-grid-bots-costs-and-risks' && record.reviewed === '2026-11-19')) && record.sourcesPresent === true);
+const reviewedRecords = index.records.filter((record) => (record.reviewed === '2026-10-02' || (guide5Successor && record.slug === 'counter-trading-and-signing-chain-safety' && record.reviewed === '2026-10-27') || (guide6Successor && record.slug === 'low-cap-grid-bots-costs-and-risks' && record.reviewed === '2026-11-19') || (guide7Successor && record.slug === 'perpetual-funding-and-liquidation-risk' && record.reviewed === '2026-11-19')) && record.sourcesPresent === true);
 assert.deepEqual(reviewedRecords.map((record) => record.slug).sort(), reviewedSlugs, 'P31.5 reviewed set must be exact');
 
 const humanArchive = index.records.filter((record) =>

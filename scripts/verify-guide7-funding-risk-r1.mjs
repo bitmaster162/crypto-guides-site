@@ -86,11 +86,12 @@ for (const locale of ['ru', 'en']) {
     .map((m) => JSON.parse(m[1]));
   const structured = jsonLd.find((x) => x['@type'] === 'Article');
   assert.ok(structured, locale + ' Article JSON-LD');
+  assert.equal(structured.dateModified, '2026-11-20', locale + ' BIP correction date');
   assert.deepEqual(structured.citation, expectedUrls, locale + ' JSON-LD citations');
   assert.equal(structured.mainEntityOfPage, origin + route, locale + ' JSON-LD canonical');
   assert.ok(sitemap.includes('<loc>' + origin + route + '</loc>'), locale + ' sitemap route');
   assert.ok(llms.includes(origin + route), locale + ' llms route');
-  checks += 23;
+  checks += 24;
 }
 console.log('GUIDE7_FUNDING_RISK_GATE=PASS' +
   ' ru_en=2 sources=8 toc=7 tables=1 review_dates=PASS canonical_hreflang=PASS' +

@@ -9,6 +9,7 @@ title: "Funding perpetual-фьючерсов: платежи, хедж и рис
 seo_title: "Funding и ликвидация perpetual | Crypto Guides"
 description: "Как сверять funding, маржу, базис и затраты у perpetual-фьючерсов без обещаний безрисковой прибыли."
 reviewed: "2026-11-19"
+modified: "2026-11-20"
 next_review: "2027-02-19"
 related: [https://crypto.bitevo.work/guides/low-cap-grid-bots-costs-and-risks]
 schema: [Article, BreadcrumbList]

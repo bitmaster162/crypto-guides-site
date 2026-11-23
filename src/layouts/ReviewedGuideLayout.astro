@@ -10,6 +10,7 @@ const {
   description = '',
   category = 'Unclassified',
   reviewed = null,
+  modified = null,
   next_review = null,
   sources = [],
   related = [],
@@ -22,6 +23,9 @@ const sourceList = Array.isArray(sources) ? sources : [];
 const relatedList = Array.isArray(related) ? related : related ? [related] : [];
 const tocList = Array.isArray(toc) ? toc : [];
 const reviewedText = typeof reviewed === 'string' ? reviewed : '';
+const modifiedText = typeof modified === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(modified)
+  ? modified
+  : reviewedText;
 const nextReviewText = typeof next_review === 'string' ? next_review : '';
 const reviewedValid = /^\d{4}-\d{2}-\d{2}$/.test(reviewedText);
 const sourcesPresent = sourceList.length > 0;
@@ -66,7 +70,7 @@ const articleJsonLd = {
   description,
   inLanguage: lang,
   mainEntityOfPage: canonical,
-  dateModified: reviewedText || undefined,
+  dateModified: modifiedText || undefined,
   isPartOf: {
     '@type': 'WebSite',
     name: 'Crypto Guides',

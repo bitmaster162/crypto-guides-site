@@ -9,6 +9,7 @@ title: "Perpetual futures funding: payments, hedging and liquidation risk"
 seo_title: "Perpetual Funding and Liquidation Risk | Crypto Guides"
 description: "How to audit perpetual funding, margin, basis and execution costs without risk-free profit claims."
 reviewed: "2026-11-19"
+modified: "2026-11-20"
 next_review: "2027-02-19"
 related: [https://crypto.bitevo.work/en/guides/low-cap-grid-bots-costs-and-risks]
 schema: [Article, BreadcrumbList]

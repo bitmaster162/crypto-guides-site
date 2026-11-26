@@ -4,6 +4,7 @@ import {isExactGuide7Successor} from './guide7-route-successor-r1.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
+import { readContract } from './r3-learning-contract.mjs';
 
 const root = new URL('../', import.meta.url);
 const disclaimer = 'Здесь — личная практика и исследования автора. Это не инвестиционный совет и не предложение управлять чужими средствами. Торговля криптоактивами может привести к потере всех вложенных денег; прошлые результаты не гарантируют будущих.';
@@ -29,6 +30,8 @@ assert.equal(source.split(enDisclaimer).length - 1, 1, 'shared layout carries ex
 const htmlFiles = await walk(new URL('dist/', root));
 assert.ok(htmlFiles.length > 0, 'rendered HTML exists');
 let checks = 4;
+const r3Expected = new Set((await readContract()).map(row => row.route + '/index.html'));
+const r3Seen = new Set();
 let enPages = 0;
 let ruPages = 0;
 for (const file of htmlFiles) {
@@ -38,10 +41,16 @@ for (const file of htmlFiles) {
   const other = isEn ? disclaimer : enDisclaimer;
   assert.equal(html.split(selected).length - 1, 1, `${file.pathname}: approved localized disclaimer exactly once`);
   assert.equal(html.split(other).length - 1, 0, `${file.pathname}: wrong language disclaimer absent`);
-  if (isEn) enPages += 1;
+  const route = file.pathname.replace(/\\/g, '/').split('/dist/').at(-1);
+  const r3Path = '/' + route;
+  if (r3Expected.has(r3Path)) {
+    assert.ok(!r3Seen.has(r3Path), 'duplicate R3 page');
+    r3Seen.add(r3Path);
+  } else if (isEn) enPages += 1;
   else ruPages += 1;
   checks += 2;
 }
+assert.deepEqual([...r3Seen].sort(), [...r3Expected].sort(), 'exact 18 separately enumerated R3 pages');
 assert.equal(enPages, (isExactGuide5Successor()?3:2)+(isExactGuide6Successor()?1:0)+(isExactGuide7Successor()?1:0), 'T1.3 adds exactly one reviewed EN guide, plus the EN index');
 assert.equal(ruPages, (isExactGuide5Successor()?169:168)+(isExactGuide6Successor()?1:0)+(isExactGuide7Successor()?1:0), 'P31.5 RU/static HTML page census preserved');
 console.log(`P28_7A_CRYPTO_GUIDES_DISCLAIMER_GATE=PASS checks=${checks} html=${htmlFiles.length} en_html=${enPages} ru_html=${ruPages} static_html=PASS js_required=0`);

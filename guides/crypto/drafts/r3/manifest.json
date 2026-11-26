@@ -1,0 +1,984 @@
+{
+  "schema": "crypto-guides.r3-draft-bundle.v1",
+  "status": "DRAFT_HOLD",
+  "review_status": "NOT_RUN",
+  "publication_authorized": false,
+  "routing_active": false,
+  "baseline_commit": "d463365a81b65d0cb4c62250da304fd736517e7b",
+  "frozen_handoff_sha256": "bfcba1ea8ab68c80d90390ccf36c1e99a30eca2cc1197284afb137d18faa3437",
+  "frozen_catalog_sha256": "f6fa1a5e6e5d0c04823a8a67ddc71fda2dd629330db77043016c6248e11f0cea",
+  "scope": "Nine frozen bilingual guide pairs, non-routed. Proposed site metadata for subsequent exact review; no review dates, sitemap, discovery, deployment or approval changes. Worksheets, R4 and trailing stop excluded.",
+  "modules": [
+    {
+      "module": "M1",
+      "slug_proposal": "spot-order-book-integrity",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "01-spot-order-book-integrity.ru.md",
+          "body_sha256": "235007c5410a638e213cd8d4d37b3a32c8602a9d325e9cc11e4a71d46d2e95f5",
+          "bytes": 14786,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-order-book-integrity",
+          "path": "/guides/spot-order-book-integrity",
+          "alternate": "/en/guides/spot-order-book-integrity",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Локальный стакан: целостность данных и видимая ликвидность",
+          "seo_title": "Целостность локального стакана",
+          "description": "Проверка снимков, последовательности обновлений и видимой ликвидности; учебные примеры без прогноза исполнения.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot WebSocket streams",
+              "url": "https://developers.binance.com/en/docs/products/spot/web-socket-streams"
+            },
+            {
+              "title": "depth event fields",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L743-L774"
+            },
+            {
+              "title": "synchronization and coverage",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L776-L809"
+            },
+            {
+              "title": "Binance Spot REST API",
+              "url": "https://developers.binance.com/en/docs/products/spot/rest-api"
+            },
+            {
+              "title": "depth endpoint and request weights",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L1073-L1116"
+            },
+            {
+              "title": "Binance Spot changelog",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/CHANGELOG.md#L5-L10"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "01-spot-order-book-integrity.en.md",
+          "body_sha256": "ee4a6230f20f9bc715a7861a0205e38e71e2899c746d9a972f094c14ddb44cbb",
+          "bytes": 7989,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-order-book-integrity",
+          "path": "/en/guides/spot-order-book-integrity",
+          "alternate": "/guides/spot-order-book-integrity",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Local order book: data integrity and visible liquidity",
+          "seo_title": "Local order book integrity",
+          "description": "Checking snapshots, update continuity and visible liquidity through examples without execution forecasts.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot WebSocket streams",
+              "url": "https://developers.binance.com/en/docs/products/spot/web-socket-streams"
+            },
+            {
+              "title": "depth event fields",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L743-L774"
+            },
+            {
+              "title": "synchronization and coverage",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L776-L809"
+            },
+            {
+              "title": "Binance Spot REST API",
+              "url": "https://developers.binance.com/en/docs/products/spot/rest-api"
+            },
+            {
+              "title": "depth endpoint and request weights",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L1073-L1116"
+            },
+            {
+              "title": "Binance Spot changelog",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/CHANGELOG.md#L5-L10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M2",
+      "slug_proposal": "spot-candle-temporal-integrity",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "02-spot-candle-temporal-integrity.ru.md",
+          "body_sha256": "cc6b7ac754d3629923efa8879276e74ad00b28c25bbc8d9abf26086d35b9e9ab",
+          "bytes": 19787,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-candle-temporal-integrity",
+          "path": "/guides/spot-candle-temporal-integrity",
+          "alternate": "/en/guides/spot-candle-temporal-integrity",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Свечи Spot: закрытие, доступность и временная целостность",
+          "seo_title": "Временная целостность свечей Spot",
+          "description": "Различия между закрытием свечи, доступностью данных и порядком наблюдений.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot WebSocket time units",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L62-L64"
+            },
+            {
+              "title": "UTC candles and closure flag",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L353-L415"
+            },
+            {
+              "title": "Timezone-offset candles",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L418-L460"
+            },
+            {
+              "title": "Binance Spot REST timestamp units",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L103-L105"
+            },
+            {
+              "title": "REST klines schema and calendar parameters",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L1278-L1342"
+            },
+            {
+              "title": "Binance Public Data Spot timestamp transition",
+              "url": "https://github.com/binance/binance-public-data/blob/d571690eb66760763b0bd6e27e8cd35603c7e244/README.md#L7-L24"
+            },
+            {
+              "title": "ZIP checksums and archive changes",
+              "url": "https://github.com/binance/binance-public-data/blob/d571690eb66760763b0bd6e27e8cd35603c7e244/README.md#L88-L101"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "02-spot-candle-temporal-integrity.en.md",
+          "body_sha256": "6bbe9b520d9d22403591a413efef91c9b295ee7b27ac78786569539f4fff1909",
+          "bytes": 11496,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-candle-temporal-integrity",
+          "path": "/en/guides/spot-candle-temporal-integrity",
+          "alternate": "/guides/spot-candle-temporal-integrity",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Spot candles: closure, availability and temporal integrity",
+          "seo_title": "Spot candle temporal integrity",
+          "description": "Distinguishing candle closure, data availability and observation order.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot WebSocket time units",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L62-L64"
+            },
+            {
+              "title": "UTC candles and closure flag",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L353-L415"
+            },
+            {
+              "title": "Timezone-offset candles",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-streams.md#L418-L460"
+            },
+            {
+              "title": "Binance Spot REST timestamp units",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L103-L105"
+            },
+            {
+              "title": "REST klines schema and calendar parameters",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L1278-L1342"
+            },
+            {
+              "title": "Binance Public Data Spot timestamp transition",
+              "url": "https://github.com/binance/binance-public-data/blob/d571690eb66760763b0bd6e27e8cd35603c7e244/README.md#L7-L24"
+            },
+            {
+              "title": "ZIP checksums and archive changes",
+              "url": "https://github.com/binance/binance-public-data/blob/d571690eb66760763b0bd6e27e8cd35603c7e244/README.md#L88-L101"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M3",
+      "slug_proposal": "spot-order-filters",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "03-spot-order-filters.ru.md",
+          "body_sha256": "e1d7131003c13da8f88224bb00e06639806ed6ebd73c2b6ec4cf4ab5532b8b1b",
+          "bytes": 11433,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-order-filters",
+          "path": "/guides/spot-order-filters",
+          "alternate": "/en/guides/spot-order-filters",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Фильтры спотовых ордеров: цена, количество и номинал",
+          "seo_title": "Фильтры спотовых ордеров",
+          "description": "Учебная проверка цены, количества и номинала; прохождение фильтра не означает допуск биржи.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot Filters",
+              "url": "https://developers.binance.com/en/docs/products/spot/filters"
+            },
+            {
+              "title": "PRICE_FILTER and PERCENT_PRICE",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/filters.md#L38-L114"
+            },
+            {
+              "title": "LOT_SIZE, MIN_NOTIONAL, NOTIONAL and MARKET_LOT_SIZE",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/filters.md#L129-L242"
+            },
+            {
+              "title": "Binance Spot REST API",
+              "url": "https://developers.binance.com/en/docs/products/spot/rest-api"
+            },
+            {
+              "title": "exchangeInfo",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L886"
+            },
+            {
+              "title": "quantity / quoteOrderQty",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L2189-L2210"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "03-spot-order-filters.en.md",
+          "body_sha256": "7dcc88c5375a124b8ebc64aabc1a331a7e9893e63f1c07974f2cc31468688971",
+          "bytes": 6802,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-order-filters",
+          "path": "/en/guides/spot-order-filters",
+          "alternate": "/guides/spot-order-filters",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Spot order filters: price, quantity and notional",
+          "seo_title": "Spot order filters",
+          "description": "Teaching checks for price, quantity and notional; passing a filter is not exchange admission.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot Filters",
+              "url": "https://developers.binance.com/en/docs/products/spot/filters"
+            },
+            {
+              "title": "PRICE_FILTER and PERCENT_PRICE",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/filters.md#L38-L114"
+            },
+            {
+              "title": "LOT_SIZE, MIN_NOTIONAL, NOTIONAL and MARKET_LOT_SIZE",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/filters.md#L129-L242"
+            },
+            {
+              "title": "Binance Spot REST API",
+              "url": "https://developers.binance.com/en/docs/products/spot/rest-api"
+            },
+            {
+              "title": "exchangeInfo",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L886"
+            },
+            {
+              "title": "quantity / quoteOrderQty",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L2189-L2210"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M4",
+      "slug_proposal": "spot-rate-limit-backoff",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "04-spot-rate-limit-backoff.ru.md",
+          "body_sha256": "e211d049e603d0afbb8470dc5eb2691a5cc9ec46867a49614e2f4e2a1fe6314c",
+          "bytes": 11945,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-rate-limit-backoff",
+          "path": "/guides/spot-rate-limit-backoff",
+          "alternate": "/en/guides/spot-rate-limit-backoff",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Лимиты запросов и безопасная пауза",
+          "seo_title": "Лимиты запросов и безопасная пауза",
+          "description": "Раздельный учёт бюджетов запросов, пауз и неопределённого исхода предыдущей заявки.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "S1: Binance Spot REST",
+              "url": "https://raw.githubusercontent.com/binance/binance-spot-api-docs/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md"
+            },
+            {
+              "title": "S2: Binance Spot unfilled order count",
+              "url": "https://raw.githubusercontent.com/binance/binance-spot-api-docs/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/order_count_decrement.md"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "04-spot-rate-limit-backoff.en.md",
+          "body_sha256": "ff2299b1ca8d2eaf66255a55b5349d15734c3af721602054fc5a4a9b27570727",
+          "bytes": 6860,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-rate-limit-backoff",
+          "path": "/en/guides/spot-rate-limit-backoff",
+          "alternate": "/guides/spot-rate-limit-backoff",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Request limits and safe backoff",
+          "seo_title": "Request limits and safe backoff",
+          "description": "Separate request budgets, backoff and uncertain prior-order outcomes.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "S1: Binance Spot REST",
+              "url": "https://raw.githubusercontent.com/binance/binance-spot-api-docs/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md"
+            },
+            {
+              "title": "S2: Binance Spot unfilled order count",
+              "url": "https://raw.githubusercontent.com/binance/binance-spot-api-docs/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/order_count_decrement.md"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M5",
+      "slug_proposal": "order-cancellation-and-api-timeouts",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "05-order-cancellation-and-api-timeouts.ru.md",
+          "body_sha256": "2e3d41ff7e455c8e5679d0b0fa4cfb18d0e77aebe9775ba4a093407f79f37b49",
+          "bytes": 12096,
+          "site": "crypto.bitevo.work",
+          "slug": "order-cancellation-and-api-timeouts",
+          "path": "/guides/order-cancellation-and-api-timeouts",
+          "alternate": "/en/guides/order-cancellation-and-api-timeouts",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Почему тайм-аут не означает отмену",
+          "seo_title": "Тайм-аут API и отмена заявки",
+          "description": "Тайм-аут, частичное исполнение, отмена и сверка состояния заявок.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot REST general information",
+              "url": "https://developers.binance.com/en/docs/products/spot/rest-api"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L118-L142"
+            },
+            {
+              "title": "Binance Spot WebSocket API Account, Query order",
+              "url": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/ws-api/account"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L180-L184"
+            },
+            {
+              "title": "Точные ссылки на доказательства 2",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L6949-L6990"
+            },
+            {
+              "title": "Binance Spot User Data Streams, Order Update",
+              "url": "https://developers.binance.com/en/docs/products/spot/user-data-stream"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L84-L92"
+            },
+            {
+              "title": "Kraken Spot REST Cancel All Orders After X",
+              "url": "https://docs.kraken.com/api-reference/trading/cancel-all-orders-after-x"
+            },
+            {
+              "title": "Binance Spot WebSocket API Trade, Cancel and replace order",
+              "url": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/ws-api/trade"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L4369-L4377"
+            },
+            {
+              "title": "Точные ссылки на доказательства 2",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L4385-L4421"
+            },
+            {
+              "title": "Точные ссылки на доказательства 3",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L4593-L4613"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "05-order-cancellation-and-api-timeouts.en.md",
+          "body_sha256": "70ac06021abc369a51ccf8b5ce568950f4cf723733c7e644e1893d6b4d17ac06",
+          "bytes": 7313,
+          "site": "crypto.bitevo.work",
+          "slug": "order-cancellation-and-api-timeouts",
+          "path": "/en/guides/order-cancellation-and-api-timeouts",
+          "alternate": "/guides/order-cancellation-and-api-timeouts",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Why a timeout does not prove cancellation",
+          "seo_title": "API timeouts and order cancellation",
+          "description": "Timeouts, partial execution, cancellation and order-state reconciliation.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot REST general information",
+              "url": "https://developers.binance.com/en/docs/products/spot/rest-api"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L118-L142"
+            },
+            {
+              "title": "Binance Spot WebSocket API Account, Query order",
+              "url": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/ws-api/account"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L180-L184"
+            },
+            {
+              "title": "Точные ссылки на доказательства 2",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L6949-L6990"
+            },
+            {
+              "title": "Binance Spot User Data Streams, Order Update",
+              "url": "https://developers.binance.com/en/docs/products/spot/user-data-stream"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L84-L92"
+            },
+            {
+              "title": "Kraken Spot REST Cancel All Orders After X",
+              "url": "https://docs.kraken.com/api-reference/trading/cancel-all-orders-after-x"
+            },
+            {
+              "title": "Binance Spot WebSocket API Trade, Cancel and replace order",
+              "url": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/ws-api/trade"
+            },
+            {
+              "title": "Точные ссылки на доказательства 1",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L4369-L4377"
+            },
+            {
+              "title": "Точные ссылки на доказательства 2",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L4385-L4421"
+            },
+            {
+              "title": "Точные ссылки на доказательства 3",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/web-socket-api.md#L4593-L4613"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M6",
+      "slug_proposal": "spot-stp-prevented-quantity",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "06-spot-stp-prevented-quantity.ru.md",
+          "body_sha256": "c324fdc11db3f3f7a89ee6d1b16a412c808c27b09f92152cd418a5871a4a263e",
+          "bytes": 12799,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-stp-prevented-quantity",
+          "path": "/guides/spot-stp-prevented-quantity",
+          "alternate": "/en/guides/spot-stp-prevented-quantity",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Самосделки и предотвращённые исполнения",
+          "seo_title": "STP и предотвращённые исполнения",
+          "description": "Учебная сверка исполненных и предотвращённых количеств с ограничениями модели.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "S1: Binance Spot STP FAQ",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/stp_faq.md#L13-L162"
+            },
+            {
+              "title": "S2: Binance Spot user data stream",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L86-L179"
+            },
+            {
+              "title": "S3: Binance Spot REST Query Prevented Matches",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4850-L4899"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "06-spot-stp-prevented-quantity.en.md",
+          "body_sha256": "e7a5ceda0b24b7d2834335e40c7612ffa12861f40b2bc239b31e8bda35b74d71",
+          "bytes": 7550,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-stp-prevented-quantity",
+          "path": "/en/guides/spot-stp-prevented-quantity",
+          "alternate": "/guides/spot-stp-prevented-quantity",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Self-trades and prevented execution",
+          "seo_title": "STP and prevented execution",
+          "description": "Teaching reconciliation of executed and prevented quantities with model limitations.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "S1: Binance Spot STP FAQ",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/stp_faq.md#L13-L162"
+            },
+            {
+              "title": "S2: Binance Spot user data stream",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L86-L179"
+            },
+            {
+              "title": "S3: Binance Spot REST Query Prevented Matches",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4850-L4899"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M7",
+      "slug_proposal": "spot-commission-accounting",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "07-spot-commission-accounting.ru.md",
+          "body_sha256": "028c6173a0cc4b526425cfb5af53250ac9d18e2ce0aae6b2c60c24e68b21bdb8",
+          "bytes": 16775,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-commission-accounting",
+          "path": "/guides/spot-commission-accounting",
+          "alternate": "/en/guides/spot-commission-accounting",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Комиссии Spot: от исполнения заявки до изменения балансов",
+          "seo_title": "Комиссии Spot и учёт активов",
+          "description": "Раздельный учёт исполнений, активов комиссии и изменений балансов на учебных данных.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot commission FAQ, pinned",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/commission_faq.md#L9-L38"
+            },
+            {
+              "title": "Commission calculation, payment asset and discount conditions",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/commission_faq.md#L149-L218"
+            },
+            {
+              "title": "Binance Spot account commission rates",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4971-L5017"
+            },
+            {
+              "title": "Binance Spot user data stream",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L100-L126"
+            },
+            {
+              "title": "Binance Spot account trade list",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4745-L4797"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "07-spot-commission-accounting.en.md",
+          "body_sha256": "30ef0e5b73bf522286e3d86d3083dafb3cf02975b84915c1898218f20d3f14d1",
+          "bytes": 9746,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-commission-accounting",
+          "path": "/en/guides/spot-commission-accounting",
+          "alternate": "/guides/spot-commission-accounting",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Spot commissions: from fills to balance changes",
+          "seo_title": "Spot fees and asset accounting",
+          "description": "Separating fills, fee assets and balance changes in teaching data.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot commission FAQ, pinned",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/commission_faq.md#L9-L38"
+            },
+            {
+              "title": "Commission calculation, payment asset and discount conditions",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/faqs/commission_faq.md#L149-L218"
+            },
+            {
+              "title": "Binance Spot account commission rates",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4971-L5017"
+            },
+            {
+              "title": "Binance Spot user data stream",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L100-L126"
+            },
+            {
+              "title": "Binance Spot account trade list",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4745-L4797"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M8",
+      "slug_proposal": "spot-account-reconciliation",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "08-spot-account-reconciliation.ru.md",
+          "body_sha256": "1e0705033afca92290c30eafe524344de6abab65f8508544a25d92a3ad2800d6",
+          "bytes": 22755,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-account-reconciliation",
+          "path": "/guides/spot-account-reconciliation",
+          "alternate": "/en/guides/spot-account-reconciliation",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Spot: как восстановить состояние счёта после разрыва потока",
+          "seo_title": "Восстановление состояния счёта Spot",
+          "description": "Сопоставление снимков, событий и исполнений после разрыва потока; границы полноты.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot User Data Stream — event semantics",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L20-L125"
+            },
+            {
+              "title": "Stream termination and external lock update",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L255-L298"
+            },
+            {
+              "title": "Binance Spot REST API — Data Sources",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L247-L261"
+            },
+            {
+              "title": "Account snapshot",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4293-L4355"
+            },
+            {
+              "title": "Order lookup and open orders",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4356-L4493"
+            },
+            {
+              "title": "Account trade list and supported parameters",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4743-L4780"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "08-spot-account-reconciliation.en.md",
+          "body_sha256": "b3e4eececb567975992123c96a081304d212927dcaeb0256e6ed2cedd8504b32",
+          "bytes": 12610,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-account-reconciliation",
+          "path": "/en/guides/spot-account-reconciliation",
+          "alternate": "/guides/spot-account-reconciliation",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Spot: recovering account state after a stream interruption",
+          "seo_title": "Spot account-state reconciliation",
+          "description": "Comparing snapshots, events and fills after a stream interruption; limits of completeness.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "Binance Spot User Data Stream — event semantics",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L20-L125"
+            },
+            {
+              "title": "Stream termination and external lock update",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L255-L298"
+            },
+            {
+              "title": "Binance Spot REST API — Data Sources",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L247-L261"
+            },
+            {
+              "title": "Account snapshot",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4293-L4355"
+            },
+            {
+              "title": "Order lookup and open orders",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4356-L4493"
+            },
+            {
+              "title": "Account trade list and supported parameters",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4743-L4780"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "module": "M9",
+      "slug_proposal": "spot-order-list-lifecycle",
+      "review_status": "NOT_RUN",
+      "route_authorized": false,
+      "locales": {
+        "ru": {
+          "body_file": "09-spot-order-list-lifecycle.ru.md",
+          "body_sha256": "efff8535eaceba1af34b9f47570e9e28ef0717e70136e63f06443b104d027893",
+          "bytes": 12172,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-order-list-lifecycle",
+          "path": "/guides/spot-order-list-lifecycle",
+          "alternate": "/en/guides/spot-order-list-lifecycle",
+          "lang": "ru",
+          "category": "Risk Management",
+          "title": "Связанные ордера: список не равен исполнению",
+          "seo_title": "Связанные ордера и статус списка",
+          "description": "OCO, OTO и OTOCO: раздельная сверка состояния списка, участников и накопленного исполнения.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../layouts/ReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "S1: OCO",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L3311-L3327"
+            },
+            {
+              "title": "S1: OTO",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L3445-L3462"
+            },
+            {
+              "title": "S1: OTOCO",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L3587-L3598"
+            },
+            {
+              "title": "S1: Cancellation",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4047-L4071"
+            },
+            {
+              "title": "S1: List query",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4569-L4612"
+            },
+            {
+              "title": "S1: Open lists",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4695-L4727"
+            },
+            {
+              "title": "S2: Individual order fields",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L99-L118"
+            },
+            {
+              "title": "S2: List notification",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L205-L238"
+            },
+            {
+              "title": "S3: Order and list enums",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/enums.md#L45-L80"
+            }
+          ]
+        },
+        "en": {
+          "body_file": "09-spot-order-list-lifecycle.en.md",
+          "body_sha256": "125d8425baaf93ccc269a140c022e384e61337401ca12fb9a550d561d6260d0e",
+          "bytes": 7541,
+          "site": "crypto.bitevo.work",
+          "slug": "spot-order-list-lifecycle",
+          "path": "/en/guides/spot-order-list-lifecycle",
+          "alternate": "/guides/spot-order-list-lifecycle",
+          "lang": "en",
+          "category": "Risk Management",
+          "title": "Linked orders: list state is not execution",
+          "seo_title": "Linked orders and list status",
+          "description": "OCO, OTO and OTOCO: separate reconciliation of list state, members and cumulative execution.",
+          "reviewed": null,
+          "modified": null,
+          "next_review": null,
+          "layout": "../../../layouts/EnglishReviewedGuideLayout.astro",
+          "schema": [
+            "Article",
+            "BreadcrumbList"
+          ],
+          "related": [],
+          "sources": [
+            {
+              "title": "S1: OCO",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L3311-L3327"
+            },
+            {
+              "title": "S1: OTO",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L3445-L3462"
+            },
+            {
+              "title": "S1: OTOCO",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L3587-L3598"
+            },
+            {
+              "title": "S1: Cancellation",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4047-L4071"
+            },
+            {
+              "title": "S1: List query",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4569-L4612"
+            },
+            {
+              "title": "S1: Open lists",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/rest-api.md#L4695-L4727"
+            },
+            {
+              "title": "S2: Individual order fields",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L99-L118"
+            },
+            {
+              "title": "S2: List notification",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/user-data-stream.md#L205-L238"
+            },
+            {
+              "title": "S3: Order and list enums",
+              "url": "https://github.com/binance/binance-spot-api-docs/blob/3cdca01b7241b5539a8691a259a95cfeb21c256b/enums.md#L45-L80"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "source_links_per_locale": 56
+}

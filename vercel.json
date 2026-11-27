@@ -36,5 +36,16 @@
       "destination": "https://bitevo.work/entry-audit",
       "permanent": true
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-bgptItKCKnHy6WjA5ghJtWVkl38WS0Ad0BS5SQH+GyU=' 'sha256-PZb4xzp9LLkoeYiQ9Gtht0AnwNid2yFP+S+a2VMmqBM='; script-src-attr 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; worker-src 'none'"
+        }
+      ]
+    }
   ]
 }

@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import corpus from '../../guides/crypto/drafts/r3/manifest.json';
+const bodies = import.meta.glob('../../guides/crypto/drafts/r3/*.md', { eager: true });
+const { slug, lang } = Astro.props;
+if (lang !== 'ru' && lang !== 'en') throw new Error('R3 locale');
+const module = corpus.modules.find((item) => item.slug_proposal === slug);
+if (!module) throw new Error('R3 module missing');
+const entry = module.locales[lang];
+const Body = bodies['../../guides/crypto/drafts/r3/' + entry.body_file]?.Content;
+if (!Body) throw new Error('R3 body missing: ' + entry.body_file);
+const isEn = lang === 'en';
+const route = (s, locale) => (locale === 'en' ? '/en' : '') + '/learn/r3/' + s;
+const canonical = 'https://crypto.bitevo.work' + route(slug, lang);
+const alternate = route(slug, isEn ? 'ru' : 'en');
+---
+<Layout lang={lang} title={entry.seo_title + ' · Crypto Guides'} description={entry.description}
+  robots="noindex, follow" canonical={canonical}
+  alternates={{ru: route(slug, 'ru'), en: route(slug, 'en')}} languageSwitchHref={alternate}>
+  <section class="r3-shell">
+    <nav class="r3-nav" aria-label={isEn ? 'R3 lessons' : 'Уроки R3'}>
+      <strong>{isEn ? 'R3 teaching collection' : 'Учебная серия R3'}</strong>
+      <ol>
+        {corpus.modules.map((item) => (
+          <li><a href={route(item.slug_proposal, lang)} aria-current={item.slug_proposal === slug ? 'page' : undefined}>{item.locales[lang].title}</a></li>
+        ))}
+      </ol>
+    </nav>
+    <div class="r3-content">
+      <aside class="r3-status" data-r3-review-status="NOT_RUN">
+        <strong>{isEn ? 'Teaching material · independent review pending' : 'Учебный материал · независимая проверка ожидается'}</strong>
+        <p>{isEn ? 'The review date is not established. Examples are hypothetical and do not establish actual execution, current exchange rules or permission to trade.' : 'Дата независимой проверки не установлена. Примеры условны и не подтверждают реальное исполнение, актуальные правила биржи или разрешение торговать.'}</p>
+      </aside>
+      <article class="r3-lesson" data-r3-module={module.module} data-r3-locale={lang} data-r3-body-sha256={entry.body_sha256}>
+        <Body />
+      </article>
+      <p><a href={alternate}>{isEn ? 'Read in Russian' : 'Read in English'}</a></p>
+    </div>
+  </section>
+</Layout>
+<style>
+  .r3-shell { max-width: 1200px; margin: 0 auto; padding: 28px 20px 56px; display: grid; grid-template-columns: minmax(0, 250px) minmax(0, 1fr); gap: 28px; }
+  .r3-nav { align-self: start; border: 1px solid var(--line); background: var(--paper-soft); border-radius: var(--radius); padding: 18px; }
+  .r3-nav ol { padding-left: 20px; line-height: 1.5; }
+  .r3-nav li { margin: 8px 0; }
+  .r3-nav a[aria-current="page"] { color: var(--gold); font-weight: bold; }
+  .r3-content { min-width: 0; overflow-wrap: anywhere; }
+  .r3-status { border: 1px solid var(--gold); border-radius: 10px; padding: 14px; margin: 0 0 24px; }
+  .r3-status p { margin: 8px 0 0; color: var(--muted); }
+  .r3-lesson { line-height: 1.65; }
+  .r3-lesson :global(table) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 18px 0; }
+  .r3-lesson :global(th), .r3-lesson :global(td) { padding: 9px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+  .r3-lesson :global(pre) { overflow-x: auto; max-width: 100%; }
+  @media (max-width: 800px) { .r3-shell { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 20px 14px; } }
+</style>

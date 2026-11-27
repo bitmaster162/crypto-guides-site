@@ -1,0 +1,9 @@
+---
+import R3LearningPage from '../../../components/R3LearningPage.astro';
+import corpus from '../../../../guides/crypto/drafts/r3/manifest.json';
+export function getStaticPaths() {
+  return corpus.modules.map((item) => ({ params: { slug: item.slug_proposal } }));
+}
+const { slug } = Astro.params;
+---
+<R3LearningPage slug={slug} lang="ru" />
